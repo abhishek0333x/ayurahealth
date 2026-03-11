@@ -4,7 +4,6 @@ export const runtime = 'nodejs';
 
 export async function POST(request: NextRequest) {
   const { messages, system_ids } = await request.json();
-  const userQuery = messages[messages.length - 1]?.content || '';
 
   const systemPrompt = `You are Ayurahealth, a compassionate AI health companion with deep knowledge across Ayurveda, Traditional Chinese Medicine, Homeopathy, Western Medicine, and Naturopathy. The user wants perspectives from: ${system_ids.join(', ')}.
 
@@ -22,23 +21,27 @@ See a Doctor If: Clear red flags to watch for.
 
 Be warm, clear, and always recommend professional consultation for serious symptoms.`;
 
-  const history = messages.slice(-10).map((m: {role:string,content:string}) => ({
-    role: m.role,
-    content: m.content,
-  }));
-
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const response = await fetch('http://localhost:11434/api/chat', {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.ANTHROPIC_API_KEY || '',
+            'anthropic-version': '2023-06-01',
+            'anthropic-beta': 'messages-2023-12-15',
+          },
           body: JSON.stringify({
-            model: 'ayurahealth',
-            messages: [{ role: 'system', content: systemPrompt }, ...history],
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 1024,
+            system: systemPrompt,
             stream: true,
-            options: { temperature: 0.7, num_ctx: 4096 },
+            messages: messages.slice(-10).map((m: {role:string,content:string}) => ({
+              role: m.role,
+              content: m.content,
+            })),
           }),
         });
 
@@ -51,21 +54,25 @@ Be warm, clear, and always recommend professional consultation for serious sympt
           const text = decoder.decode(value);
           const lines = text.split('\n').filter(l => l.trim());
           for (const line of lines) {
-            try {
-              const data = JSON.parse(line);
-              const token = data?.message?.content || '';
-              if (token) {
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token })}\n\n`));
-              }
-              if (data.done) {
-                controller.enqueue(encoder.encode('data: [DONE]\n\n'));
-              }
-            } catch {}
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6);
+              if (data === '[DONE]') continue;
+              try {
+                const parsed = JSON.parse(data);
+                if (parsed.type === 'content_block_delta') {
+                  const token = parsed.delta?.text || '';
+                  if (token) {
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token })}\n\n`));
+                  }
+                }
+              } catch {}
+            }
           }
         }
+        controller.enqueue(encoder.encode('data: [DONE]\n\n'));
         controller.close();
       } catch (e) {
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token: 'Error: Make sure Ollama is running with: ollama serve' })}\n\n`));
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token: 'Error connecting to AI. Please try again.' })}\n\n`));
         controller.close();
       }
     },
