@@ -1,9 +1,6 @@
 import { NextRequest } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
 
 export const runtime = 'nodejs';
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(request: NextRequest) {
   const { messages, system_ids } = await request.json();
@@ -22,7 +19,7 @@ Always structure your response exactly like this:
 
 **See a Doctor If:** Clear red flags and warning signs they must not ignore.
 
-Be warm, wise, and non-alarming. Like a trusted knowledgeable friend. Never diagnose definitively. Always recommend professional consultation for serious symptoms.`;
+Be warm, wise, and non-alarming. Never diagnose definitively. Always recommend professional consultation for serious symptoms.`;
 
   const history = messages.slice(-10).map((m: {role:string,content:string}) => ({
     role: m.role as 'user' | 'assistant',
@@ -33,16 +30,40 @@ Be warm, wise, and non-alarming. Like a trusted knowledgeable friend. Never diag
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const response = await client.messages.stream({
-          model: 'claude-haiku-4-5',
-          max_tokens: 1024,
-          system: systemPrompt,
-          messages: history,
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.ANTHROPIC_API_KEY || '',
+            'anthropic-version': '2023-06-01',
+            'anthropic-beta': 'messages-2023-12-15',
+          },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5',
+            max_tokens: 1024,
+            system: systemPrompt,
+            messages: history,
+            stream: true,
+          }),
         });
 
-        for await (const chunk of response) {
-          if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token: chunk.delta.text })}\n\n`));
+        const reader = response.body!.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const text = decoder.decode(value);
+          const lines = text.split('\n').filter(l => l.trim());
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+                if (data.type === 'content_block_delta' && data.delta?.text) {
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token: data.delta.text })}\n\n`));
+                }
+              } catch {}
+            }
           }
         }
         controller.enqueue(encoder.encode('data: [DONE]\n\n'));
