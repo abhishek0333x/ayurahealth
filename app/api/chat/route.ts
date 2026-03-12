@@ -39,7 +39,7 @@ Be warm, wise, and non-alarming. Never diagnose definitively. Always recommend p
             'anthropic-beta': 'messages-2023-12-15',
           },
           body: JSON.stringify({
-            model: 'claude-haiku-4-5',
+            model: 'claude-haiku-4-5-20251001',
             max_tokens: 1024,
             system: systemPrompt,
             messages: history,
