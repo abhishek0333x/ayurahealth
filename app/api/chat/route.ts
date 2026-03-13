@@ -296,7 +296,7 @@ RESPONSE GUIDELINES
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, systems, incognito } = await req.json()
+    const { messages, systems, incognito, dosha, lang } = await req.json()
 
     const selectedSystems = systems?.length > 0 ? systems : ['ayurveda', 'tcm', 'western']
 
@@ -315,11 +315,23 @@ export async function POST(req: NextRequest) {
       .map((s: string) => systemMap[s] || s)
       .join(', ')
 
+    
+    const langInstruction: Record<string, string> = {
+      en: 'Respond in English.',
+      ja: '日本語で回答してください。専門的な漢方・アーユルヴェーダ用語も日本語で説明してください。',
+      hi: 'हिंदी में जवाब दें। आयुर्वेदिक और पारंपरिक चिकित्सा शब्दों को हिंदी में समझाएं।',
+    }
+    const langNote = langInstruction[lang || 'en'] || 'Respond in English.'
+
+    const doshaNote = dosha
+      ? `\nUSER DOSHA: This user is ${dosha} type. Tailor ALL recommendations specifically for ${dosha} constitution.`
+      : ''
+
     const systemPrompt = `${KNOWLEDGE_BASE}
 
 ACTIVE TRADITIONS FOR THIS SESSION: ${selectedNames}
 Focus your answers primarily on these selected traditions, but you may reference others for comparison.
-${incognito ? 'This is a private/incognito session. Do not reference any previous conversation.' : ''}
+${incognito ? 'This is a private/incognito session.' : ''}${doshaNote}\n\nLANGUAGE INSTRUCTION: ${langNote}
 `
 
     const groqMessages = messages.map((m: { role: string; content: string }) => ({
