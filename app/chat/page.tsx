@@ -9,6 +9,38 @@ type Screen = 'landing' | 'quiz' | 'result' | 'chat'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SR = any
 
+const STORAGE_KEY = 'ayurahealth_v1'
+
+interface SavedState {
+  dosha: Dosha | null
+  messages: Message[]
+  selectedSystems: string[]
+  lang: Lang
+  savedAt: number
+}
+
+function loadState(): SavedState | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as SavedState
+    // Expire after 7 days
+    if (Date.now() - parsed.savedAt > 7 * 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(STORAGE_KEY)
+      return null
+    }
+    return parsed
+  } catch { return null }
+}
+
+function saveState(state: SavedState) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)) } catch {}
+}
+
+function clearState() {
+  try { localStorage.removeItem(STORAGE_KEY) } catch {}
+}
+
 const DOSHA_META = {
   Vata:  { emoji: '🌬️', color: '#7aafd4', glow: 'rgba(122,175,212,0.3)', bg: 'rgba(122,175,212,0.08)', taglineKey: 'vata_tagline', descKey: 'vata_desc', strengthsKey: 'vata_strengths', watchKey: 'vata_watch' },
   Pitta: { emoji: '🔥', color: '#e8835a', glow: 'rgba(232,131,90,0.3)',  bg: 'rgba(232,131,90,0.08)',  taglineKey: 'pitta_tagline', descKey: 'pitta_desc', strengthsKey: 'pitta_strengths', watchKey: 'pitta_watch' },
@@ -46,6 +78,17 @@ function renderMarkdown(text: string, doshaColor = '#6abf8a'): string {
     .replace(/\n/g, '<br/>')
 }
 
+function timeAgo(ts: number): string {
+  const diff = Date.now() - ts
+  const mins = Math.floor(diff / 60000)
+  const hours = Math.floor(diff / 3600000)
+  const days = Math.floor(diff / 86400000)
+  if (mins < 1) return 'just now'
+  if (mins < 60) return `${mins}m ago`
+  if (hours < 24) return `${hours}h ago`
+  return `${days}d ago`
+}
+
 export default function ChatPage() {
   const [lang, setLang] = useState<Lang>('en')
   const [screen, setScreen] = useState<Screen>('landing')
@@ -63,6 +106,9 @@ export default function ChatPage() {
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [voiceSupported, setVoiceSupported] = useState(false)
   const [thinkingDots, setThinkingDots] = useState('.')
+  const [savedState, setSavedState] = useState<SavedState | null>(null)
+  const [showWelcomeBack, setShowWelcomeBack] = useState(false)
+  const [showClearConfirm, setShowClearConfirm] = useState(false)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -71,12 +117,25 @@ export default function ChatPage() {
   const doshaColor = dosha ? DOSHA_META[dosha].color : '#6abf8a'
   const tx = t[lang]
 
+  // Load saved state on mount
+  useEffect(() => {
+    const saved = loadState()
+    if (saved && saved.messages.length > 1) {
+      setSavedState(saved)
+      setShowWelcomeBack(true)
+    }
+  }, [])
+
+  // Auto-save whenever messages or key state changes
+  useEffect(() => {
+    if (incognito || messages.length === 0) return
+    saveState({ dosha, messages, selectedSystems, lang, savedAt: Date.now() })
+  }, [messages, dosha, selectedSystems, lang, incognito])
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const w = window as SR
-      if ((w.SpeechRecognition || w.webkitSpeechRecognition) && w.speechSynthesis) {
-        setVoiceSupported(true)
-      }
+      if ((w.SpeechRecognition || w.webkitSpeechRecognition) && w.speechSynthesis) setVoiceSupported(true)
     }
   }, [])
 
@@ -116,6 +175,29 @@ export default function ChatPage() {
       : tx.greeting
     setMessages([{ role: 'assistant', content: greeting }])
   }, [dosha, tx])
+
+  const resumeSession = () => {
+    if (!savedState) return
+    setDosha(savedState.dosha)
+    setMessages(savedState.messages)
+    setSelectedSystems(savedState.selectedSystems)
+    setLang(savedState.lang)
+    setScreen('chat')
+    setShowWelcomeBack(false)
+  }
+
+  const dismissWelcomeBack = () => {
+    setShowWelcomeBack(false)
+    setSavedState(null)
+  }
+
+  const handleClearHistory = () => {
+    clearState()
+    setMessages([])
+    setDosha(null)
+    setShowClearConfirm(false)
+    setScreen('landing')
+  }
 
   const speakText = useCallback((text: string) => {
     if (!voiceSupported || typeof window === 'undefined') return
@@ -199,6 +281,8 @@ export default function ChatPage() {
 
   return (
     <main style={{ minHeight: '100vh', background: '#05100a', fontFamily: '"DM Sans", system-ui, sans-serif', color: '#e8dfc8', position: 'relative', overflow: 'hidden' }}>
+
+      {/* Sacred geometry bg */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
         <svg width="100%" height="100%" style={{ opacity: 0.04 }}>
           <defs>
@@ -217,6 +301,63 @@ export default function ChatPage() {
         <div style={{ position: 'absolute', top: '-30%', left: '-20%', width: '80vw', height: '80vw', background: 'radial-gradient(circle, rgba(74,158,106,0.06) 0%, transparent 70%)', borderRadius: '50%' }} />
       </div>
 
+      {/* ── WELCOME BACK BANNER ── */}
+      {showWelcomeBack && savedState && (
+        <div style={{
+          position: 'fixed', top: 70, left: '50%', transform: 'translateX(-50%)',
+          width: 'calc(100% - 2rem)', maxWidth: 480,
+          background: 'rgba(10,25,15,0.95)',
+          border: `1px solid ${savedState.dosha ? DOSHA_META[savedState.dosha].color + '50' : 'rgba(106,191,138,0.3)'}`,
+          borderRadius: 20, padding: '1.25rem 1.25rem 1rem',
+          backdropFilter: 'blur(20px)',
+          boxShadow: `0 8px 40px rgba(0,0,0,0.5), 0 0 30px ${savedState.dosha ? DOSHA_META[savedState.dosha].glow : 'rgba(106,191,138,0.1)'}`,
+          zIndex: 200,
+          animation: 'slideDown 0.35s ease',
+        }}>
+          <button onClick={dismissWelcomeBack} style={{ position: 'absolute', top: 10, right: 14, background: 'none', border: 'none', color: 'rgba(200,200,200,0.4)', fontSize: '1.2rem', cursor: 'pointer', lineHeight: 1 }}>×</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+            <div style={{ fontSize: '2rem', filter: savedState.dosha ? `drop-shadow(0 0 10px ${DOSHA_META[savedState.dosha].glow})` : 'none' }}>
+              {savedState.dosha ? DOSHA_META[savedState.dosha].emoji : '🌿'}
+            </div>
+            <div>
+              <div style={{ color: savedState.dosha ? DOSHA_META[savedState.dosha].color : '#6abf8a', fontFamily: '"Cormorant Garamond", serif', fontSize: '1.1rem', fontWeight: 700 }}>
+                Welcome back{savedState.dosha ? `, ${savedState.dosha} ✦` : '!'}
+              </div>
+              <div style={{ color: 'rgba(200,200,200,0.45)', fontSize: '0.75rem', marginTop: '0.1rem' }}>
+                {savedState.messages.length - 1} messages · saved {timeAgo(savedState.savedAt)}
+              </div>
+            </div>
+          </div>
+          <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: '0.6rem 0.75rem', marginBottom: '0.75rem', fontSize: '0.8rem', color: 'rgba(200,200,200,0.5)', fontStyle: 'italic', lineHeight: 1.5, borderLeft: `2px solid ${savedState.dosha ? DOSHA_META[savedState.dosha].color + '40' : 'rgba(106,191,138,0.3)'}` }}>
+            "{savedState.messages.filter(m => m.role === 'user').slice(-1)[0]?.content?.substring(0, 80) || 'Your consultation'}..."
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button onClick={resumeSession} style={{ flex: 1, padding: '0.65rem', background: savedState.dosha ? `${DOSHA_META[savedState.dosha].color}20` : 'rgba(106,191,138,0.15)', border: `1px solid ${savedState.dosha ? DOSHA_META[savedState.dosha].color + '40' : 'rgba(106,191,138,0.3)'}`, borderRadius: 12, color: savedState.dosha ? DOSHA_META[savedState.dosha].color : '#6abf8a', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>
+              Continue consultation →
+            </button>
+            <button onClick={dismissWelcomeBack} style={{ padding: '0.65rem 1rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, color: 'rgba(200,200,200,0.4)', fontSize: '0.85rem', cursor: 'pointer' }}>
+              Start fresh
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── CLEAR HISTORY CONFIRM ── */}
+      {showClearConfirm && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ background: '#0a1a0f', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 20, padding: '1.5rem', maxWidth: 340, width: '100%', backdropFilter: 'blur(20px)' }}>
+            <div style={{ fontSize: '1.5rem', textAlign: 'center', marginBottom: '0.5rem' }}>🗑️</div>
+            <h3 style={{ fontFamily: '"Cormorant Garamond", serif', color: '#e8dfc8', fontSize: '1.2rem', textAlign: 'center', marginBottom: '0.5rem' }}>Clear all history?</h3>
+            <p style={{ color: 'rgba(200,200,200,0.5)', fontSize: '0.85rem', textAlign: 'center', lineHeight: 1.6, marginBottom: '1.25rem' }}>This will delete your saved dosha, all messages, and preferences. Cannot be undone.</p>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button onClick={handleClearHistory} style={{ flex: 1, padding: '0.7rem', background: 'rgba(200,60,60,0.15)', border: '1px solid rgba(200,60,60,0.3)', borderRadius: 12, color: '#e88080', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer' }}>Clear everything</button>
+              <button onClick={() => setShowClearConfirm(false)} style={{ flex: 1, padding: '0.7rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, color: 'rgba(200,200,200,0.5)', fontSize: '0.9rem', cursor: 'pointer' }}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Header */}
       <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(5,16,10,0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(106,191,138,0.12)', padding: '0.7rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div onClick={() => setScreen('landing')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '1.4rem' }}>🌿</span>
@@ -231,13 +372,21 @@ export default function ChatPage() {
               {opt.flag} {opt.label}
             </button>
           ))}
-          {dosha && screen === 'chat' && <div style={{ padding: '0.3rem 0.7rem', borderRadius: 20, fontSize: '0.75rem', border: `1px solid ${DOSHA_META[dosha].color}40`, background: DOSHA_META[dosha].bg, color: DOSHA_META[dosha].color }}>{DOSHA_META[dosha].emoji} {dosha}</div>}
+          {dosha && screen === 'chat' && (
+            <div style={{ padding: '0.3rem 0.7rem', borderRadius: 20, fontSize: '0.75rem', border: `1px solid ${DOSHA_META[dosha].color}40`, background: DOSHA_META[dosha].bg, color: DOSHA_META[dosha].color }}>
+              {DOSHA_META[dosha].emoji} {dosha}
+            </div>
+          )}
+          {screen === 'chat' && !incognito && (
+            <button onClick={() => setShowClearConfirm(true)} title="Clear history" style={{ padding: '0.3rem 0.5rem', borderRadius: 20, fontSize: '0.75rem', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: 'rgba(200,200,200,0.3)', cursor: 'pointer' }}>🗑️</button>
+          )}
           <button onClick={() => setIncognito(!incognito)} style={{ padding: '0.3rem 0.65rem', borderRadius: 20, fontSize: '0.7rem', border: `1px solid ${incognito ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)'}`, background: incognito ? 'rgba(255,255,255,0.08)' : 'transparent', color: incognito ? '#fff' : 'rgba(200,200,200,0.5)', cursor: 'pointer' }}>
             {incognito ? '🔒' : '👁️'}
           </button>
         </div>
       </header>
 
+      {/* ── LANDING ── */}
       {screen === 'landing' && (
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 600, margin: '0 auto', padding: '3rem 1.5rem 6rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
@@ -245,7 +394,7 @@ export default function ChatPage() {
             <h1 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(2.2rem, 6vw, 3.5rem)', fontWeight: 700, color: '#c9a84c', lineHeight: 1.15, marginBottom: '0.75rem', textShadow: '0 0 40px rgba(201,168,76,0.3)' }}>{tx.hero_title}</h1>
             <p style={{ color: 'rgba(232,223,200,0.65)', fontSize: '1.05rem', lineHeight: 1.7, maxWidth: 480, margin: '0 auto 2rem' }}>{tx.hero_sub}</p>
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(106,191,138,0.2)', borderRadius: 20, padding: '2rem', backdropFilter: 'blur(10px)', marginBottom: '1rem', boxShadow: '0 0 40px rgba(106,191,138,0.06)' }}>
+          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(106,191,138,0.2)', borderRadius: 20, padding: '2rem', backdropFilter: 'blur(10px)', marginBottom: '1rem' }}>
             <div style={{ fontSize: '2rem', textAlign: 'center', marginBottom: '0.75rem' }}>🧬</div>
             <h3 style={{ fontFamily: '"Cormorant Garamond", serif', color: '#c9a84c', fontSize: '1.4rem', textAlign: 'center', fontWeight: 600, marginBottom: '0.5rem' }}>{tx.quiz_cta_title}</h3>
             <p style={{ color: 'rgba(232,223,200,0.55)', fontSize: '0.875rem', textAlign: 'center', lineHeight: 1.6, marginBottom: '1.5rem' }}>{tx.quiz_cta_sub}</p>
@@ -261,6 +410,7 @@ export default function ChatPage() {
         </div>
       )}
 
+      {/* ── QUIZ ── */}
       {screen === 'quiz' && (
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 560, margin: '0 auto', padding: '2rem 1.5rem 6rem' }}>
           <div style={{ marginBottom: '2rem' }}>
@@ -278,7 +428,8 @@ export default function ChatPage() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {questions[currentQ].opts.map((opt, i) => (
-              <button key={i} onClick={() => handleAnswer(opt.d)} style={{ padding: '1rem 1.25rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(106,191,138,0.15)', borderRadius: 16, color: 'rgba(232,223,200,0.85)', fontSize: '0.95rem', cursor: 'pointer', textAlign: 'left', lineHeight: 1.5, transition: 'all 0.2s' }}
+              <button key={i} onClick={() => handleAnswer(opt.d)}
+                style={{ padding: '1rem 1.25rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(106,191,138,0.15)', borderRadius: 16, color: 'rgba(232,223,200,0.85)', fontSize: '0.95rem', cursor: 'pointer', textAlign: 'left', lineHeight: 1.5, transition: 'all 0.2s' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(106,191,138,0.5)'; (e.currentTarget as HTMLElement).style.background = 'rgba(106,191,138,0.08)' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(106,191,138,0.15)'; (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)' }}
               >{opt.l}</button>
@@ -288,6 +439,7 @@ export default function ChatPage() {
         </div>
       )}
 
+      {/* ── RESULT ── */}
       {screen === 'result' && dosha && (
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 540, margin: '0 auto', padding: '2rem 1.5rem 6rem' }}>
           <div style={{ opacity: revealed ? 1 : 0, transform: revealed ? 'translateY(0)' : 'translateY(24px)', transition: 'all 0.6s ease' }}>
@@ -314,13 +466,23 @@ export default function ChatPage() {
         </div>
       )}
 
+      {/* ── CHAT ── */}
       {screen === 'chat' && (
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 760, margin: '0 auto', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 57px)' }}>
           <div style={{ padding: '0.6rem 1rem', display: 'flex', gap: '0.35rem', flexWrap: 'wrap', borderBottom: '1px solid rgba(106,191,138,0.08)', background: 'rgba(5,16,10,0.6)', backdropFilter: 'blur(10px)' }}>
             {MEDICINE_SYSTEMS.map(sys => (
-              <button key={sys.id} onClick={() => setSelectedSystems(prev => prev.includes(sys.id) ? prev.filter(s => s !== sys.id) : [...prev, sys.id])} style={{ padding: '0.22rem 0.65rem', borderRadius: 20, border: `1px solid ${selectedSystems.includes(sys.id) ? 'rgba(106,191,138,0.4)' : 'rgba(255,255,255,0.07)'}`, background: selectedSystems.includes(sys.id) ? 'rgba(106,191,138,0.1)' : 'transparent', color: selectedSystems.includes(sys.id) ? '#6abf8a' : 'rgba(200,200,200,0.35)', fontSize: '0.7rem', cursor: 'pointer' }}>{sys.label}</button>
+              <button key={sys.id} onClick={() => setSelectedSystems(prev => prev.includes(sys.id) ? prev.filter(s => s !== sys.id) : [...prev, sys.id])}
+                style={{ padding: '0.22rem 0.65rem', borderRadius: 20, border: `1px solid ${selectedSystems.includes(sys.id) ? 'rgba(106,191,138,0.4)' : 'rgba(255,255,255,0.07)'}`, background: selectedSystems.includes(sys.id) ? 'rgba(106,191,138,0.1)' : 'transparent', color: selectedSystems.includes(sys.id) ? '#6abf8a' : 'rgba(200,200,200,0.35)', fontSize: '0.7rem', cursor: 'pointer' }}>
+                {sys.label}
+              </button>
             ))}
+            {!incognito && messages.length > 1 && (
+              <span style={{ marginLeft: 'auto', fontSize: '0.65rem', color: 'rgba(200,200,200,0.25)', alignSelf: 'center' }}>
+                💾 auto-saved
+              </span>
+            )}
           </div>
+
           <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1rem 0.5rem' }}>
             {messages.map((msg, i) => (
               <div key={i} style={{ marginBottom: '1.25rem', display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: '0.5rem' }}>
@@ -356,6 +518,7 @@ export default function ChatPage() {
             )}
             <div ref={messagesEndRef} />
           </div>
+
           <div style={{ padding: '0.75rem 1rem', background: 'rgba(5,16,10,0.85)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(106,191,138,0.08)' }}>
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end', maxWidth: 700, margin: '0 auto' }}>
               {voiceSupported && (
@@ -380,6 +543,7 @@ export default function ChatPage() {
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: rgba(106,191,138,0.2); border-radius: 2px; }
         .synthesis-header { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 700; color: #c9a84c; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+        @keyframes slideDown { from { opacity: 0; transform: translateX(-50%) translateY(-12px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
       `}</style>
     </main>
   )
