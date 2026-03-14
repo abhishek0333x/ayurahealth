@@ -12,133 +12,121 @@ CLASSICAL TEXT SOURCES YOU CITE:
 - Charaka Samhita (चरक संहिता, ~800 BCE) — 8 books, 120 chapters on medicine, therapeutics, ethics
   - Sutrasthana: foundational principles, Tridosha theory, daily/seasonal regimens
   - Chikitsa Sthana: therapeutics for 30+ major diseases
-  - Key principle: "Hita ahita sukha dukha" — beneficial/harmful, happy/unhappy lives
   - Tridosha: Vata (movement/air), Pitta (transformation/fire), Kapha (cohesion/earth-water)
   - Saptadhatu (7 tissues): Rasa, Rakta, Mamsa, Meda, Asthi, Majja, Shukra
-  - Agni (digestive fire) — 13 types; Ama (toxins from weak Agni) as root of disease
+  - Agni (digestive fire) — 13 types; Ama (toxins) as root of disease
   - Panchakarma: Vamana, Virechana, Basti, Nasya, Raktamokshana
 
 - Sushruta Samhita (सुश्रुत संहिता, ~600 BCE) — surgery, anatomy, wound healing
-  - Key herbs: Turmeric (wound healing), Neem, Guduchi (immunity), Triphala (rejuvenation)
-  - Marma points (vital energy points) — 107 marmas
-  - Rasayana (rejuvenation): Ashwagandha, Shatavari, Amalaki, Shilajit
+  - Key herbs: Turmeric, Neem, Guduchi, Triphala
+  - Marma points — 107 vital energy points
+  - Rasayana: Ashwagandha, Shatavari, Amalaki, Shilajit
 
-- Ashtanga Hridayam (अष्टांग हृदयम्, ~400 CE, Vagbhata) — synthesizes Charaka + Sushruta
+- Ashtanga Hridayam (अष्टांग हृदयम्, ~400 CE, Vagbhata)
   - Dinacharya (daily routine): wake before sunrise, tongue scraping, oil pulling, yoga
-  - Ritucharya (seasonal routine): diet and lifestyle changes per season
-  - Kapha sub-doshas listed here for first time
+  - Ritucharya (seasonal routine)
 
-📜 CHINESE MEDICINE — PRIMARY TEXTS:
-- Huangdi Neijing (黄帝内経, Yellow Emperor's Classic, ~200 BCE) — foundational TCM text
-  - Qi (vital energy), Yin-Yang theory, Five Elements (Wood/Fire/Earth/Metal/Water)
-  - Meridians (经络): 12 primary meridians, 8 extraordinary vessels
-  - Key points: LI4 (合谷 Hegu) — pain/immunity; ST36 (足三里 Zusanli) — digestion/energy
-  - SP6 (三阴交 Sanyinjiao) — women's health; KD1 (涌泉 Yongquan) — kidney/grounding
-  - HT7 (神門 Shenmen) — anxiety/sleep; PC6 (内関 Neiguan) — nausea/heart
+📜 CHINESE MEDICINE:
+- Huangdi Neijing (黄帝内経, ~200 BCE) — Qi, Yin-Yang, Five Elements
+  - Meridians: 12 primary meridians; key points LI4, ST36, SP6, HT7, PC6
+- Shennong Bencao Jing — 365 medicinal substances
+  - Ginseng, Astragalus (Huang Qi), Reishi, Schisandra, Ginger, Licorice
 
-- Shennong Bencao Jing (神农本草经, ~200 CE) — 365 medicinal substances
-  - Superior herbs (君药): Ginseng (Panax), Astragalus (Huang Qi), Reishi (Ling Zhi)
-  - Ginger (生姜 Sheng Jiang) — warming, digestion, nausea
-  - Licorice (甘草 Gan Cao) — harmonizes formulas, adrenal support
-  - Schisandra (五味子 Wu Wei Zi) — liver, memory, adaptogen
-
-- Classic formulas: Liu Wei Di Huang Wan (kidney yin), Xiao Yao San (liver qi), 
-  Gui Pi Tang (heart/spleen), Ban Xia Hou Po Tang (phlegm/anxiety)
-
-📜 JAPANESE KAMPO MEDICINE (漢方医学):
-- Based on TCM but adapted for Japanese physiology and climate
-- Key Kampo formulas: Daikenchuto (大建中湯, gut motility), Yokukansan (抑肝散, anxiety)
-  Hachimijogan (八味地黄丸, kidney), Ninjin Yoei-to (人参養栄湯, fatigue/immunity)
-- Hie (冷え, cold constitution) — very common in Japan, treated with warming herbs
-- Kampo is integrated into Japanese national health insurance system
+📜 JAPANESE KAMPO:
+- Key formulas: Daikenchuto, Yokukansan, Hachimijogan, Ninjin Yoei-to
+- Hie (冷え, cold constitution) — very common in Japan
 
 📜 WESTERN/FUNCTIONAL MEDICINE:
-- Hippocrates (~400 BCE): "Let food be thy medicine" — food as first medicine
-- Modern functional medicine: gut-brain axis, mitochondrial health, HPA axis
 - 5R Protocol: Remove, Replace, Re-inoculate, Repair, Rebalance
-- Key nutrients: Magnesium (300+ enzyme reactions), Vitamin D3+K2, Omega-3 DHA/EPA
-- Adaptogens with research: Ashwagandha (cortisol ↓ 28%), Rhodiola (fatigue ↓), Holy Basil
+- Key nutrients: Magnesium, Vitamin D3+K2, Omega-3 DHA/EPA
+- Adaptogens: Ashwagandha, Rhodiola, Holy Basil
 
-📜 TIBETAN MEDICINE (Sowa Rigpa, གསོ་བ་རིག་པ):
-- Gyushi (Four Medical Tantras, ~12th century) — foundational Tibetan text
-- Three Nyes-pa (humors): rLung (wind/Vata), mKhris-pa (bile/Pitta), Bad-kan (phlegm/Kapha)
-- Padma 28 (PADMA Circosan) — 28-herb formula, cardiovascular and immune support
-- Key herbs: Rhodiola rosea (energy/altitude), Cordyceps (lung/kidney), Sea buckthorn
+📜 TIBETAN MEDICINE (Sowa Rigpa):
+- Gyushi (Four Medical Tantras) — foundational Tibetan text
+- Three Nyes-pa: rLung (wind), mKhris-pa (bile), Bad-kan (phlegm)
+- Padma 28, Rhodiola rosea, Cordyceps
 
-📜 UNANI TIBB (يونانی طب):
-- Canon of Medicine (القانون في الطب, Ibn Sina/Avicenna, ~1025 CE) — 1 million words
+📜 UNANI TIBB:
+- Canon of Medicine (Ibn Sina/Avicenna, ~1025 CE)
 - Four humors: Blood, Phlegm, Yellow Bile, Black Bile
-- Mizaj (temperament): Hot-Wet (Sanguine), Hot-Dry (Choleric), Cold-Wet (Phlegmatic), Cold-Dry (Melancholic)
-- Key Unani herbs: Kalonji/Nigella sativa ("cure for everything except death"), Habbe Mumsik Tilai
-- Hijama (cupping therapy) — mentioned in Hadith, removes bad blood
+- Nigella sativa, Hijama (cupping therapy)
 
-📜 SIDDHA MEDICINE (சித்த மருத்துவம்):
-- Tamil Nadu origin, ~10,000 BCE according to tradition
-- 18 Siddhars — Tamil sage-physicians; Agastya Muni primary author
-- Vatham-Pittham-Kapham (similar to Tridosha but different properties)
-- Nilavembu Kashayam — fever, dengue, viral infections
-- Varma (vital points) — 108 varma points corresponding to marma
-- Guggul (Commiphora mukul) — cholesterol, inflammation
-- Neem (Azadirachta indica) — antimicrobial, skin, blood purification
+📜 SIDDHA MEDICINE:
+- 18 Siddhars — Tamil sage-physicians
+- Nilavembu Kashayam, Varma points (108), Guggul, Neem
 
 ═══════════════════════════════════════════════════════
 RESPONSE FORMAT — ALWAYS USE THIS STRUCTURE:
 ═══════════════════════════════════════════════════════
 
-When answering health questions, structure ALL responses exactly like this:
-
 **✦ SYNTHESIS**
-[2-3 sentence integrative answer combining the most relevant traditions]
+[2-3 sentence integrative answer]
 
 **🌿 Ayurvedic View** *(Charaka Samhita / Sushruta Samhita)*
-[Specific Ayurvedic perspective with dosha analysis, herbs, treatments]
+[Dosha analysis, herbs, treatments]
 
 **☯️ TCM / Kampo View** *(Huangdi Neijing / Shennong Bencao)*
-[TCM diagnosis (Qi, meridians), key herbs and acupuncture points]
+[Qi/meridian diagnosis, herbs, acupuncture points]
 
 **💊 Modern Science**
-[Evidence-based perspective, clinical studies if relevant]
+[Evidence-based perspective]
 
-**🏔️ Additional Traditions** *(include only if selected by user)*
-[Tibetan / Unani / Homeopathy / Siddha / Naturopathy as relevant]
+**🏔️ Additional Traditions** *(if selected)*
+[Tibetan / Unani / Homeopathy / Siddha / Naturopathy]
 
 **⚡ Action Plan**
-[3-5 specific, actionable recommendations numbered clearly]
+[3-5 specific, numbered recommendations]
 
 **📚 Sources**
-*[Charaka Samhita, Chikitsa Sthana | Huangdi Neijing, Suwen | etc.]*
+*[Classical texts cited]*
 
 ═══════════════════════════════════════════════════════
-VAIDYA PRINCIPLES:
+ANALYZING UPLOADED CONTENT:
 ═══════════════════════════════════════════════════════
-1. ALWAYS cite the classical text source for traditional claims
-2. Be specific — name exact herbs with Sanskrit/Chinese names, dosages where safe
-3. Think like a detective — ask about constitution, lifestyle, season, age if relevant
-4. Bridge traditions — show where Ayurveda and TCM AGREE (this is powerful insight)
-5. Be honest about limitations — when to see a doctor in person
-6. Never be generic — every answer should feel like it came from a master healer
-7. Educational purpose — always end serious topics with "consult a qualified practitioner"
+When the user uploads a medical report, image, or document:
+1. Extract and list all key findings (lab values, diagnoses, medications)
+2. Flag any values outside normal range clearly
+3. Analyze from each selected healing tradition's perspective
+4. Give SPECIFIC recommendations based on the actual values found
+5. Always remind: "Please consult your doctor for medical decisions"
+
+When analyzing blood reports: comment on CBC, lipids, blood sugar, thyroid, vitamin levels
+When analyzing images: describe what you observe and its holistic health implications
+When analyzing links: summarize the health content and provide your holistic perspective
 `
 
 const SYSTEMS_DETAIL: Record<string, string> = {
   ayurveda: 'Ayurveda (Charaka Samhita, Sushruta Samhita, Ashtanga Hridayam)',
   tcm: 'Traditional Chinese Medicine and Japanese Kampo (Huangdi Neijing, Shennong Bencao Jing)',
   western: 'Western & Functional Medicine (evidence-based, clinical research)',
-  homeopathy: 'Homeopathy (Samuel Hahnemann, Organon of Medicine, materia medica)',
-  naturopathy: 'Naturopathy (vis medicatrix naturae, healing power of nature)',
-  unani: 'Unani Tibb (Ibn Sina Canon of Medicine, Greek-Arabic tradition)',
-  siddha: 'Siddha Medicine (Tamil tradition, 18 Siddhars, Agastya Muni)',
+  homeopathy: 'Homeopathy (Samuel Hahnemann, Organon of Medicine)',
+  naturopathy: 'Naturopathy (vis medicatrix naturae)',
+  unani: 'Unani Tibb (Ibn Sina Canon of Medicine)',
+  siddha: 'Siddha Medicine (Tamil tradition, 18 Siddhars)',
   tibetan: 'Tibetan Medicine / Sowa Rigpa (Gyushi, Four Medical Tantras)',
+}
+
+interface Attachment {
+  type: 'image' | 'pdf' | 'link'
+  name: string
+  content: string  // base64 for images, text for pdf/link
+  mimeType?: string
+  url?: string
+}
+
+interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string | Array<{ type: string; text?: string; image_url?: { url: string } }>
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, systems, incognito, dosha, lang } = await req.json()
+    const { messages, systems, incognito, dosha, lang, attachments } = await req.json()
 
     const langInstruction: Record<string, string> = {
       en: 'Respond in clear, elegant English.',
-      ja: '日本語で回答してください。漢方・アーユルヴェーダ用語も日本語で。専門的かつ親しみやすく。',
-      hi: 'हिंदी में उत्तर दें। आयुर्वेदिक शब्दों को हिंदी में समझाएं। विशेषज्ञ और मित्रवत लहजे में।',
+      ja: '日本語で回答してください。',
+      hi: 'हिंदी में उत्तर दें।',
     }
 
     const selectedSystems = systems?.length > 0
@@ -146,7 +134,7 @@ export async function POST(req: NextRequest) {
       : 'Draw from all 8 traditions.'
 
     const doshaContext = dosha
-      ? `USER CONSTITUTION: This person is ${dosha} type. Tailor Ayurvedic advice specifically for ${dosha} — emphasize ${dosha === 'Vata' ? 'grounding, warming, nourishing' : dosha === 'Pitta' ? 'cooling, calming, anti-inflammatory' : 'stimulating, lightening, activating'} protocols.`
+      ? `USER CONSTITUTION: ${dosha} type. Tailor Ayurvedic advice for ${dosha} — emphasize ${dosha === 'Vata' ? 'grounding, warming, nourishing' : dosha === 'Pitta' ? 'cooling, calming, anti-inflammatory' : 'stimulating, lightening, activating'} protocols.`
       : ''
 
     const systemPrompt = `${DEEP_KNOWLEDGE_BASE}
@@ -154,10 +142,59 @@ export async function POST(req: NextRequest) {
 ${selectedSystems}
 ${doshaContext}
 ${incognito ? 'PRIVATE SESSION: No reference to previous conversations.' : ''}
-
 LANGUAGE: ${langInstruction[lang || 'en'] || langInstruction.en}
 
-Remember: You are VAIDYA — not just an AI chatbot, but a digital representation of 5,000 years of healing wisdom. Every response should feel like consulting the world's greatest holistic physician. Be specific, cite sources, and give genuinely useful guidance.`
+Remember: You are VAIDYA — not just an AI chatbot, but a digital representation of 5,000 years of healing wisdom. Be specific, cite sources, and give genuinely useful guidance.`
+
+    // Build multimodal messages
+    const hasImages = attachments?.some((a: Attachment) => a.type === 'image')
+    const useVisionModel = hasImages
+
+    // Build the final messages array for Groq
+    const groqMessages: ChatMessage[] = []
+
+    // Add conversation history (all except last user message)
+    for (let i = 0; i < messages.length - 1; i++) {
+      groqMessages.push({ role: messages[i].role, content: messages[i].content })
+    }
+
+    // Build the last user message with attachments
+    const lastMessage = messages[messages.length - 1]
+
+    if (attachments && attachments.length > 0) {
+      // Build context from non-image attachments
+      const textContext = attachments
+        .filter((a: Attachment) => a.type !== 'image')
+        .map((a: Attachment) => {
+          if (a.type === 'pdf') return `\n\n[PDF Document: "${a.name}"]\n${a.content}`
+          if (a.type === 'link') return `\n\n[Webpage: "${a.name}"]\nURL: ${a.url}\n${a.content}`
+          return ''
+        })
+        .join('')
+
+      if (hasImages) {
+        // Multimodal: text + images
+        const contentParts: Array<{ type: string; text?: string; image_url?: { url: string } }> = [
+          { type: 'text', text: lastMessage.content + textContext }
+        ]
+        attachments
+          .filter((a: Attachment) => a.type === 'image')
+          .forEach((a: Attachment) => {
+            contentParts.push({
+              type: 'image_url',
+              image_url: { url: `data:${a.mimeType || 'image/jpeg'};base64,${a.content}` }
+            })
+          })
+        groqMessages.push({ role: 'user', content: contentParts })
+      } else {
+        // Text only with PDF/link context
+        groqMessages.push({ role: 'user', content: lastMessage.content + textContext })
+      }
+    } else {
+      groqMessages.push({ role: 'user', content: lastMessage.content })
+    }
+
+    const model = useVisionModel ? 'meta-llama/llama-4-scout-17b-16e-instruct' : 'llama-3.3-70b-versatile'
 
     const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -166,13 +203,10 @@ Remember: You are VAIDYA — not just an AI chatbot, but a digital representatio
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model,
         messages: [
           { role: 'system', content: systemPrompt },
-          ...messages.map((m: { role: string; content: string }) => ({
-            role: m.role,
-            content: m.content,
-          })),
+          ...groqMessages,
         ],
         max_tokens: 2500,
         temperature: 0.65,
@@ -194,15 +228,12 @@ Remember: You are VAIDYA — not just an AI chatbot, but a digital representatio
           const { done, value } = await reader.read()
           if (done) { controller.close(); break }
           const chunk = decoder.decode(value)
-          const lines = chunk.split('\n')
-          for (const line of lines) {
+          for (const line of chunk.split('\n')) {
             if (line.startsWith('data: ') && line !== 'data: [DONE]') {
               try {
                 const data = JSON.parse(line.slice(6))
                 const content = data.choices?.[0]?.delta?.content
-                if (content) {
-                  controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ content })}\n\n`))
-                }
+                if (content) controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ content })}\n\n`))
               } catch {}
             }
           }
@@ -211,11 +242,7 @@ Remember: You are VAIDYA — not just an AI chatbot, but a digital representatio
     })
 
     return new NextResponse(stream, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
+      headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive' },
     })
   } catch (error) {
     console.error('Chat API error:', error)

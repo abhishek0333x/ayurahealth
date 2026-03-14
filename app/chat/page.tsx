@@ -4,6 +4,11 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { t, LANG_OPTIONS, type Lang } from '../../lib/translations'
 
 interface Message { role: 'user' | 'assistant'; content: string }
+interface Attachment {
+  id: string; type: 'image' | 'pdf' | 'link'
+  name: string; content: string
+  preview?: string; mimeType?: string; url?: string; size?: string
+}
 type Dosha = 'Vata' | 'Pitta' | 'Kapha'
 type Screen = 'landing' | 'quiz' | 'result' | 'chat'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,7 +16,6 @@ type SR = any
 
 const STORAGE_KEY = 'ayurahealth_v1'
 interface SavedState { dosha: Dosha | null; messages: Message[]; selectedSystems: string[]; lang: Lang; savedAt: number }
-
 function loadState(): SavedState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -65,6 +69,17 @@ function timeAgo(ts: number): string {
   return `${days}d ago`
 }
 
+function formatSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes}B`
+  if (bytes < 1048576) return `${(bytes/1024).toFixed(1)}KB`
+  return `${(bytes/1048576).toFixed(1)}MB`
+}
+
+function isValidUrl(str: string): boolean {
+  try { new URL(str); return str.startsWith('http://') || str.startsWith('https://') }
+  catch { return false }
+}
+
 export default function ChatPage() {
   const [lang, setLang] = useState<Lang>('en')
   const [screen, setScreen] = useState<Screen>('landing')
@@ -87,22 +102,30 @@ export default function ChatPage() {
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const [isSharing, setIsSharing] = useState(false)
   const [shareSuccess, setShareSuccess] = useState(false)
+  const [attachments, setAttachments] = useState<Attachment[]>([])
+  const [attachLoading, setAttachLoading] = useState(false)
+  const [linkInput, setLinkInput] = useState('')
+  const [showLinkInput, setShowLinkInput] = useState(false)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const recognitionRef = useRef<SR>(null)
   const shareCardRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const linkInputRef = useRef<HTMLInputElement>(null)
 
   const doshaColor = dosha ? DOSHA_META[dosha].color : '#6abf8a'
   const tx = t[lang]
 
-  // Load html2canvas from CDN
   useEffect(() => {
     const script = document.createElement('script')
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
-    script.async = true
-    document.head.appendChild(script)
-    return () => { try { document.head.removeChild(script) } catch {} }
+    script.async = true; document.head.appendChild(script)
+    // Load PDF.js
+    const pdfjsScript = document.createElement('script')
+    pdfjsScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
+    pdfjsScript.async = true; document.head.appendChild(pdfjsScript)
+    return () => { try { document.head.removeChild(script); document.head.removeChild(pdfjsScript) } catch {} }
   }, [])
 
   useEffect(() => {
@@ -132,6 +155,78 @@ export default function ChatPage() {
     const interval = setInterval(() => setThinkingDots(d => d.length >= 3 ? '.' : d + '.'), 500)
     return () => clearInterval(interval)
   }, [loading])
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (!files.length) return
+    setAttachLoading(true)
+    for (const file of files) {
+      if (attachments.length >= 4) break // max 4 attachments
+      const id = Math.random().toString(36).slice(2)
+      const size = formatSize(file.size)
+      if (file.type.startsWith('image/')) {
+        // Image: convert to base64
+        const reader = new FileReader()
+        await new Promise<void>(resolve => {
+          reader.onload = () => {
+            const base64 = (reader.result as string).split(',')[1]
+            setAttachments(prev => [...prev, {
+              id, type: 'image', name: file.name,
+              content: base64, preview: reader.result as string,
+              mimeType: file.type, size,
+            }])
+            resolve()
+          }
+          reader.readAsDataURL(file)
+        })
+      } else if (file.type === 'application/pdf') {
+        // PDF: extract text using PDF.js
+        const reader = new FileReader()
+        await new Promise<void>(resolve => {
+          reader.onload = async () => {
+            try {
+              const w = window as SR
+              if (w.pdfjsLib) {
+                w.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+                const pdf = await w.pdfjsLib.getDocument({ data: reader.result }).promise
+                let text = ''
+                for (let p = 1; p <= Math.min(pdf.numPages, 10); p++) {
+                  const page = await pdf.getPage(p)
+                  const content = await page.getTextContent()
+                  text += content.items.map((item: SR) => item.str).join(' ') + '\n'
+                }
+                setAttachments(prev => [...prev, { id, type: 'pdf', name: file.name, content: text.substring(0, 8000), size }])
+              } else {
+                setAttachments(prev => [...prev, { id, type: 'pdf', name: file.name, content: '[PDF content - AI will analyze]', size }])
+              }
+            } catch { setAttachments(prev => [...prev, { id, type: 'pdf', name: file.name, content: '[Could not extract PDF text]', size }]) }
+            resolve()
+          }
+          reader.readAsArrayBuffer(file)
+        })
+      }
+    }
+    setAttachLoading(false)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const handleAddLink = async () => {
+    const url = linkInput.trim()
+    if (!isValidUrl(url)) return
+    setAttachLoading(true)
+    setShowLinkInput(false)
+    setLinkInput('')
+    try {
+      const res = await fetch('/api/fetch-link', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      const id = Math.random().toString(36).slice(2)
+      setAttachments(prev => [...prev, { id, type: 'link', name: data.title || url, content: data.text, url }])
+    } catch { alert('Could not fetch that link. Try a different URL.') }
+    setAttachLoading(false)
+  }
+
+  const removeAttachment = (id: string) => setAttachments(prev => prev.filter(a => a.id !== id))
 
   const calcDosha = (ans: string[]): Dosha => {
     const counts: Record<string, number> = { Vata: 0, Pitta: 0, Kapha: 0 }
@@ -172,32 +267,18 @@ export default function ChatPage() {
     try {
       const w = window as SR
       if (!w.html2canvas) { setIsSharing(false); return }
-      const canvas = await w.html2canvas(shareCardRef.current, {
-        scale: 3, useCORS: true, backgroundColor: DOSHA_META[dosha].cardBg,
-        width: 400, height: 500, logging: false,
-      })
+      const canvas = await w.html2canvas(shareCardRef.current, { scale: 3, useCORS: true, backgroundColor: DOSHA_META[dosha].cardBg, width: 400, height: 500, logging: false })
       canvas.toBlob(async (blob: Blob | null) => {
         if (!blob) { setIsSharing(false); return }
         const file = new File([blob], `my-${dosha.toLowerCase()}-dosha.png`, { type: 'image/png' })
-        const shareData = {
-          title: `I am ${dosha} — AyuraHealth`,
-          text: `I just discovered my Ayurvedic dosha is ${dosha} ${DOSHA_META[dosha].emoji}\n\nFind yours free → ayurahealth.vercel.app`,
-          files: [file],
-        }
-        // Mobile: use native share sheet
+        const shareData = { title: `I am ${dosha} — AyuraHealth`, text: `I just discovered my Ayurvedic dosha is ${dosha} ${DOSHA_META[dosha].emoji}\n\nFind yours free → ayurahealth.vercel.app`, files: [file] }
         if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-          await navigator.share(shareData)
-          setShareSuccess(true)
-          setTimeout(() => setShareSuccess(false), 3000)
+          await navigator.share(shareData); setShareSuccess(true); setTimeout(() => setShareSuccess(false), 3000)
         } else {
-          // Desktop: download the image
           const url = URL.createObjectURL(blob)
-          const a = document.createElement('a')
-          a.href = url; a.download = `my-${dosha.toLowerCase()}-dosha.png`
-          document.body.appendChild(a); a.click()
-          document.body.removeChild(a); URL.revokeObjectURL(url)
-          setShareSuccess(true)
-          setTimeout(() => setShareSuccess(false), 3000)
+          const a = document.createElement('a'); a.href = url; a.download = `my-${dosha.toLowerCase()}-dosha.png`
+          document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url)
+          setShareSuccess(true); setTimeout(() => setShareSuccess(false), 3000)
         }
       }, 'image/png')
     } catch (e) { console.error(e) }
@@ -210,9 +291,7 @@ export default function ChatPage() {
     const clean = text.replace(/\*\*?|#{1,3}|[📚🌿☯️💊🏔️⚡✦]/g, '').substring(0, 800)
     const utterance = new SpeechSynthesisUtterance(clean)
     utterance.lang = lang === 'ja' ? 'ja-JP' : lang === 'hi' ? 'hi-IN' : 'en-US'
-    utterance.rate = 0.9
-    utterance.onstart = () => setIsSpeaking(true)
-    utterance.onend = () => setIsSpeaking(false)
+    utterance.rate = 0.9; utterance.onstart = () => setIsSpeaking(true); utterance.onend = () => setIsSpeaking(false)
     window.speechSynthesis.speak(utterance)
   }, [lang, voiceSupported])
 
@@ -231,8 +310,7 @@ export default function ChatPage() {
       setInput(transcript)
       if (event.results[event.results.length - 1].isFinal) setIsListening(false)
     }
-    recognition.onerror = () => setIsListening(false)
-    recognition.onend = () => setIsListening(false)
+    recognition.onerror = () => setIsListening(false); recognition.onend = () => setIsListening(false)
     recognitionRef.current = recognition; recognition.start()
   }, [lang, isListening])
 
@@ -241,10 +319,15 @@ export default function ChatPage() {
     if (!content || loading) return
     setInput('')
     if (textareaRef.current) textareaRef.current.style.height = 'auto'
+    const currentAttachments = [...attachments]
+    setAttachments([])
     const newMessages: Message[] = [...messages, { role: 'user', content }]
     setMessages(newMessages); setLoading(true); setStreaming('')
     try {
-      const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: newMessages, systems: selectedSystems, incognito, dosha, lang }) })
+      const res = await fetch('/api/chat', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: newMessages, systems: selectedSystems, incognito, dosha, lang, attachments: currentAttachments }),
+      })
       if (!res.ok) throw new Error('API error')
       const reader = res.body?.getReader(); const decoder = new TextDecoder(); let full = ''
       if (reader) {
@@ -266,6 +349,9 @@ export default function ChatPage() {
     e.target.style.height = Math.min(e.target.scrollHeight, 140) + 'px'
   }
   const questions = QUESTIONS(lang)
+
+  const attachmentIconMap = { image: '🖼️', pdf: '📄', link: '🔗' }
+  const attachmentColorMap = { image: '#7aafd4', pdf: '#e8835a', link: '#c9a84c' }
 
   return (
     <main style={{ minHeight: '100vh', background: '#05100a', fontFamily: '"DM Sans", system-ui, sans-serif', color: '#e8dfc8', position: 'relative', overflow: 'hidden' }}>
@@ -289,7 +375,7 @@ export default function ChatPage() {
         <div style={{ position: 'absolute', top: '-30%', left: '-20%', width: '80vw', height: '80vw', background: 'radial-gradient(circle, rgba(74,158,106,0.06) 0%, transparent 70%)', borderRadius: '50%' }} />
       </div>
 
-      {/* ── WELCOME BACK BANNER ── */}
+      {/* Welcome back */}
       {showWelcomeBack && savedState && (
         <div style={{ position: 'fixed', top: 70, left: '50%', transform: 'translateX(-50%)', width: 'calc(100% - 2rem)', maxWidth: 480, background: 'rgba(10,25,15,0.95)', border: `1px solid ${savedState.dosha ? DOSHA_META[savedState.dosha].color + '50' : 'rgba(106,191,138,0.3)'}`, borderRadius: 20, padding: '1.25rem 1.25rem 1rem', backdropFilter: 'blur(20px)', boxShadow: '0 8px 40px rgba(0,0,0,0.5)', zIndex: 200, animation: 'slideDown 0.35s ease' }}>
           <button onClick={() => { setShowWelcomeBack(false); setSavedState(null) }} style={{ position: 'absolute', top: 10, right: 14, background: 'none', border: 'none', color: 'rgba(200,200,200,0.4)', fontSize: '1.2rem', cursor: 'pointer', lineHeight: 1 }}>×</button>
@@ -304,21 +390,21 @@ export default function ChatPage() {
             "{savedState.messages.filter(m => m.role === 'user').slice(-1)[0]?.content?.substring(0, 80) || 'Your consultation'}..."
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button onClick={resumeSession} style={{ flex: 1, padding: '0.65rem', background: savedState.dosha ? `${DOSHA_META[savedState.dosha].color}20` : 'rgba(106,191,138,0.15)', border: `1px solid ${savedState.dosha ? DOSHA_META[savedState.dosha].color + '40' : 'rgba(106,191,138,0.3)'}`, borderRadius: 12, color: savedState.dosha ? DOSHA_META[savedState.dosha].color : '#6abf8a', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>Continue consultation →</button>
+            <button onClick={resumeSession} style={{ flex: 1, padding: '0.65rem', background: savedState.dosha ? `${DOSHA_META[savedState.dosha].color}20` : 'rgba(106,191,138,0.15)', border: `1px solid ${savedState.dosha ? DOSHA_META[savedState.dosha].color + '40' : 'rgba(106,191,138,0.3)'}`, borderRadius: 12, color: savedState.dosha ? DOSHA_META[savedState.dosha].color : '#6abf8a', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>Continue →</button>
             <button onClick={() => { setShowWelcomeBack(false); setSavedState(null) }} style={{ padding: '0.65rem 1rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, color: 'rgba(200,200,200,0.4)', fontSize: '0.85rem', cursor: 'pointer' }}>Start fresh</button>
           </div>
         </div>
       )}
 
-      {/* ── CLEAR CONFIRM ── */}
+      {/* Clear confirm */}
       {showClearConfirm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
           <div style={{ background: '#0a1a0f', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 20, padding: '1.5rem', maxWidth: 340, width: '100%' }}>
             <div style={{ fontSize: '1.5rem', textAlign: 'center', marginBottom: '0.5rem' }}>🗑️</div>
             <h3 style={{ fontFamily: '"Cormorant Garamond", serif', color: '#e8dfc8', fontSize: '1.2rem', textAlign: 'center', marginBottom: '0.5rem' }}>Clear all history?</h3>
-            <p style={{ color: 'rgba(200,200,200,0.5)', fontSize: '0.85rem', textAlign: 'center', lineHeight: 1.6, marginBottom: '1.25rem' }}>Deletes your dosha, messages and preferences. Cannot be undone.</p>
+            <p style={{ color: 'rgba(200,200,200,0.5)', fontSize: '0.85rem', textAlign: 'center', lineHeight: 1.6, marginBottom: '1.25rem' }}>Deletes your dosha, messages and preferences.</p>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button onClick={handleClearHistory} style={{ flex: 1, padding: '0.7rem', background: 'rgba(200,60,60,0.15)', border: '1px solid rgba(200,60,60,0.3)', borderRadius: 12, color: '#e88080', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer' }}>Clear everything</button>
+              <button onClick={handleClearHistory} style={{ flex: 1, padding: '0.7rem', background: 'rgba(200,60,60,0.15)', border: '1px solid rgba(200,60,60,0.3)', borderRadius: 12, color: '#e88080', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer' }}>Clear</button>
               <button onClick={() => setShowClearConfirm(false)} style={{ flex: 1, padding: '0.7rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, color: 'rgba(200,200,200,0.5)', fontSize: '0.9rem', cursor: 'pointer' }}>Cancel</button>
             </div>
           </div>
@@ -348,7 +434,7 @@ export default function ChatPage() {
         </div>
       </header>
 
-      {/* ── LANDING ── */}
+      {/* LANDING */}
       {screen === 'landing' && (
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 600, margin: '0 auto', padding: '3rem 1.5rem 6rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
@@ -372,7 +458,7 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* ── QUIZ ── */}
+      {/* QUIZ */}
       {screen === 'quiz' && (
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 560, margin: '0 auto', padding: '2rem 1.5rem 6rem' }}>
           <div style={{ marginBottom: '2rem' }}>
@@ -401,12 +487,10 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* ── RESULT ── */}
+      {/* RESULT */}
       {screen === 'result' && dosha && (
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 540, margin: '0 auto', padding: '2rem 1.5rem 6rem' }}>
           <div style={{ opacity: revealed ? 1 : 0, transform: revealed ? 'translateY(0)' : 'translateY(24px)', transition: 'all 0.6s ease' }}>
-
-            {/* Visible result info */}
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
               <div style={{ fontSize: '5rem', marginBottom: '0.5rem', filter: `drop-shadow(0 0 30px ${DOSHA_META[dosha].glow})` }}>{DOSHA_META[dosha].emoji}</div>
               <div style={{ color: 'rgba(200,200,200,0.4)', fontSize: '0.85rem', marginBottom: '0.4rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{tx.your_dosha_is}</div>
@@ -424,79 +508,58 @@ export default function ChatPage() {
                 ))}
               </div>
             </div>
-
-            {/* ── SHARE CARD (hidden, captured by html2canvas) ── */}
-            <div ref={shareCardRef} style={{
-              position: 'absolute', left: '-9999px', top: 0,
-              width: 400, height: 500, overflow: 'hidden',
-              background: DOSHA_META[dosha].cardBg,
-              fontFamily: 'Georgia, serif',
-            }}>
-              {/* Subtle mandala bg */}
+            {/* Hidden share card */}
+            <div ref={shareCardRef} style={{ position: 'absolute', left: '-9999px', top: 0, width: 400, height: 500, overflow: 'hidden', background: DOSHA_META[dosha].cardBg, fontFamily: 'Georgia, serif' }}>
               <svg width="400" height="500" style={{ position: 'absolute', top: 0, left: 0, opacity: 0.07 }}>
-                <defs>
-                  <pattern id="sc-mandala" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                    <circle cx="50" cy="50" r="42" fill="none" stroke={DOSHA_META[dosha].color} strokeWidth="0.5"/>
-                    <circle cx="50" cy="50" r="28" fill="none" stroke={DOSHA_META[dosha].color} strokeWidth="0.5"/>
-                    <line x1="8" y1="50" x2="92" y2="50" stroke={DOSHA_META[dosha].color} strokeWidth="0.3"/>
-                    <line x1="50" y1="8" x2="50" y2="92" stroke={DOSHA_META[dosha].color} strokeWidth="0.3"/>
-                    <line x1="20" y1="20" x2="80" y2="80" stroke={DOSHA_META[dosha].color} strokeWidth="0.3"/>
-                    <line x1="80" y1="20" x2="20" y2="80" stroke={DOSHA_META[dosha].color} strokeWidth="0.3"/>
-                  </pattern>
-                </defs>
-                <rect width="400" height="500" fill={`url(#sc-mandala)`}/>
+                <defs><pattern id="sc-m" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                  <circle cx="50" cy="50" r="42" fill="none" stroke={DOSHA_META[dosha].color} strokeWidth="0.5"/>
+                  <circle cx="50" cy="50" r="28" fill="none" stroke={DOSHA_META[dosha].color} strokeWidth="0.5"/>
+                  <line x1="8" y1="50" x2="92" y2="50" stroke={DOSHA_META[dosha].color} strokeWidth="0.3"/>
+                  <line x1="50" y1="8" x2="50" y2="92" stroke={DOSHA_META[dosha].color} strokeWidth="0.3"/>
+                  <line x1="20" y1="20" x2="80" y2="80" stroke={DOSHA_META[dosha].color} strokeWidth="0.3"/>
+                  <line x1="80" y1="20" x2="20" y2="80" stroke={DOSHA_META[dosha].color} strokeWidth="0.3"/>
+                </pattern></defs>
+                <rect width="400" height="500" fill="url(#sc-m)"/>
               </svg>
-              {/* Glow orb */}
               <div style={{ position: 'absolute', top: '10%', left: '50%', transform: 'translateX(-50%)', width: 300, height: 300, background: `radial-gradient(circle, ${DOSHA_META[dosha].color}18 0%, transparent 70%)`, borderRadius: '50%' }} />
-              {/* Border */}
-              <div style={{ position: 'absolute', inset: 16, border: `1px solid ${DOSHA_META[dosha].color}25`, borderRadius: 24, pointerEvents: 'none' }} />
-              {/* Top label */}
+              <div style={{ position: 'absolute', inset: 16, border: `1px solid ${DOSHA_META[dosha].color}25`, borderRadius: 24 }} />
               <div style={{ position: 'relative', textAlign: 'center', paddingTop: 44 }}>
-                <div style={{ color: `${DOSHA_META[dosha].color}70`, fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>My Ayurvedic Constitution</div>
+                <div style={{ color: `${DOSHA_META[dosha].color}70`, fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase' }}>My Ayurvedic Constitution</div>
               </div>
-              {/* Emoji */}
               <div style={{ textAlign: 'center', marginTop: 20, fontSize: 80, lineHeight: 1 }}>{DOSHA_META[dosha].emoji}</div>
-              {/* Dosha name */}
               <div style={{ textAlign: 'center', marginTop: 12 }}>
                 <div style={{ fontFamily: 'Georgia, serif', fontSize: 64, fontWeight: 700, color: DOSHA_META[dosha].color, lineHeight: 1 }}>{dosha}</div>
-                <div style={{ color: `${DOSHA_META[dosha].color}80`, fontSize: 14, fontStyle: 'italic', marginTop: 6, fontFamily: 'Georgia, serif' }}>{tx[DOSHA_META[dosha].taglineKey as keyof typeof tx] as string}</div>
+                <div style={{ color: `${DOSHA_META[dosha].color}80`, fontSize: 14, fontStyle: 'italic', marginTop: 6 }}>{tx[DOSHA_META[dosha].taglineKey as keyof typeof tx] as string}</div>
               </div>
-              {/* Divider */}
               <div style={{ margin: '20px 40px', height: 1, background: `linear-gradient(90deg, transparent, ${DOSHA_META[dosha].color}40, transparent)` }} />
-              {/* Strengths & Watch */}
               <div style={{ display: 'flex', gap: 0, margin: '0 32px' }}>
                 <div style={{ flex: 1, paddingRight: 16, borderRight: `1px solid ${DOSHA_META[dosha].color}20` }}>
-                  <div style={{ color: DOSHA_META[dosha].color, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Georgia, serif' }}>Strengths</div>
-                  <div style={{ color: 'rgba(232,223,200,0.7)', fontSize: 12, lineHeight: 1.6, fontFamily: 'Georgia, serif' }}>{tx[DOSHA_META[dosha].strengthsKey as keyof typeof tx] as string}</div>
+                  <div style={{ color: DOSHA_META[dosha].color, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6 }}>Strengths</div>
+                  <div style={{ color: 'rgba(232,223,200,0.7)', fontSize: 12, lineHeight: 1.6 }}>{tx[DOSHA_META[dosha].strengthsKey as keyof typeof tx] as string}</div>
                 </div>
                 <div style={{ flex: 1, paddingLeft: 16 }}>
-                  <div style={{ color: DOSHA_META[dosha].color, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Georgia, serif' }}>Watch for</div>
-                  <div style={{ color: 'rgba(232,223,200,0.7)', fontSize: 12, lineHeight: 1.6, fontFamily: 'Georgia, serif' }}>{tx[DOSHA_META[dosha].watchKey as keyof typeof tx] as string}</div>
+                  <div style={{ color: DOSHA_META[dosha].color, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6 }}>Watch for</div>
+                  <div style={{ color: 'rgba(232,223,200,0.7)', fontSize: 12, lineHeight: 1.6 }}>{tx[DOSHA_META[dosha].watchKey as keyof typeof tx] as string}</div>
                 </div>
               </div>
-              {/* Footer branding */}
               <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, textAlign: 'center' }}>
-                <div style={{ color: '#c9a84c', fontSize: 16, fontWeight: 700, fontFamily: 'Georgia, serif', letterSpacing: '0.04em' }}>🌿 AyuraHealth</div>
-                <div style={{ color: 'rgba(200,200,200,0.3)', fontSize: 11, marginTop: 4, fontFamily: 'Georgia, serif', letterSpacing: '0.06em' }}>ayurahealth.vercel.app</div>
+                <div style={{ color: '#c9a84c', fontSize: 16, fontWeight: 700, letterSpacing: '0.04em' }}>🌿 AyuraHealth</div>
+                <div style={{ color: 'rgba(200,200,200,0.3)', fontSize: 11, marginTop: 4, letterSpacing: '0.06em' }}>ayurahealth.vercel.app</div>
               </div>
             </div>
-
-            {/* Action buttons */}
             <button onClick={() => startChat(dosha)} style={{ width: '100%', padding: '1rem', background: `linear-gradient(135deg, ${DOSHA_META[dosha].color}90, ${DOSHA_META[dosha].color}60)`, color: '#fff', border: `1px solid ${DOSHA_META[dosha].color}50`, borderRadius: 16, fontSize: '1rem', fontWeight: 600, cursor: 'pointer', marginBottom: '0.75rem' }}>{tx.start_consult}</button>
-
-            {/* Share button */}
-            <button onClick={shareCard} disabled={isSharing} style={{ width: '100%', padding: '0.85rem', background: shareSuccess ? 'rgba(106,191,138,0.15)' : 'rgba(255,255,255,0.04)', color: shareSuccess ? '#6abf8a' : 'rgba(232,223,200,0.7)', border: `1px solid ${shareSuccess ? 'rgba(106,191,138,0.4)' : 'rgba(255,255,255,0.12)'}`, borderRadius: 16, fontSize: '0.95rem', fontWeight: 500, cursor: isSharing ? 'wait' : 'pointer', marginBottom: '0.75rem', transition: 'all 0.3s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-              {isSharing ? '⏳ Generating card...' : shareSuccess ? '✅ Card saved! Share it anywhere' : '📤 Share my dosha card'}
+            <button onClick={shareCard} disabled={isSharing} style={{ width: '100%', padding: '0.85rem', background: shareSuccess ? 'rgba(106,191,138,0.15)' : 'rgba(255,255,255,0.04)', color: shareSuccess ? '#6abf8a' : 'rgba(232,223,200,0.7)', border: `1px solid ${shareSuccess ? 'rgba(106,191,138,0.4)' : 'rgba(255,255,255,0.12)'}`, borderRadius: 16, fontSize: '0.95rem', fontWeight: 500, cursor: isSharing ? 'wait' : 'pointer', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.3s' }}>
+              {isSharing ? '⏳ Generating...' : shareSuccess ? '✅ Card saved! Share anywhere' : '📤 Share my dosha card'}
             </button>
-
             <button onClick={() => { setCurrentQ(0); setAnswers([]); setScreen('quiz') }} style={{ width: '100%', padding: '0.8rem', background: 'transparent', color: 'rgba(200,200,200,0.35)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, fontSize: '0.85rem', cursor: 'pointer' }}>{tx.retake}</button>
           </div>
         </div>
       )}
 
-      {/* ── CHAT ── */}
+      {/* CHAT */}
       {screen === 'chat' && (
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 760, margin: '0 auto', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 57px)' }}>
+          {/* System pills */}
           <div style={{ padding: '0.6rem 1rem', display: 'flex', gap: '0.35rem', flexWrap: 'wrap', borderBottom: '1px solid rgba(106,191,138,0.08)', background: 'rgba(5,16,10,0.6)', backdropFilter: 'blur(10px)' }}>
             {MEDICINE_SYSTEMS.map(sys => (
               <button key={sys.id} onClick={() => setSelectedSystems(prev => prev.includes(sys.id) ? prev.filter(s => s !== sys.id) : [...prev, sys.id])}
@@ -506,6 +569,8 @@ export default function ChatPage() {
             ))}
             {!incognito && messages.length > 1 && <span style={{ marginLeft: 'auto', fontSize: '0.65rem', color: 'rgba(200,200,200,0.25)', alignSelf: 'center' }}>💾 auto-saved</span>}
           </div>
+
+          {/* Messages */}
           <div style={{ flex: 1, overflowY: 'auto', padding: '1.25rem 1rem 0.5rem' }}>
             {messages.map((msg, i) => (
               <div key={i} style={{ marginBottom: '1.25rem', display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: '0.5rem' }}>
@@ -535,13 +600,84 @@ export default function ChatPage() {
             )}
             <div ref={messagesEndRef} />
           </div>
-          <div style={{ padding: '0.75rem 1rem', background: 'rgba(5,16,10,0.85)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(106,191,138,0.08)' }}>
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end', maxWidth: 700, margin: '0 auto' }}>
-              {voiceSupported && <button onClick={startListening} style={{ width: 44, height: 44, borderRadius: '50%', flexShrink: 0, background: isListening ? 'rgba(232,131,90,0.2)' : 'rgba(106,191,138,0.08)', border: `1px solid ${isListening ? 'rgba(232,131,90,0.5)' : 'rgba(106,191,138,0.2)'}`, color: isListening ? '#e8835a' : '#6abf8a', cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{isListening ? '⏸' : '🎤'}</button>}
-              <textarea ref={textareaRef} value={input} onChange={handleTextarea} onKeyDown={handleKey} placeholder={dosha ? tx.chat_placeholder_dosha.replace('{dosha}', dosha) : tx.chat_placeholder} rows={1} style={{ flex: 1, padding: '0.75rem 1rem', borderRadius: 22, border: '1px solid rgba(106,191,138,0.15)', background: 'rgba(255,255,255,0.04)', color: '#e8dfc8', fontSize: '0.9rem', resize: 'none', outline: 'none', lineHeight: 1.5, maxHeight: 140, overflowY: 'auto', fontFamily: '"DM Sans", system-ui, sans-serif' }} />
-              <button onClick={() => sendMessage()} disabled={loading || !input.trim()} style={{ width: 44, height: 44, borderRadius: '50%', flexShrink: 0, background: loading || !input.trim() ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #2d5a1b, #4a9e6a)', border: 'none', color: loading || !input.trim() ? 'rgba(255,255,255,0.2)' : '#fff', cursor: loading || !input.trim() ? 'not-allowed' : 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
+
+          {/* Input area */}
+          <div style={{ padding: '0.6rem 1rem 0.75rem', background: 'rgba(5,16,10,0.85)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(106,191,138,0.08)' }}>
+
+            {/* Attachment previews */}
+            {attachments.length > 0 && (
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.6rem', padding: '0.5rem 0' }}>
+                {attachments.map(att => (
+                  <div key={att.id} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(255,255,255,0.05)', border: `1px solid ${attachmentColorMap[att.type]}30`, borderRadius: 10, padding: '0.3rem 0.5rem', maxWidth: 200 }}>
+                    {att.type === 'image' && att.preview ? (
+                      <img src={att.preview} alt="" style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
+                    ) : (
+                      <span style={{ fontSize: '1rem', flexShrink: 0 }}>{attachmentIconMap[att.type]}</span>
+                    )}
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ color: `${attachmentColorMap[att.type]}`, fontSize: '0.7rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 120 }}>{att.name}</div>
+                      {att.size && <div style={{ color: 'rgba(200,200,200,0.35)', fontSize: '0.6rem' }}>{att.size}</div>}
+                    </div>
+                    <button onClick={() => removeAttachment(att.id)} style={{ background: 'none', border: 'none', color: 'rgba(200,200,200,0.3)', fontSize: '0.9rem', cursor: 'pointer', flexShrink: 0, lineHeight: 1, padding: '0 2px' }}>×</button>
+                  </div>
+                ))}
+                {attachLoading && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10, padding: '0.3rem 0.75rem', color: 'rgba(200,200,200,0.4)', fontSize: '0.75rem' }}>
+                    ⏳ Processing...
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Link input */}
+            {showLinkInput && (
+              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.6rem' }}>
+                <input ref={linkInputRef} type="url" value={linkInput} onChange={e => setLinkInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') handleAddLink(); if (e.key === 'Escape') { setShowLinkInput(false); setLinkInput('') } }}
+                  placeholder="Paste a health article URL..."
+                  style={{ flex: 1, padding: '0.6rem 0.9rem', borderRadius: 12, border: '1px solid rgba(201,168,76,0.3)', background: 'rgba(255,255,255,0.04)', color: '#e8dfc8', fontSize: '0.85rem', outline: 'none', fontFamily: '"DM Sans", system-ui, sans-serif' }}
+                  autoFocus
+                />
+                <button onClick={handleAddLink} disabled={!isValidUrl(linkInput)} style={{ padding: '0.6rem 1rem', background: isValidUrl(linkInput) ? 'rgba(201,168,76,0.15)' : 'transparent', border: `1px solid ${isValidUrl(linkInput) ? 'rgba(201,168,76,0.4)' : 'rgba(255,255,255,0.08)'}`, borderRadius: 12, color: isValidUrl(linkInput) ? '#c9a84c' : 'rgba(200,200,200,0.3)', fontSize: '0.85rem', cursor: isValidUrl(linkInput) ? 'pointer' : 'not-allowed', fontWeight: 600, whiteSpace: 'nowrap' }}>Add →</button>
+                <button onClick={() => { setShowLinkInput(false); setLinkInput('') }} style={{ padding: '0.6rem 0.75rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, color: 'rgba(200,200,200,0.35)', fontSize: '0.85rem', cursor: 'pointer' }}>✕</button>
+              </div>
+            )}
+
+            {/* Main input row */}
+            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'flex-end', maxWidth: 700, margin: '0 auto' }}>
+              {/* Hidden file input */}
+              <input ref={fileInputRef} type="file" accept="image/*,.pdf" multiple onChange={handleFileSelect} style={{ display: 'none' }} />
+
+              {/* Attach button */}
+              <button onClick={() => fileInputRef.current?.click()} disabled={attachments.length >= 4} title="Attach image or PDF" style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: attachments.length > 0 ? 'rgba(122,175,212,0.12)' : 'rgba(106,191,138,0.06)', border: `1px solid ${attachments.length > 0 ? 'rgba(122,175,212,0.4)' : 'rgba(106,191,138,0.15)'}`, color: attachments.length > 0 ? '#7aafd4' : 'rgba(200,200,200,0.4)', cursor: attachments.length >= 4 ? 'not-allowed' : 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                📎
+              </button>
+
+              {/* Link button */}
+              <button onClick={() => { setShowLinkInput(!showLinkInput); setTimeout(() => linkInputRef.current?.focus(), 50) }} title="Add a link" style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: showLinkInput ? 'rgba(201,168,76,0.12)' : 'rgba(106,191,138,0.06)', border: `1px solid ${showLinkInput ? 'rgba(201,168,76,0.4)' : 'rgba(106,191,138,0.15)'}`, color: showLinkInput ? '#c9a84c' : 'rgba(200,200,200,0.4)', cursor: 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                🔗
+              </button>
+
+              {/* Voice button */}
+              {voiceSupported && (
+                <button onClick={startListening} style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: isListening ? 'rgba(232,131,90,0.2)' : 'rgba(106,191,138,0.06)', border: `1px solid ${isListening ? 'rgba(232,131,90,0.5)' : 'rgba(106,191,138,0.15)'}`, color: isListening ? '#e8835a' : 'rgba(200,200,200,0.4)', cursor: 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {isListening ? '⏸' : '🎤'}
+                </button>
+              )}
+
+              <textarea ref={textareaRef} value={input} onChange={handleTextarea} onKeyDown={handleKey}
+                placeholder={attachments.length > 0 ? 'Ask Vaidya about the attached file...' : dosha ? tx.chat_placeholder_dosha.replace('{dosha}', dosha) : tx.chat_placeholder}
+                rows={1} style={{ flex: 1, padding: '0.75rem 1rem', borderRadius: 22, border: '1px solid rgba(106,191,138,0.15)', background: 'rgba(255,255,255,0.04)', color: '#e8dfc8', fontSize: '0.9rem', resize: 'none', outline: 'none', lineHeight: 1.5, maxHeight: 140, overflowY: 'auto', fontFamily: '"DM Sans", system-ui, sans-serif' }} />
+
+              <button onClick={() => sendMessage()} disabled={loading || (!input.trim() && attachments.length === 0)} style={{ width: 44, height: 44, borderRadius: '50%', flexShrink: 0, background: loading || (!input.trim() && attachments.length === 0) ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #2d5a1b, #4a9e6a)', border: 'none', color: loading || (!input.trim() && attachments.length === 0) ? 'rgba(255,255,255,0.2)' : '#fff', cursor: loading || (!input.trim() && attachments.length === 0) ? 'not-allowed' : 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
             </div>
-            <p style={{ textAlign: 'center', color: 'rgba(200,200,200,0.2)', fontSize: '0.62rem', marginTop: '0.4rem' }}>{tx.edu_disclaimer}</p>
+
+            {/* Hint row */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '0.35rem' }}>
+              <span style={{ color: 'rgba(200,200,200,0.18)', fontSize: '0.6rem' }}>📎 reports & photos</span>
+              <span style={{ color: 'rgba(200,200,200,0.18)', fontSize: '0.6rem' }}>🔗 articles & links</span>
+              <span style={{ color: 'rgba(200,200,200,0.18)', fontSize: '0.6rem' }}>🎤 voice</span>
+            </div>
           </div>
         </div>
       )}
