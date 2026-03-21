@@ -48,6 +48,20 @@ export async function POST(req: NextRequest) {
   try {
     const { messages, systems, incognito, dosha, lang, attachments, deepThink } = await req.json()
 
+    const LANG_NAMES: Record<string, string> = {
+      en: 'English', sa: 'Sanskrit', hi: 'Hindi', ja: 'Japanese',
+      zh: 'Chinese Simplified', 'zh-TW': 'Chinese Traditional', ko: 'Korean',
+      ar: 'Arabic', fa: 'Persian', ur: 'Urdu', bn: 'Bengali', ta: 'Tamil',
+      te: 'Telugu', kn: 'Kannada', ml: 'Malayalam', mr: 'Marathi',
+      gu: 'Gujarati', pa: 'Punjabi', ne: 'Nepali', es: 'Spanish',
+      fr: 'French', de: 'German', it: 'Italian', pt: 'Portuguese',
+      ru: 'Russian', pl: 'Polish', nl: 'Dutch', sv: 'Swedish',
+      tr: 'Turkish', id: 'Indonesian', ms: 'Malay', th: 'Thai',
+      vi: 'Vietnamese', sw: 'Swahili', uk: 'Ukrainian', he: 'Hebrew',
+      el: 'Greek', ro: 'Romanian', hu: 'Hungarian', cs: 'Czech',
+    }
+    const langName = LANG_NAMES[lang || 'en'] || lang || 'English'
+
     const langMap: Record<string, string> = {
       en: 'Respond in English.',
       ja: '日本語で回答してください。',
