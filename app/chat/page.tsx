@@ -340,7 +340,7 @@ export default function ChatPage() {
       const fullLang = localStorage.getItem('ayura_lang') || lang
       const res = await fetch('/api/chat', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages, systems: selectedSystems, incognito, dosha, lang, attachments: currentAttachments }),
+        body: JSON.stringify({ messages: newMessages, systems: selectedSystems, incognito, dosha, lang: (typeof window !== "undefined" ? localStorage.getItem("ayura_lang") || lang : lang), attachments: currentAttachments }),
       })
       if (!res.ok) throw new Error('API error')
       const reader = res.body?.getReader(); const decoder = new TextDecoder(); let full = ''
