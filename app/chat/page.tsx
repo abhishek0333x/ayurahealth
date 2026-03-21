@@ -337,6 +337,7 @@ export default function ChatPage() {
     const newMessages: Message[] = [...messages, { role: 'user', content }]
     setMessages(newMessages); setLoading(true); setStreaming('')
     try {
+      const fullLang = localStorage.getItem('ayura_lang') || lang
       const res = await fetch('/api/chat', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: newMessages, systems: selectedSystems, incognito, dosha, lang, attachments: currentAttachments }),
