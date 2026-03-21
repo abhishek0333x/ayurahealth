@@ -434,11 +434,7 @@ export default function ChatPage() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
-          {LANG_OPTIONS.map(opt => (
-            <button key={opt.code} onClick={() => setLang(opt.code)} style={{ padding: '0.25rem 0.5rem', borderRadius: 20, fontSize: '0.7rem', border: `1px solid ${lang === opt.code ? 'rgba(106,191,138,0.5)' : 'rgba(255,255,255,0.1)'}`, background: lang === opt.code ? 'rgba(106,191,138,0.12)' : 'transparent', color: lang === opt.code ? '#6abf8a' : 'rgba(200,200,200,0.5)', cursor: 'pointer', fontWeight: lang === opt.code ? 600 : 400 }}>
-              {opt.flag} {opt.label}
-            </button>
-          ))}
+
           {dosha && screen === 'chat' && <div style={{ padding: '0.3rem 0.7rem', borderRadius: 20, fontSize: '0.75rem', border: `1px solid ${DOSHA_META[dosha].color}40`, background: DOSHA_META[dosha].bg, color: DOSHA_META[dosha].color }}>{DOSHA_META[dosha].emoji} {dosha}</div>}
           {screen === 'chat' && !incognito && <button onClick={() => setShowClearConfirm(true)} style={{ padding: '0.3rem 0.5rem', borderRadius: 20, fontSize: '0.75rem', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: 'rgba(200,200,200,0.3)', cursor: 'pointer' }}>🗑️</button>}
           <button onClick={() => setIncognito(!incognito)} style={{ padding: '0.3rem 0.65rem', borderRadius: 20, fontSize: '0.7rem', border: `1px solid ${incognito ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)'}`, background: incognito ? 'rgba(255,255,255,0.08)' : 'transparent', color: incognito ? '#fff' : 'rgba(200,200,200,0.5)', cursor: 'pointer' }}>
