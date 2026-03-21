@@ -14,14 +14,42 @@ export default function LandingPage() {
         <div>
           <span style={{ color: '#f0e6c8', fontSize: '1.3rem', fontWeight: 700 }}>🌿 AyuraHealth</span>
         </div>
-        <Link href="/chat" style={{
-          background: '#f0e6c8', color: '#2d5a1b',
-          padding: '0.5rem 1.2rem', borderRadius: 20,
-          fontSize: '0.85rem', fontWeight: 700,
-          textDecoration: 'none',
-        }}>
-          Try Free →
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {/* Language selector */}
+          {(['en', 'ja', 'hi'] as const).map((code) => {
+            const flags: Record<string, string> = { en: '🇬🇧 EN', ja: '🇯🇵 日本語', hi: '🇮🇳 हिन्दी' }
+            return (
+              <button
+                key={code}
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('ayura_lang', code)
+                  }
+                }}
+                style={{
+                  padding: '0.25rem 0.55rem',
+                  borderRadius: 20,
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  background: 'transparent',
+                  color: '#f0e6c8',
+                  fontSize: '0.7rem',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                }}
+              >
+                {flags[code]}
+              </button>
+            )
+          })}
+          <Link href="/chat" style={{
+            background: '#f0e6c8', color: '#2d5a1b',
+            padding: '0.5rem 1.2rem', borderRadius: 20,
+            fontSize: '0.85rem', fontWeight: 700,
+            textDecoration: 'none', marginLeft: '0.25rem',
+          }}>
+            Try Free →
+          </Link>
+        </div>
       </header>
 
       {/* Hero */}

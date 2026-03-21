@@ -81,7 +81,13 @@ function isValidUrl(str: string): boolean {
 }
 
 export default function ChatPage() {
-  const [lang, setLang] = useState<Lang>('en')
+  const [lang, setLang] = useState<Lang>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('ayura_lang')
+      if (saved === 'ja' || saved === 'hi') return saved as Lang
+    }
+    return 'en'
+  })
   const [screen, setScreen] = useState<Screen>('landing')
   const [currentQ, setCurrentQ] = useState(0)
   const [answers, setAnswers] = useState<string[]>([])
@@ -113,6 +119,13 @@ export default function ChatPage() {
   const shareCardRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const linkInputRef = useRef<HTMLInputElement>(null)
+
+  // Save language preference whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ayura_lang', lang)
+    }
+  }, [lang])
 
   const doshaColor = dosha ? DOSHA_META[dosha].color : '#6abf8a'
   const tx = t[lang]
