@@ -92,7 +92,9 @@ export async function POST(req: NextRequest) {
     const systemPrompt = `${VAIDYA_SYSTEM}
 ${selectedSystems}
 ${doshaCtx}
-LANGUAGE: Respond entirely and only in ${langName}. Every word of your response must be in ${langName}.
+LANGUAGE: ${lang === 'sa' 
+      ? 'Respond ONLY in classical Sanskrit (देवनागरी script). Use Sanskrit grammar. Every word must be Sanskrit. Example greeting: नमस्ते। अहं वैद्यः।'
+      : `Respond entirely in ${langName}. Every single word must be in ${langName}. Do not use English.`}
 ${deepThink ? 'DEEP MIND MODE: Maximum reasoning depth. Cross-reference all 8 traditions thoroughly. Show nuanced multi-tradition connections. Be comprehensive and cite specific classical chapters.' : ''}`
 
     const hasImages = attachments?.some((a: {type: string}) => a.type === 'image')
