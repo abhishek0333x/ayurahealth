@@ -1,8 +1,9 @@
 'use client'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 
 export default function LandingPage() {
+  const [activeLang, setActiveLang] = React.useState<'en' | 'ja' | 'hi'>('en')
   return (
     <main style={{ fontFamily: 'Georgia, serif', background: '#faf8f2', minHeight: '100vh' }}>
 
