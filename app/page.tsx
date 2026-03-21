@@ -7,76 +7,189 @@ const LANGUAGES = [
   { code: 'sa', name: 'Sanskrit', native: 'संस्कृतम्' },
   { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
   { code: 'ja', name: 'Japanese', native: '日本語' },
-  { code: 'zh', name: 'Chinese (Simplified)', native: '简体中文' },
-  { code: 'zh-TW', name: 'Chinese (Traditional)', native: '繁體中文' },
+  { code: 'zh', name: 'Chinese', native: '简体中文' },
   { code: 'ko', name: 'Korean', native: '한국어' },
   { code: 'ar', name: 'Arabic', native: 'العربية' },
-  { code: 'fa', name: 'Persian', native: 'فارسی' },
-  { code: 'ur', name: 'Urdu', native: 'اردو' },
-  { code: 'bn', name: 'Bengali', native: 'বাংলা' },
-  { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
-  { code: 'te', name: 'Telugu', native: 'తెలుగు' },
-  { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' },
-  { code: 'ml', name: 'Malayalam', native: 'മലയാളം' },
-  { code: 'mr', name: 'Marathi', native: 'मराठी' },
-  { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી' },
-  { code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ' },
   { code: 'es', name: 'Spanish', native: 'Español' },
   { code: 'fr', name: 'French', native: 'Français' },
   { code: 'de', name: 'German', native: 'Deutsch' },
-  { code: 'it', name: 'Italian', native: 'Italiano' },
   { code: 'pt', name: 'Portuguese', native: 'Português' },
   { code: 'ru', name: 'Russian', native: 'Русский' },
-  { code: 'pl', name: 'Polish', native: 'Polski' },
-  { code: 'nl', name: 'Dutch', native: 'Nederlands' },
-  { code: 'sv', name: 'Swedish', native: 'Svenska' },
-  { code: 'no', name: 'Norwegian', native: 'Norsk' },
-  { code: 'da', name: 'Danish', native: 'Dansk' },
-  { code: 'fi', name: 'Finnish', native: 'Suomi' },
+  { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
+  { code: 'te', name: 'Telugu', native: 'తెలుగు' },
+  { code: 'bn', name: 'Bengali', native: 'বাংলা' },
+  { code: 'mr', name: 'Marathi', native: 'मराठी' },
+  { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી' },
+  { code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ' },
+  { code: 'ur', name: 'Urdu', native: 'اردو' },
+  { code: 'fa', name: 'Persian', native: 'فارسی' },
   { code: 'tr', name: 'Turkish', native: 'Türkçe' },
   { code: 'id', name: 'Indonesian', native: 'Bahasa Indonesia' },
   { code: 'ms', name: 'Malay', native: 'Bahasa Melayu' },
   { code: 'th', name: 'Thai', native: 'ภาษาไทย' },
   { code: 'vi', name: 'Vietnamese', native: 'Tiếng Việt' },
-  { code: 'sw', name: 'Swahili', native: 'Kiswahili' },
+  { code: 'nl', name: 'Dutch', native: 'Nederlands' },
+  { code: 'it', name: 'Italian', native: 'Italiano' },
+  { code: 'pl', name: 'Polish', native: 'Polski' },
+  { code: 'sv', name: 'Swedish', native: 'Svenska' },
   { code: 'uk', name: 'Ukrainian', native: 'Українська' },
   { code: 'he', name: 'Hebrew', native: 'עברית' },
   { code: 'el', name: 'Greek', native: 'Ελληνικά' },
   { code: 'ro', name: 'Romanian', native: 'Română' },
   { code: 'hu', name: 'Hungarian', native: 'Magyar' },
   { code: 'cs', name: 'Czech', native: 'Čeština' },
-  { code: 'sk', name: 'Slovak', native: 'Slovenčina' },
-  { code: 'bg', name: 'Bulgarian', native: 'Български' },
-  { code: 'hr', name: 'Croatian', native: 'Hrvatski' },
-  { code: 'sr', name: 'Serbian', native: 'Српски' },
-  { code: 'af', name: 'Afrikaans', native: 'Afrikaans' },
+  { code: 'sw', name: 'Swahili', native: 'Kiswahili' },
   { code: 'ne', name: 'Nepali', native: 'नेपाली' },
   { code: 'si', name: 'Sinhala', native: 'සිංහල' },
   { code: 'my', name: 'Burmese', native: 'မြန်မာဘာသာ' },
   { code: 'km', name: 'Khmer', native: 'ភាសាខ្មែរ' },
-  { code: 'lo', name: 'Lao', native: 'ພາສາລາວ' },
   { code: 'mn', name: 'Mongolian', native: 'Монгол' },
   { code: 'ka', name: 'Georgian', native: 'ქართული' },
   { code: 'am', name: 'Amharic', native: 'አማርኛ' },
+  { code: 'af', name: 'Afrikaans', native: 'Afrikaans' },
+  { code: 'da', name: 'Danish', native: 'Dansk' },
+  { code: 'fi', name: 'Finnish', native: 'Suomi' },
+  { code: 'no', name: 'Norwegian', native: 'Norsk' },
+  { code: 'zh-TW', name: 'Chinese Traditional', native: '繁體中文' },
+  { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' },
+  { code: 'ml', name: 'Malayalam', native: 'മലയാളം' },
+  { code: 'lo', name: 'Lao', native: 'ພາສາລາວ' },
+  { code: 'bg', name: 'Bulgarian', native: 'Български' },
+  { code: 'hr', name: 'Croatian', native: 'Hrvatski' },
+  { code: 'sr', name: 'Serbian', native: 'Српски' },
+  { code: 'sk', name: 'Slovak', native: 'Slovenčina' },
 ]
 
-// Core translations for key languages
-const T: Record<string, { tagline: string; sub: string; cta: string; free: string }> = {
-  en: { tagline: 'Ancient Wisdom.\nModern AI.\nNatural Healing.', sub: 'Your personal health companion — combining Ayurveda, Chinese Medicine, and 6 ancient healing traditions with the power of AI.', cta: 'Begin Your Journey', free: 'Free · No account required · Private' },
-  sa: { tagline: 'प्राचीनं ज्ञानम्।\nआधुनिकं AI।\nप्राकृतिकी चिकित्सा।', sub: 'आयुर्वेद, चीनीयचिकित्सा च षट् अन्याभिः परम्पराभिः सहितः आपणः स्वास्थ्यसहायकः।', cta: 'यात्रां आरभ्यताम्', free: 'निःशुल्कम् · खाता न आवश्यकम् · गोपनीयम्' },
-  hi: { tagline: 'प्राचीन ज्ञान।\nआधुनिक AI।\nप्राकृतिक उपचार।', sub: 'आयुर्वेद, चीनी चिकित्सा और 6 प्राचीन परंपराओं को AI के साथ जोड़ने वाला आपका स्वास्थ्य साथी।', cta: 'यात्रा शुरू करें', free: 'निःशुल्क · कोई खाता नहीं · निजी' },
-  ja: { tagline: '古代の智慧。\n現代のAI。\n自然な癒し。', sub: 'アーユルヴェーダ、中医学、そして6つの伝統医学とAIを統合したパーソナルヘルスコンパニオン。', cta: '旅を始める', free: '無料 · アカウント不要 · プライベート' },
-  zh: { tagline: '古代智慧。\n现代AI。\n自然疗愈。', sub: '结合阿育吠陀、中医和6种古老治愈传统与AI力量的个人健康伴侣。', cta: '开始您的旅程', free: '免费 · 无需账户 · 私密' },
-  ar: { tagline: 'الحكمة القديمة.\nالذكاء الاصطناعي الحديث.\nالشفاء الطبيعي.', sub: 'رفيقك الصحي الشخصي — يجمع بين الأيورفيدا والطب الصيني و6 تقاليد علاجية قديمة.', cta: 'ابدأ رحلتك', free: 'مجاني · لا حساب مطلوب · خاص' },
-  es: { tagline: 'Sabiduría Antigua.\nIA Moderna.\nSanación Natural.', sub: 'Tu compañero de salud personal — combinando Ayurveda, Medicina China y 6 tradiciones de sanación ancestrales con IA.', cta: 'Comienza Tu Viaje', free: 'Gratis · Sin cuenta · Privado' },
-  fr: { tagline: 'Sagesse Ancienne.\nIA Moderne.\nGuérison Naturelle.', sub: 'Votre compagnon de santé personnel — combinant l\'Ayurveda, la Médecine Chinoise et 6 traditions de guérison ancestrales avec l\'IA.', cta: 'Commencez Votre Voyage', free: 'Gratuit · Sans compte · Privé' },
-  de: { tagline: 'Altes Wissen.\nModerne KI.\nNatürliche Heilung.', sub: 'Ihr persönlicher Gesundheitsbegleiter — kombiniert Ayurveda, Chinesische Medizin und 6 alte Heiltraditionen mit KI.', cta: 'Beginnen Sie Ihre Reise', free: 'Kostenlos · Kein Konto · Privat' },
-  pt: { tagline: 'Sabedoria Antiga.\nIA Moderna.\nCura Natural.', sub: 'Seu companheiro de saúde pessoal — combinando Ayurveda, Medicina Chinesa e 6 tradições de cura ancestrais com IA.', cta: 'Inicie Sua Jornada', free: 'Gratuito · Sem conta · Privado' },
-  ru: { tagline: 'Древняя Мудрость.\nСовременный ИИ.\nЕстественное Исцеление.', sub: 'Ваш личный помощник по здоровью — объединяет Аюрведу, Китайскую медицину и 6 древних целительных традиций с ИИ.', cta: 'Начните Путешествие', free: 'Бесплатно · Без аккаунта · Конфиденциально' },
-  ko: { tagline: '고대의 지혜.\n현대 AI.\n자연 치유.', sub: '아유르베다, 중국 의학, 그리고 6가지 고대 치유 전통을 AI와 결합한 개인 건강 동반자.', cta: '여행 시작하기', free: '무료 · 계정 불필요 · 비공개' },
+const T: Record<string, {
+  tagline: string, sub: string, cta: string, free: string,
+  traditions: string, tradSub: string,
+  how: string, s1t: string, s1d: string, s2t: string, s2d: string, s3t: string, s3d: string,
+  finalCta: string, finalSub: string, footer: string, clinic: string
+}> = {
+  en: {
+    tagline: 'Ancient Wisdom.\nModern AI.\nNatural Healing.',
+    sub: 'Your personal health companion — combining Ayurveda, Chinese Medicine, and 6 ancient healing traditions with AI.',
+    cta: 'Begin Your Journey', free: 'Free · No account required · Private',
+    traditions: '8 Healing Traditions', tradSub: 'The first AI to unify all major healing systems',
+    how: 'How VAIDYA Heals You',
+    s1t: 'Discover Your Constitution', s1d: 'A 5-question assessment reveals your Vata, Pitta, or Kapha type — drawn from 5,000 years of Ayurvedic wisdom.',
+    s2t: 'VAIDYA Consults All Traditions', s2d: 'Cross-references Charaka Samhita, Huangdi Neijing, and 6 other classical texts. Ancient wisdom meets modern evidence.',
+    s3t: 'Deep Mind Mode', s3d: 'Advanced reasoning across all 8 traditions. Deeper cross-tradition analysis for complex health questions.',
+    finalCta: 'Healing has always been natural.', finalSub: 'Let VAIDYA guide you back to balance. Free, always.',
+    footer: 'For educational purposes only · Not a substitute for professional medical advice', clinic: 'For Clinics →',
+  },
+  sa: {
+    tagline: 'प्राचीनं ज्ञानम्।\nआधुनिकं AI।\nप्राकृतिकी चिकित्सा।',
+    sub: 'आयुर्वेद, चीनीयचिकित्सा च षट् अन्याभिः परम्पराभिः सहितः आपणः स्वास्थ्यसहायकः।',
+    cta: 'यात्रां आरभ्यताम्', free: 'निःशुल्कम् · खाता न आवश्यकम् · गोपनीयम्',
+    traditions: '८ चिकित्साः परम्पराः', tradSub: 'सर्वाः प्रमुखाः चिकित्साप्रणाल्यः एकीकर्तुं प्रथमः AI',
+    how: 'वैद्यः कथं चिकित्सति',
+    s1t: 'स्वप्रकृतिं जानीयात्', s1d: 'पञ्चप्रश्नैः वात-पित्त-कफप्रकृतिः निर्धार्यते। ५,०००-वर्षीयायुर्वेदज्ञानात्।',
+    s2t: 'वैद्यः सर्वाः परम्पराः परामर्शयति', s2d: 'चरकसंहिता, हुआंगदीनेइजिंग च षट् अन्यग्रन्थान् एकदा संदर्भयति।',
+    s3t: 'दीपमनःप्रकारः', s3d: 'सर्वाभ्यः ८ परम्पराभ्यः उन्नतं विचारणम्। जटिलस्वास्थ्यप्रश्नेभ्यः गभीरतरं विश्लेषणम्।',
+    finalCta: 'आरोग्यं सदा प्राकृतिकम् आसीत्।', finalSub: 'वैद्यः भवन्तं संतुलनं प्रति नयतु। सर्वदा निःशुल्कम्।',
+    footer: 'केवलं शैक्षिकप्रयोजनाय · वृत्तिगतचिकित्साप्रस्तावस्य विकल्पः नास्ति', clinic: 'चिकित्सालयेभ्यः →',
+  },
+  hi: {
+    tagline: 'प्राचीन ज्ञान।\nआधुनिक AI।\nप्राकृतिक उपचार।',
+    sub: 'आयुर्वेद, चीनी चिकित्सा और 6 प्राचीन परंपराओं को AI के साथ जोड़ने वाला आपका स्वास्थ्य साथी।',
+    cta: 'यात्रा शुरू करें', free: 'निःशुल्क · कोई खाता नहीं · निजी',
+    traditions: '8 उपचार परंपराएं', tradSub: 'सभी प्रमुख उपचार प्रणालियों को एकीकृत करने वाला पहला AI',
+    how: 'VAIDYA आपको कैसे ठीक करता है',
+    s1t: 'अपनी प्रकृति जानें', s1d: '5 प्रश्नों से वात, पित्त या कफ की पहचान — 5,000 वर्षों के आयुर्वेदिक ज्ञान से।',
+    s2t: 'VAIDYA सभी परंपराओं से परामर्श करता है', s2d: 'चरक संहिता, हुआंगदी नेइजिंग और 6 अन्य ग्रंथों को एक साथ संदर्भित करता है।',
+    s3t: 'डीप माइंड मोड', s3d: 'सभी 8 परंपराओं में उन्नत तर्क। जटिल स्वास्थ्य प्रश्नों के लिए गहरा विश्लेषण।',
+    finalCta: 'उपचार हमेशा प्रकृति में था।', finalSub: 'VAIDYA को आपको संतुलन की ओर ले जाने दें। हमेशा मुफ्त।',
+    footer: 'केवल शैक्षिक उद्देश्यों के लिए · पेशेवर चिकित्सा सलाह का विकल्प नहीं', clinic: 'क्लीनिक के लिए →',
+  },
+  ja: {
+    tagline: '古代の智慧。\n現代のAI。\n自然な癒し。',
+    sub: 'アーユルヴェーダ、中医学、そして6つの伝統医学とAIを統合したパーソナルヘルスコンパニオン。',
+    cta: '旅を始める', free: '無料 · アカウント不要 · プライベート',
+    traditions: '8つの癒しの伝統', tradSub: 'すべての主要な癒しシステムを統合した初のAI',
+    how: 'ヴァイドヤの癒しの仕組み',
+    s1t: '体質を発見', s1d: '5つの質問でヴァータ、ピッタ、カパを特定。5,000年のアーユルヴェーダの知恵から。',
+    s2t: 'ヴァイドヤが全伝統を参照', s2d: 'チャラカ・サンヒター、黄帝内経など8つの古典文献を同時に参照。',
+    s3t: 'ディープマインドモード', s3d: '8つの伝統全体にわたる高度な推論。複雑な健康問題に対するより深い分析。',
+    finalCta: '癒しはいつも自然の中にありました。', finalSub: 'ヴァイドヤがバランスへの道を案内します。常に無料。',
+    footer: '教育目的のみ · 専門的な医療アドバイスの代替ではありません', clinic: 'クリニック向け →',
+  },
+  zh: {
+    tagline: '古代智慧。\n现代AI。\n自然疗愈。',
+    sub: '结合阿育吠陀、中医和6种古老治愈传统与AI力量的个人健康伴侣。',
+    cta: '开始您的旅程', free: '免费 · 无需账户 · 私密',
+    traditions: '8种治愈传统', tradSub: '第一个统一所有主要治愈系统的AI',
+    how: 'VAIDYA如何治愈您',
+    s1t: '了解您的体质', s1d: '5个问题揭示您的瓦塔、皮塔或卡法类型——源自5000年的阿育吠陀智慧。',
+    s2t: 'VAIDYA参考所有传统', s2d: '同时参考查拉卡本集、黄帝内经和其他6部经典文献。',
+    s3t: '深度思维模式', s3d: '跨越8种传统的高级推理。对复杂健康问题进行更深入的跨传统分析。',
+    finalCta: '治愈一直存在于自然之中。', finalSub: '让VAIDYA引导您回归平衡。永远免费。',
+    footer: '仅供教育目的 · 不能替代专业医疗建议', clinic: '诊所专区 →',
+  },
+  ko: {
+    tagline: '고대의 지혜。\n현대 AI。\n자연 치유。',
+    sub: '아유르베다, 중국 의학, 그리고 6가지 고대 치유 전통을 AI와 결합한 개인 건강 동반자。',
+    cta: '여행 시작하기', free: '무료 · 계정 불필요 · 비공개',
+    traditions: '8가지 치유 전통', tradSub: '모든 주요 치유 시스템을 통합한 최초의 AI',
+    how: 'VAIDYA가 당신을 치유하는 방법',
+    s1t: '체질 발견', s1d: '5가지 질문으로 바타, 피타 또는 카파 유형을 파악합니다.',
+    s2t: 'VAIDYA가 모든 전통을 참고', s2d: '차라카 삼히타, 황제내경 등 8개 고전 문헌을 동시에 참조합니다。',
+    s3t: '딥 마인드 모드', s3d: '8가지 전통 전반에 걸친 고급 추론。복잡한 건강 문제에 대한 심층 분석。',
+    finalCta: '치유는 항상 자연에 있었습니다。', finalSub: 'VAIDYA가 균형으로 안내합니다。항상 무료。',
+    footer: '교육 목적으로만 · 전문 의료 조언을 대체하지 않음', clinic: '클리닉 전용 →',
+  },
+  ar: {
+    tagline: 'الحكمة القديمة.\nالذكاء الاصطناعي الحديث.\nالشفاء الطبيعي.',
+    sub: 'رفيقك الصحي الشخصي — يجمع بين الأيورفيدا والطب الصيني و6 تقاليد علاجية قديمة.',
+    cta: 'ابدأ رحلتك', free: 'مجاني · لا حساب مطلوب · خاص',
+    traditions: '٨ تقاليد علاجية', tradSub: 'أول ذكاء اصطناعي يوحد جميع أنظمة الشفاء الرئيسية',
+    how: 'كيف يشفيك VAIDYA',
+    s1t: 'اكتشف دستورك الصحي', s1d: '٥ أسئلة تكشف نوعك من فاتا أو بيتا أو كافا — مستمدة من ٥٠٠٠ عام من حكمة الأيورفيدا.',
+    s2t: 'VAIDYA يستشير جميع التقاليد', s2d: 'يرجع في آنٍ واحد إلى شاراكا سامهيتا وهوانغدي نيجينغ و٦ نصوص كلاسيكية أخرى.',
+    s3t: 'وضع العقل العميق', s3d: 'استدلال متقدم عبر جميع التقاليد الثماني. تحليل أعمق للأسئلة الصحية المعقدة.',
+    finalCta: 'الشفاء كان دائماً في الطبيعة.', finalSub: 'دع VAIDYA يرشدك نحو التوازن. مجاني دائماً.',
+    footer: 'للأغراض التعليمية فقط · لا يغني عن الاستشارة الطبية المتخصصة', clinic: 'للعيادات →',
+  },
+  es: {
+    tagline: 'Sabiduría Antigua.\nIA Moderna.\nSanación Natural.',
+    sub: 'Tu compañero de salud personal — combinando Ayurveda, Medicina China y 6 tradiciones de sanación ancestrales con IA.',
+    cta: 'Comienza Tu Viaje', free: 'Gratis · Sin cuenta · Privado',
+    traditions: '8 Tradiciones de Sanación', tradSub: 'La primera IA que unifica todos los sistemas de curación principales',
+    how: 'Cómo VAIDYA Te Sana',
+    s1t: 'Descubre Tu Constitución', s1d: 'Una evaluación de 5 preguntas revela tu tipo Vata, Pitta o Kapha — basada en 5,000 años de sabiduría Ayurvédica.',
+    s2t: 'VAIDYA Consulta Todas las Tradiciones', s2d: 'Cruza referencias entre Charaka Samhita, Huangdi Neijing y 6 textos clásicos más simultáneamente.',
+    s3t: 'Modo Mente Profunda', s3d: 'Razonamiento avanzado a través de las 8 tradiciones. Análisis más profundo para preguntas de salud complejas.',
+    finalCta: 'La sanación siempre ha sido natural.', finalSub: 'Deja que VAIDYA te guíe de vuelta al equilibrio. Gratis, siempre.',
+    footer: 'Solo con fines educativos · No es un sustituto del consejo médico profesional', clinic: 'Para Clínicas →',
+  },
+  fr: {
+    tagline: 'Sagesse Ancienne.\nIA Moderne.\nGuérison Naturelle.',
+    sub: 'Votre compagnon de santé personnel — combinant l\'Ayurveda, la Médecine Chinoise et 6 traditions de guérison ancestrales avec l\'IA.',
+    cta: 'Commencez Votre Voyage', free: 'Gratuit · Sans compte · Privé',
+    traditions: '8 Traditions de Guérison', tradSub: 'La première IA à unifier tous les grands systèmes de guérison',
+    how: 'Comment VAIDYA Vous Guérit',
+    s1t: 'Découvrez Votre Constitution', s1d: 'Une évaluation de 5 questions révèle votre type Vata, Pitta ou Kapha — issue de 5 000 ans de sagesse Ayurvédique.',
+    s2t: 'VAIDYA Consulte Toutes les Traditions', s2d: 'Croise les références entre Charaka Samhita, Huangdi Neijing et 6 autres textes classiques simultanément.',
+    s3t: 'Mode Esprit Profond', s3d: 'Raisonnement avancé à travers les 8 traditions. Analyse plus approfondie pour les questions de santé complexes.',
+    finalCta: 'La guérison a toujours été naturelle.', finalSub: 'Laissez VAIDYA vous guider vers l\'équilibre. Gratuit, toujours.',
+    footer: 'À des fins éducatives uniquement · Ne remplace pas les conseils médicaux professionnels', clinic: 'Pour les Cliniques →',
+  },
+  de: {
+    tagline: 'Altes Wissen.\nModerne KI.\nNatürliche Heilung.',
+    sub: 'Ihr persönlicher Gesundheitsbegleiter — kombiniert Ayurveda, Chinesische Medizin und 6 alte Heiltraditionen mit KI.',
+    cta: 'Beginnen Sie Ihre Reise', free: 'Kostenlos · Kein Konto · Privat',
+    traditions: '8 Heiltraditionen', tradSub: 'Die erste KI, die alle wichtigen Heilsysteme vereint',
+    how: 'Wie VAIDYA Sie Heilt',
+    s1t: 'Entdecken Sie Ihre Konstitution', s1d: 'Eine 5-Fragen-Bewertung enthüllt Ihren Vata-, Pitta- oder Kapha-Typ — aus 5.000 Jahren Ayurvedischer Weisheit.',
+    s2t: 'VAIDYA Konsultiert Alle Traditionen', s2d: 'Vergleicht gleichzeitig Charaka Samhita, Huangdi Neijing und 6 weitere klassische Texte.',
+    s3t: 'Tiefgeist-Modus', s3d: 'Erweitertes Denken über alle 8 Traditionen hinweg. Tiefere Analyse für komplexe Gesundheitsfragen.',
+    finalCta: 'Heilung war schon immer natürlich.', finalSub: 'Lassen Sie VAIDYA Sie zurück ins Gleichgewicht führen. Immer kostenlos.',
+    footer: 'Nur zu Bildungszwecken · Kein Ersatz für professionellen medizinischen Rat', clinic: 'Für Kliniken →',
+  },
 }
 
-const getT = (code: string) => T[code] || { ...T.en, sub: T.en.sub }
+// For languages without full translation, use English
+const getT = (code: string) => T[code] || T['en']
 
 const TRADITIONS = [
   { icon: '🌿', name: 'Ayurveda', origin: 'India · 5,000 BCE' },
@@ -90,16 +203,14 @@ const TRADITIONS = [
 ]
 
 export default function LandingPage() {
-  const [langCode, setLangCode] = useState('en')
+  const [lang, setLang] = useState('en')
   const [showPicker, setShowPicker] = useState(false)
   const [search, setSearch] = useState('')
   const [scrolled, setScrolled] = useState(false)
   const pickerRef = useRef<HTMLDivElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
-
-  const currentLang = LANGUAGES.find(l => l.code === langCode) || LANGUAGES[0]
-  const t = getT(langCode)
-
+  const t = getT(lang)
+  const currentLang = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0]
   const filtered = LANGUAGES.filter(l =>
     l.name.toLowerCase().includes(search.toLowerCase()) ||
     l.native.toLowerCase().includes(search.toLowerCase())
@@ -107,38 +218,35 @@ export default function LandingPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem('ayura_lang')
-    if (saved && LANGUAGES.find(l => l.code === saved)) setLangCode(saved)
+    if (saved && LANGUAGES.find(l => l.code === saved)) setLang(saved)
     const onScroll = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useEffect(() => {
-    if (showPicker) {
-      setTimeout(() => searchRef.current?.focus(), 50)
-    } else {
-      setSearch('')
-    }
+    if (showPicker) setTimeout(() => searchRef.current?.focus(), 50)
+    else setSearch('')
   }, [showPicker])
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
-        setShowPicker(false)
-      }
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) setShowPicker(false)
     }
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
   const selectLang = (code: string) => {
-    setLangCode(code)
+    setLang(code)
     localStorage.setItem('ayura_lang', code)
     setShowPicker(false)
   }
 
+  const isRTL = ['ar', 'fa', 'ur', 'he'].includes(lang)
+
   return (
-    <main style={{ background: '#05100a', minHeight: '100vh', color: '#e8dfc8', overflowX: 'hidden' }}>
+    <main dir={isRTL ? 'rtl' : 'ltr'} style={{ background: '#05100a', minHeight: '100vh', color: '#e8dfc8', overflowX: 'hidden' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -148,7 +256,7 @@ export default function LandingPage() {
         .fade-2 { animation: fadeUp 0.9s 0.15s ease forwards; opacity: 0; }
         .fade-3 { animation: fadeUp 0.9s 0.3s ease forwards; opacity: 0; }
         .fade-4 { animation: fadeUp 0.9s 0.45s ease forwards; opacity: 0; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeUp { from { opacity:0; transform: translateY(28px); } to { opacity:1; transform: translateY(0); } }
         .btn-primary { display: inline-block; background: linear-gradient(135deg, #2d5a1b, #3d7a28); color: #e8dfc8; padding: 0.9rem 2.2rem; border-radius: 980px; font-size: 0.95rem; font-weight: 500; text-decoration: none; transition: all 0.25s; box-shadow: 0 4px 24px rgba(45,90,27,0.35); }
         .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(45,90,27,0.5); }
         .btn-ghost { display: inline-block; color: rgba(232,223,200,0.4); padding: 0.9rem 1.2rem; font-size: 0.9rem; text-decoration: none; transition: color 0.2s; }
@@ -156,7 +264,7 @@ export default function LandingPage() {
         .lang-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(106,191,138,0.15); color: rgba(232,223,200,0.6); padding: 0.28rem 0.85rem; border-radius: 980px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
         .lang-btn:hover { border-color: rgba(106,191,138,0.35); color: #e8dfc8; background: rgba(106,191,138,0.08); }
         .picker-overlay { position: fixed; inset: 0; z-index: 999; display: flex; align-items: flex-start; justify-content: flex-end; padding: 56px 1rem 0; }
-        .picker-box { background: rgba(12,22,12,0.96); border: 1px solid rgba(106,191,138,0.15); border-radius: 14px; width: 280px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(106,191,138,0.05); backdrop-filter: blur(20px); }
+        .picker-box { background: rgba(12,22,12,0.97); border: 1px solid rgba(106,191,138,0.15); border-radius: 14px; width: 280px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6); backdrop-filter: blur(20px); }
         .picker-search { width: 100%; background: rgba(255,255,255,0.04); border: none; border-bottom: 1px solid rgba(106,191,138,0.08); color: #e8dfc8; padding: 0.75rem 1rem; font-size: 0.85rem; outline: none; font-family: -apple-system, sans-serif; }
         .picker-search::placeholder { color: rgba(232,223,200,0.25); }
         .picker-list { max-height: 320px; overflow-y: auto; }
@@ -165,44 +273,31 @@ export default function LandingPage() {
         .lang-item { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 1rem; cursor: pointer; transition: background 0.15s; }
         .lang-item:hover { background: rgba(106,191,138,0.06); }
         .lang-item.active { background: rgba(106,191,138,0.08); }
-        .lang-item-left { display: flex; flex-direction: column; gap: 0.1rem; }
-        .lang-native { font-size: 0.85rem; color: #e8dfc8; font-family: -apple-system, sans-serif; }
-        .lang-english { font-size: 0.7rem; color: rgba(232,223,200,0.3); font-family: -apple-system, sans-serif; }
-        .checkmark { color: #6abf8a; font-size: 0.85rem; }
         .trad-card { background: rgba(255,255,255,0.025); border: 1px solid rgba(106,191,138,0.08); border-radius: 16px; padding: 1.25rem; transition: all 0.25s; }
-        .trad-card:hover { background: rgba(106,191,138,0.06); border-color: rgba(106,191,138,0.2); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(45,90,27,0.2); }
+        .trad-card:hover { background: rgba(106,191,138,0.06); border-color: rgba(106,191,138,0.2); transform: translateY(-3px); }
         .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(106,191,138,0.12), transparent); }
-        .nav-link { color: rgba(232,223,200,0.35); font-size: 0.8rem; text-decoration: none; transition: color 0.2s; }
-        .nav-link:hover { color: #e8dfc8; }
-        .glow { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; }
         .step-row { display: grid; grid-template-columns: 80px 1fr; gap: 2rem; align-items: start; padding: 2.5rem 0; border-bottom: 1px solid rgba(106,191,138,0.08); }
         .step-row:last-child { border-bottom: none; }
         .step-num { font-family: 'Cormorant Garamond', serif; font-size: 4rem; font-weight: 300; line-height: 1; color: rgba(201,168,76,0.45); }
+        .nav-link { color: rgba(232,223,200,0.35); font-size: 0.8rem; text-decoration: none; transition: color 0.2s; }
+        .nav-link:hover { color: #e8dfc8; }
+        .glow { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; }
         @media (max-width: 600px) { .step-row { grid-template-columns: 56px 1fr; gap: 1rem; } .step-num { font-size: 2.8rem; } .picker-overlay { justify-content: center; padding-top: 56px; } .picker-box { width: calc(100vw - 2rem); } }
       `}</style>
 
-      {/* Language Picker */}
       {showPicker && (
         <div className="picker-overlay" onClick={() => setShowPicker(false)}>
           <div className="picker-box" ref={pickerRef} onClick={e => e.stopPropagation()}>
-            <input
-              ref={searchRef}
-              className="picker-search"
-              placeholder="Search language..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
+            <input ref={searchRef} className="picker-search" placeholder="Search language..." value={search} onChange={e => setSearch(e.target.value)} />
             <div className="picker-list">
-              {filtered.length === 0 && (
-                <div style={{ padding: '1rem', color: 'rgba(232,223,200,0.3)', fontSize: '0.8rem', textAlign: 'center' }}>No languages found</div>
-              )}
+              {filtered.length === 0 && <div style={{ padding: '1rem', color: 'rgba(232,223,200,0.3)', fontSize: '0.8rem', textAlign: 'center' }}>No languages found</div>}
               {filtered.map(l => (
-                <div key={l.code} className={`lang-item${l.code === langCode ? ' active' : ''}`} onClick={() => selectLang(l.code)}>
-                  <div className="lang-item-left">
-                    <span className="lang-native">{l.native}</span>
-                    {l.native !== l.name && <span className="lang-english">{l.name}</span>}
+                <div key={l.code} className={`lang-item${l.code === lang ? ' active' : ''}`} onClick={() => selectLang(l.code)}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#e8dfc8' }}>{l.native}</span>
+                    {l.native !== l.name && <span style={{ fontSize: '0.7rem', color: 'rgba(232,223,200,0.3)' }}>{l.name}</span>}
                   </div>
-                  {l.code === langCode && <span className="checkmark">✓</span>}
+                  {l.code === lang && <span style={{ color: '#6abf8a', fontSize: '0.85rem' }}>✓</span>}
                 </div>
               ))}
             </div>
@@ -210,7 +305,6 @@ export default function LandingPage() {
         </div>
       )}
 
-      {/* Nav */}
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, padding: '0 2rem', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: scrolled ? 'rgba(5,16,10,0.88)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? '1px solid rgba(106,191,138,0.1)' : 'none', transition: 'all 0.35s' }}>
         <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.15rem', fontWeight: 600, color: '#c9a84c', letterSpacing: '0.02em' }}>🌿 AyuraHealth</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -219,31 +313,21 @@ export default function LandingPage() {
             <span>{currentLang.native}</span>
             <span style={{ fontSize: '0.6rem', opacity: 0.5 }}>▾</span>
           </button>
-          <Link href="/clinic" className="nav-link" style={{ border: '1px solid rgba(106,191,138,0.15)', padding: '0.25rem 0.7rem', borderRadius: 20 }}>For Clinics</Link>
+          <Link href="/clinic" className="nav-link" style={{ border: '1px solid rgba(106,191,138,0.15)', padding: '0.25rem 0.7rem', borderRadius: 20 }}>{t.clinic}</Link>
         </div>
       </nav>
 
-      {/* Hero */}
       <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '8rem 2rem 5rem', position: 'relative', overflow: 'hidden' }}>
         <div className="glow" style={{ top: '15%', left: '50%', transform: 'translateX(-50%)', width: 800, height: 600, background: 'radial-gradient(ellipse, rgba(45,90,27,0.2) 0%, transparent 65%)' }} />
-        <div className="glow" style={{ bottom: '10%', right: '10%', width: 300, height: 300, background: 'radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 70%)' }} />
-
         <div className="fade" style={{ position: 'relative', zIndex: 1, fontSize: '0.72rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(106,191,138,0.6)', marginBottom: '1.75rem', fontFamily: '-apple-system, sans-serif' }}>
-          8 Ancient Traditions · Always Free
+          VAIDYA DEEP MIND · 8 TRADITIONS · ALWAYS FREE
         </div>
-
-        <h1 className="hero-text fade-2" style={{ position: 'relative', zIndex: 1, marginBottom: '2rem' }}>
-          {t.tagline}
-        </h1>
-
-        <p className="fade-3" style={{ position: 'relative', zIndex: 1, fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', color: 'rgba(232,223,200,0.45)', maxWidth: 520, lineHeight: 1.75, marginBottom: '2.5rem', fontFamily: '-apple-system, sans-serif' }}>
-          {t.sub}
-        </p>
-
+        <h1 className="hero-text fade-2" style={{ position: 'relative', zIndex: 1, marginBottom: '2rem' }}>{t.tagline}</h1>
+        <p className="fade-3" style={{ position: 'relative', zIndex: 1, fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', color: 'rgba(232,223,200,0.45)', maxWidth: 520, lineHeight: 1.75, marginBottom: '2.5rem', fontFamily: '-apple-system, sans-serif' }}>{t.sub}</p>
         <div className="fade-4" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <Link href={`/chat?lang=${langCode}`} className="btn-primary">{t.cta}</Link>
-            <Link href={`/chat?lang=${langCode}`} className="btn-ghost">Deep Mind Consultation →</Link>
+            <Link href={`/chat?lang=${lang}`} className="btn-primary">{t.cta}</Link>
+            <Link href={`/chat?lang=${lang}`} className="btn-ghost">Deep Mind Consultation →</Link>
           </div>
           <span style={{ fontSize: '0.7rem', color: 'rgba(232,223,200,0.2)', letterSpacing: '0.05em', fontFamily: '-apple-system, sans-serif' }}>{t.free}</span>
         </div>
@@ -251,10 +335,9 @@ export default function LandingPage() {
 
       <div className="divider" />
 
-      {/* 8 Traditions */}
       <section style={{ padding: '6rem 2rem', maxWidth: 960, margin: '0 auto' }}>
-        <h2 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 300, textAlign: 'center', marginBottom: '0.6rem', color: '#e8dfc8' }}>8 Healing Traditions</h2>
-        <p style={{ textAlign: 'center', color: 'rgba(232,223,200,0.25)', fontSize: '0.8rem', marginBottom: '3rem', letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: '-apple-system, sans-serif' }}>The first AI to unify all major healing systems</p>
+        <h2 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 300, textAlign: 'center', marginBottom: '0.6rem', color: '#e8dfc8' }}>{t.traditions}</h2>
+        <p style={{ textAlign: 'center', color: 'rgba(232,223,200,0.25)', fontSize: '0.8rem', marginBottom: '3rem', letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: '-apple-system, sans-serif' }}>{t.tradSub}</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))', gap: '0.75rem' }}>
           {TRADITIONS.map((item, i) => (
             <div key={i} className="trad-card">
@@ -268,22 +351,21 @@ export default function LandingPage() {
 
       <div className="divider" />
 
-      {/* How it works */}
       <section style={{ padding: '6rem 2rem', maxWidth: 760, margin: '0 auto' }}>
-        <h2 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 300, marginBottom: '3rem', color: '#e8dfc8' }}>How VAIDYA Heals You</h2>
+        <h2 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 300, marginBottom: '3rem', color: '#e8dfc8' }}>{t.how}</h2>
         {[
-          { n: '01', t: 'Discover Your Constitution', d: 'A 5-question assessment reveals your Vata, Pitta, or Kapha type — drawn from 5,000 years of Ayurvedic wisdom.', badge: null },
-          { n: '02', t: 'VAIDYA Consults All Traditions', d: 'Cross-references Charaka Samhita, Huangdi Neijing, and 6 other classical texts. Ancient wisdom meets modern evidence.', badge: null },
-          { n: '03', t: 'Deep Mind Mode', d: 'Advanced reasoning across all 8 traditions. Deeper cross-tradition analysis for complex health questions.', badge: 'VAIDYA Deep Mind' },
+          { n: '01', title: t.s1t, desc: t.s1d, badge: null },
+          { n: '02', title: t.s2t, desc: t.s2d, badge: null },
+          { n: '03', title: t.s3t, desc: t.s3d, badge: 'VAIDYA Deep Mind' },
         ].map((s, i) => (
           <div key={i} className="step-row">
             <div className="step-num">{s.n}</div>
             <div style={{ paddingTop: '0.4rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.65rem', flexWrap: 'wrap' }}>
-                <h3 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.45rem', fontWeight: 400, color: '#e8dfc8' }}>{s.t}</h3>
+                <h3 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.45rem', fontWeight: 400, color: '#e8dfc8' }}>{s.title}</h3>
                 {s.badge && <span style={{ fontSize: '0.62rem', background: 'rgba(118,185,0,0.12)', border: '1px solid rgba(118,185,0,0.3)', color: 'rgba(118,185,0,0.85)', padding: '0.15rem 0.5rem', borderRadius: 980, letterSpacing: '0.05em', fontFamily: '-apple-system, sans-serif', whiteSpace: 'nowrap' }}>{s.badge}</span>}
               </div>
-              <p style={{ color: 'rgba(232,223,200,0.38)', fontSize: '0.9rem', lineHeight: 1.8, fontFamily: '-apple-system, sans-serif' }}>{s.d}</p>
+              <p style={{ color: 'rgba(232,223,200,0.38)', fontSize: '0.9rem', lineHeight: 1.8, fontFamily: '-apple-system, sans-serif' }}>{s.desc}</p>
             </div>
           </div>
         ))}
@@ -291,25 +373,21 @@ export default function LandingPage() {
 
       <div className="divider" />
 
-      {/* Final CTA */}
       <section style={{ padding: '8rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div className="glow" style={{ top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 500, background: 'radial-gradient(ellipse, rgba(45,90,27,0.15) 0%, transparent 65%)' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>🌿</div>
-          <h2 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', fontWeight: 300, lineHeight: 1.15, marginBottom: '1rem', color: '#e8dfc8' }}>
-            Healing has always been natural.
-          </h2>
-          <p style={{ color: 'rgba(232,223,200,0.3)', marginBottom: '2.5rem', fontSize: '0.95rem', fontFamily: '-apple-system, sans-serif' }}>Let VAIDYA guide you back to balance. Free, always.</p>
-          <Link href={`/chat?lang=${langCode}`} className="btn-primary" style={{ fontSize: '1rem', padding: '1rem 2.8rem' }}>{t.cta}</Link>
+          <h2 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(2rem, 5vw, 4rem)', fontWeight: 300, lineHeight: 1.15, marginBottom: '1rem', color: '#e8dfc8' }}>{t.finalCta}</h2>
+          <p style={{ color: 'rgba(232,223,200,0.3)', marginBottom: '2.5rem', fontSize: '0.95rem', fontFamily: '-apple-system, sans-serif' }}>{t.finalSub}</p>
+          <Link href={`/chat?lang=${lang}`} className="btn-primary" style={{ fontSize: '1rem', padding: '1rem 2.8rem' }}>{t.cta}</Link>
         </div>
       </section>
 
-      {/* Footer */}
       <footer style={{ borderTop: '1px solid rgba(106,191,138,0.08)', padding: '2rem', textAlign: 'center', background: 'rgba(0,0,0,0.2)' }}>
-        <p style={{ color: 'rgba(232,223,200,0.15)', fontSize: '0.72rem', marginBottom: '1rem', fontFamily: '-apple-system, sans-serif' }}>For educational purposes only · Not a substitute for professional medical advice</p>
+        <p style={{ color: 'rgba(232,223,200,0.15)', fontSize: '0.72rem', marginBottom: '1rem', fontFamily: '-apple-system, sans-serif' }}>{t.footer}</p>
         <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          {[['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['For Clinics', '/clinic'], ['Contact', 'mailto:hello@ayurahealth.com']].map(([label, href]) => (
-            <a key={href} href={href} style={{ color: 'rgba(232,223,200,0.2)', fontSize: '0.72rem', textDecoration: 'none', fontFamily: '-apple-system, sans-serif', transition: 'color 0.2s' }}
+          {[['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['For Clinics', '/clinic'], ['Contact', '/contact']].map(([label, href]) => (
+            <a key={href} href={href} style={{ color: 'rgba(232,223,200,0.2)', fontSize: '0.72rem', textDecoration: 'none', fontFamily: '-apple-system, sans-serif' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'rgba(232,223,200,0.5)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(232,223,200,0.2)')}
             >{label}</a>
