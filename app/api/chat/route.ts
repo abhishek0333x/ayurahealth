@@ -117,7 +117,9 @@ ${deepThink ? 'DEEP MIND MODE: Maximum reasoning depth. Cross-reference all 8 tr
       formattedMessages.push({ role: 'user', content: lastMsg.content + attachmentCtx })
     }
 
-    const useNemotron = deepThink && !hasImages && !!process.env.OPENROUTER_API_KEY
+    const indicLangs = ['sa', 'ta', 'te', 'kn', 'ml', 'pa', 'gu', 'mr', 'bn', 'ur', 'fa', 'ar', 'he']
+    const autoDeepMind = indicLangs.includes(lang || 'en')
+    const useNemotron = (deepThink || autoDeepMind) && !hasImages && !!process.env.OPENROUTER_API_KEY
 
     const apiUrl = useNemotron
       ? 'https://openrouter.ai/api/v1/chat/completions'
