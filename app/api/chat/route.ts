@@ -82,6 +82,56 @@ export async function POST(req: NextRequest) {
       ? `Patient is ${dosha} dominant. Tailor ALL recommendations to ${dosha}. ${dosha === 'Vata' ? 'Grounding, warming, nourishing.' : dosha === 'Pitta' ? 'Cooling, calming, anti-inflammatory.' : 'Stimulating, lightening, activating.'}`
       : ''
 
+    // Blood report detection
+    const isBloodReport = attachments?.some((a: {type: string; name?: string}) =>
+      a.type === 'pdf' && (
+        a.name?.toLowerCase().includes('blood') ||
+        a.name?.toLowerCase().includes('lab') ||
+        a.name?.toLowerCase().includes('report') ||
+        a.name?.toLowerCase().includes('test') ||
+        a.name?.toLowerCase().includes('cbc') ||
+        a.name?.toLowerCase().includes('lipid') ||
+        a.name?.toLowerCase().includes('thyroid') ||
+        a.name?.toLowerCase().includes('haemoglobin') ||
+        a.name?.toLowerCase().includes('hemoglobin')
+      )
+    ) || (messages[messages.length-1]?.content?.toLowerCase().includes('blood') &&
+         messages[messages.length-1]?.content?.toLowerCase().includes('report'))
+
+    const bloodReportPrompt = isBloodReport ? `
+BLOOD REPORT ANALYSIS MODE — ACTIVATED
+
+The user has uploaded a medical lab report. Analyze it with this EXACT structure:
+
+**🔬 VAIDYA'S LAB ANALYSIS**
+[2-3 sentences as an ancient physician seeing modern numbers for the first time]
+
+**📊 Biomarker Analysis**
+For each abnormal or notable value found in the report:
+
+**[Biomarker Name]: [Value] [Unit] — [Normal Range]**
+- Modern Medicine: [What this means clinically]
+- Ayurvedic View: [Which dosha is affected, what classical texts say]
+- Action: [One specific thing to do]
+
+**⚡ Priority Actions (Next 30 Days)**
+1. [Most urgent — today]
+2. [Diet change — this week]
+3. [Herb/supplement — classical Ayurvedic remedy with dose]
+4. [Lifestyle — based on dosha]
+5. [When to see a doctor — be specific]
+
+**🌿 Ayurvedic Root Cause**
+[Which dosha imbalance explains these results according to Charaka Samhita]
+
+**📚 Classical References**
+[Cite specific sutras or chapters from Charaka Samhita or Ashtanga Hridayam relevant to these findings]
+
+⚠️ *This is educational analysis only. Always consult your physician for medical decisions.*
+
+Be thorough. Be specific. Cite actual biomarker values from the report.
+` : ''
+
     const attachmentCtx = attachments?.length > 0
       ? attachments.filter((a: {type: string}) => a.type !== 'image')
           .map((a: {type: string; content: string; name: string; url?: string}) =>
@@ -95,6 +145,7 @@ ${doshaCtx}
 LANGUAGE: ${lang === 'sa' 
       ? 'Respond ONLY in classical Sanskrit (देवनागरी script). Use Sanskrit grammar. Every word must be Sanskrit. Example greeting: नमस्ते। अहं वैद्यः।'
       : `Respond entirely in ${langName}. Every single word must be in ${langName}. Do not use English.`}
+${isBloodReport ? bloodReportPrompt : ''}
 ${deepThink ? 'DEEP MIND MODE: Maximum reasoning depth. Cross-reference all 8 traditions thoroughly. Show nuanced multi-tradition connections. Be comprehensive and cite specific classical chapters.' : ''}`
 
     const hasImages = attachments?.some((a: {type: string}) => a.type === 'image')
@@ -118,7 +169,8 @@ ${deepThink ? 'DEEP MIND MODE: Maximum reasoning depth. Cross-reference all 8 tr
     }
 
     const indicLangs = ['sa', 'ta', 'te', 'kn', 'ml', 'pa', 'gu', 'mr', 'bn', 'ur', 'fa', 'ar', 'he']
-    const autoDeepMind = indicLangs.includes(lang || 'en')
+    // Blood reports always get best AI
+    const autoDeepMind = indicLangs.includes(lang || 'en') || isBloodReport
     const useNemotron = (deepThink || autoDeepMind) && !hasImages && !!process.env.OPENROUTER_API_KEY
 
     const apiUrl = useNemotron
