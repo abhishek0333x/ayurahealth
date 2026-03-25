@@ -326,12 +326,9 @@ export default function LandingPage() {
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#6abf8a', display: 'inline-block' }}/>
           <span style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(106,191,138,0.85)', fontFamily: '-apple-system, sans-serif' }}>Free · No account required · Private</span>
         </div>
-        <h1 className="fade-2" style={{ position: 'relative', zIndex: 1, fontFamily: '-apple-system, sans-serif', fontSize: 'clamp(1.5rem, 3.5vw, 2.6rem)', fontWeight: 600, color: '#e8dfc8', lineHeight: 1.2, marginBottom: '1rem', maxWidth: 680, letterSpacing: '-0.02em' }}>
-          Personalized health guidance from Ayurveda, Chinese Medicine & 6 healing traditions — powered by AI
-        </h1>
-        <div className="hero-tagline fade-3" style={{ position: 'relative', zIndex: 1, marginBottom: '1.5rem' }}>{t.tagline}</div>
-        <p className="fade-4" style={{ position: 'relative', zIndex: 1, fontSize: 'clamp(0.9rem, 2vw, 1rem)', color: 'rgba(232,223,200,0.55)', maxWidth: 520, lineHeight: 1.75, marginBottom: '2.5rem', fontFamily: '-apple-system, sans-serif' }}>
-          Describe your symptoms. VAIDYA responds with guidance from Charaka Samhita, Huangdi Neijing and 6 classical texts — in your language. In minutes.
+        <div className="hero-tagline fade-2" style={{ position: 'relative', zIndex: 1, marginBottom: '1.5rem' }}>{t.tagline}</div>
+        <p className="fade-3" style={{ position: 'relative', zIndex: 1, fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem)', color: 'rgba(232,223,200,0.65)', maxWidth: 600, lineHeight: 1.7, marginBottom: '2.5rem', fontFamily: '-apple-system, sans-serif' }}>
+          {t.sub}
         </p>
         <div className="fade-5" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>

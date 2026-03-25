@@ -10,12 +10,12 @@ interface Attachment {
   preview?: string; mimeType?: string; url?: string; size?: string
 }
 type Dosha = 'Vata' | 'Pitta' | 'Kapha'
-type Screen = 'landing' | 'quiz' | 'result' | 'chat'
+type Screen = 'landing' | 'welcome' | 'quiz' | 'result' | 'chat'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SR = any
 
 const STORAGE_KEY = 'ayurahealth_v1'
-interface SavedState { dosha: Dosha | null; messages: Message[]; selectedSystems: string[]; lang: Lang; savedAt: number }
+interface SavedState { dosha: Dosha | null; messages: Message[]; selectedSystems: string[]; lang: Lang; savedAt: number; userName?: string }
 function loadState(): SavedState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -89,6 +89,7 @@ export default function ChatPage() {
     return 'en'
   })
   const [screen, setScreen] = useState<Screen>('landing')
+  const [userName, setUserName] = useState('')
   const [currentQ, setCurrentQ] = useState(0)
   const [answers, setAnswers] = useState<string[]>([])
   const [dosha, setDosha] = useState<Dosha | null>(null)
