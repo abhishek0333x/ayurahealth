@@ -471,10 +471,25 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Newsletter Section */}
+      <section style={{ padding: '3rem 1rem', background: 'linear-gradient(135deg, rgba(26,77,46,0.1) 0%, rgba(212,165,116,0.05) 100%)', borderTop: '1px solid rgba(106,191,138,0.08)' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
+          <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#e8dfb8', marginBottom: '0.5rem' }}>Stay Updated</h3>
+          <p style={{ color: 'rgba(232,223,200,0.7)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Get the latest updates on new features, health tips, and AyuraHealth announcements.</p>
+          <div style={{ display: 'flex', gap: '0.5rem', maxWidth: '400px', margin: '0 auto' }}>
+            <input type="email" placeholder="your@email.com" style={{ flex: 1, padding: '0.75rem', borderRadius: '0.5rem', border: 'none', fontSize: '0.9rem' }} />
+            <button style={{ padding: '0.75rem 1.5rem', background: '#6abf8a', color: '#05100a', border: 'none', borderRadius: '0.5rem', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.9rem', transition: 'background 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#5aad7a')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#6abf8a')}
+            >Subscribe</button>
+          </div>
+        </div>
+      </section>
+
       <footer style={{ borderTop: '1px solid rgba(106,191,138,0.08)', padding: '2rem', textAlign: 'center', background: 'rgba(0,0,0,0.2)' }}>
         <p style={{ color: 'rgba(232,223,200,0.2)', fontSize: '0.72rem', marginBottom: '1rem', fontFamily: '-apple-system, sans-serif' }}>{t.footer}</p>
         <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          {[['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['For Clinics', '/clinic'], ['Diet Chart', '/diet'], ['Contact', '/contact']].map(([label, href]) => (
+          {[['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['Testimonials', '/testimonials'], ['Press Kit', '/press-kit'], ['For Clinics', '/clinic'], ['Diet Chart', '/diet'], ['Contact', '/contact']].map(([label, href]) => (
             <a key={href} href={href} style={{ color: 'rgba(232,223,200,0.25)', fontSize: '0.72rem', textDecoration: 'none', fontFamily: '-apple-system, sans-serif', transition: 'color 0.2s' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'rgba(232,223,200,0.6)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(232,223,200,0.25)')}
