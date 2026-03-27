@@ -319,6 +319,7 @@ export default function LandingPage() {
             <span>{currentLang.native}</span>
             <span style={{ fontSize: '0.6rem', opacity: 0.6 }}>▾</span>
           </button>
+          <Link href="/pricing" className="nav-link">💳 Pricing</Link>
           <Link href="/clinic" className="nav-link">{t.clinic}</Link>
         </div>
       </nav>
@@ -492,7 +493,7 @@ export default function LandingPage() {
       <footer style={{ borderTop: '1px solid rgba(106,191,138,0.08)', padding: '2rem', textAlign: 'center', background: 'rgba(0,0,0,0.2)' }}>
         <p style={{ color: 'rgba(232,223,200,0.2)', fontSize: '0.72rem', marginBottom: '1rem', fontFamily: '-apple-system, sans-serif' }}>{t.footer}</p>
         <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          {[['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['Testimonials', '/testimonials'], ['Press Kit', '/press-kit'], ['For Clinics', '/clinic'], ['Diet Chart', '/diet'], ['Contact', '/contact']].map(([label, href]) => (
+          {[['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['Testimonials', '/testimonials'], ['Press Kit', '/press-kit'], ['Pricing', '/pricing'], ['For Clinics', '/clinic'], ['Diet Chart', '/diet'], ['Contact', '/contact']].map(([label, href]) => (
             <a key={href} href={href} style={{ color: 'rgba(232,223,200,0.25)', fontSize: '0.72rem', textDecoration: 'none', fontFamily: '-apple-system, sans-serif', transition: 'color 0.2s' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'rgba(232,223,200,0.6)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(232,223,200,0.25)')}
