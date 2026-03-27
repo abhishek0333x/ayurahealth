@@ -1,8 +1,11 @@
 'use client'
 import { useEffect } from 'react'
 
-export default function Error({ error, reset }: { error: Error; reset: () => void }) {
-  useEffect(() => { console.error('AyuraHealth error:', error) }, [error])
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  useEffect(() => {
+    if (error) console.error('AyuraHealth error:', error)
+  }, [error])
+  
   return (
     <div style={{ minHeight: '100vh', background: '#05100a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Georgia, serif', flexDirection: 'column', gap: '1.5rem', padding: '2rem' }}>
       <div style={{ fontSize: '3rem' }}>🌿</div>
