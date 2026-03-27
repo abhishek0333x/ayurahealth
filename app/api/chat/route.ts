@@ -38,6 +38,21 @@ RESPONSE FORMAT:
 
 PERSONALITY: Ancient, wise, warm, occasionally poetic. You have opinions. You make surprising cross-tradition connections. Never sound like a search engine. Sound like a healer who has seen a thousand patients.`
 
+// Input validation helper
+function validateInput(input: unknown, maxLength: number = 5000): string {
+  if (typeof input !== 'string') throw new Error('Invalid input type')
+  if (input.length > maxLength) throw new Error('Input exceeds maximum length')
+  return input.trim()
+}
+
+// Sanitize HTML/script content
+function sanitizeContent(content: string): string {
+  return content
+    .replace(/<script[^>]*>.*?<\/script>/gi, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+}
+
 export async function POST(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0] || 'anonymous'
   const { allowed } = checkRateLimit(ip)
@@ -46,7 +61,69 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { messages, systems, incognito, dosha, lang, attachments, deepThink } = await req.json()
+    // Parse and validate request body
+    let body: unknown
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+    }
+
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+    }
+
+    const { messages, systems, incognito, dosha, lang, attachments, deepThink } = body as {
+      messages?: unknown
+      systems?: unknown
+      incognito?: unknown
+      dosha?: unknown
+      lang?: unknown
+      attachments?: unknown
+      deepThink?: unknown
+    }
+
+    // Validate messages array
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return NextResponse.json({ error: 'Invalid messages' }, { status: 400 })
+    }
+
+    // Validate each message
+    for (const msg of messages) {
+      if (typeof msg !== 'object' || !msg) {
+        return NextResponse.json({ error: 'Invalid message format' }, { status: 400 })
+      }
+      const msgObj = msg as Record<string, unknown>
+      if (typeof msgObj.role !== 'string' || !['user', 'assistant'].includes(msgObj.role)) {
+        return NextResponse.json({ error: 'Invalid message role' }, { status: 400 })
+      }
+      if (typeof msgObj.content !== 'string') {
+        return NextResponse.json({ error: 'Invalid message content' }, { status: 400 })
+      }
+      try {
+        validateInput(msgObj.content, 5000)
+      } catch (e) {
+        return NextResponse.json({ error: (e as Error).message }, { status: 400 })
+      }
+    }
+
+    // Validate dosha
+    const validDoshas = ['Vata', 'Pitta', 'Kapha']
+    if (dosha && (typeof dosha !== 'string' || !validDoshas.includes(dosha))) {
+      return NextResponse.json({ error: 'Invalid dosha' }, { status: 400 })
+    }
+
+    // Validate language
+    const validLangs = ['en', 'sa', 'hi', 'ja', 'zh', 'ko', 'ar', 'es', 'fr', 'de', 'pt', 'ru']
+    if (lang && (typeof lang !== 'string' || !validLangs.includes(lang))) {
+      return NextResponse.json({ error: 'Invalid language' }, { status: 400 })
+    }
+
+    // Validate systems array
+    const validSystems = ['ayurveda', 'tcm', 'western', 'homeopathy', 'naturopathy', 'unani', 'siddha', 'tibetan']
+    if (systems && (!Array.isArray(systems) || !systems.every(s => typeof s === 'string' && validSystems.includes(s)))) {
+      return NextResponse.json({ error: 'Invalid systems' }, { status: 400 })
+    }
 
     const LANG_NAMES: Record<string, string> = {
       en: 'English', sa: 'Sanskrit', hi: 'Hindi', ja: 'Japanese',
@@ -149,23 +226,45 @@ ${isBloodReport ? bloodReportPrompt : ''}
 ${deepThink ? 'DEEP MIND MODE: Maximum reasoning depth. Cross-reference all 8 traditions thoroughly. Show nuanced multi-tradition connections. Be comprehensive and cite specific classical chapters.' : ''}`
 
     const hasImages = attachments?.some((a: {type: string}) => a.type === 'image')
-    const lastMsg = messages[messages.length - 1]
+    const lastMsg = messages[messages.length - 1] as Record<string, unknown>
+    if (typeof lastMsg.content !== 'string') {
+      return NextResponse.json({ error: 'Invalid last message' }, { status: 400 })
+    }
+
+    // Sanitize all message content
+    const sanitizedMessages = messages.map((msg: unknown) => {
+      const msgObj = msg as Record<string, unknown>
+      return {
+        role: msgObj.role,
+        content: sanitizeContent(msgObj.content as string),
+      }
+    })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formattedMessages: any[] = []
-    for (let i = 0; i < messages.length - 1; i++) {
-      formattedMessages.push({ role: messages[i].role, content: messages[i].content })
+    for (let i = 0; i < sanitizedMessages.length - 1; i++) {
+      formattedMessages.push({ role: sanitizedMessages[i].role, content: sanitizedMessages[i].content })
     }
 
     if (hasImages) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const parts: any[] = [{ type: 'text', text: lastMsg.content + attachmentCtx }]
-      attachments.filter((a: {type: string}) => a.type === 'image').forEach((a: {mimeType?: string; content: string}) => {
-        parts.push({ type: 'image_url', image_url: { url: `data:${a.mimeType || 'image/jpeg'};base64,${a.content}` } })
-      })
+      const parts: any[] = [{ type: 'text', text: sanitizeContent(lastMsg.content as string) + attachmentCtx }]
+      if (Array.isArray(attachments)) {
+        attachments.filter((a: unknown) => {
+          const aObj = a as Record<string, unknown>
+          return aObj.type === 'image'
+        }).forEach((a: unknown) => {
+          const aObj = a as Record<string, unknown>
+          const mimeType = aObj.mimeType as string | undefined
+          const content = aObj.content as string | undefined
+          if (typeof content === 'string' && /^[A-Za-z0-9+/=]+$/.test(content)) {
+            parts.push({ type: 'image_url', image_url: { url: `data:${mimeType || 'image/jpeg'};base64,${content}` } })
+          }
+        })
+      }
       formattedMessages.push({ role: 'user', content: parts })
     } else {
-      formattedMessages.push({ role: 'user', content: lastMsg.content + attachmentCtx })
+      formattedMessages.push({ role: 'user', content: sanitizeContent(lastMsg.content as string) + attachmentCtx })
     }
 
     const indicLangs = ['sa', 'ta', 'te', 'kn', 'ml', 'pa', 'gu', 'mr', 'bn', 'ur', 'fa', 'ar', 'he']

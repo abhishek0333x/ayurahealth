@@ -108,6 +108,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        <meta charSet="utf-8" />
+        <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.groq.com https://api.openai.com; frame-ancestors 'none';" />
+        
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -142,7 +145,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta property="og:title" content="AyuraHealth — Ancient Wisdom, Modern AI" />
         <meta property="og:description" content="Discover your Ayurvedic dosha. Personalized health guidance from 8 ancient healing traditions. Free forever." />
 
-        {/* Schema.org for Google rich results */}
+        {/* ─── Schema.org for Google rich results ─── */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebApplication",
@@ -156,10 +159,86 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           "image": `${BASE_URL}/opengraph-image`,
           "author": { "@type": "Organization", "name": "AyuraHealth", "url": BASE_URL },
         })}} />
+
+        {/* ─── Organization Schema ─── */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "AyuraHealth",
+          "url": BASE_URL,
+          "logo": `${BASE_URL}/favicon.png`,
+          "description": "AI-powered holistic health companion",
+          "sameAs": [
+            "https://www.linkedin.com/company/ayurahealth",
+            "https://twitter.com/ayurahealth",
+            "https://www.instagram.com/ayurahealth",
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "Customer Support",
+            "email": "support@ayurahealth.com",
+          },
+        })}} />
+
+        {/* ─── FAQ Schema ─── */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is AyuraHealth?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "AyuraHealth is an AI-powered holistic health companion that combines Ayurveda, Chinese Medicine, Tibetan, Unani, Siddha, Homeopathy, Naturopathy and Western Medicine."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is AyuraHealth free?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, AyuraHealth is completely free. No account required, no hidden charges."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a dosha quiz?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A dosha quiz is a 5-question assessment that reveals your Ayurvedic constitution (Vata, Pitta, or Kapha) based on 5,000 years of Ayurvedic wisdom."
+              }
+            },
+          ]
+        })}} />
+
+        {/* ─── Security Headers ─── */}
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+        <meta httpEquiv="X-Frame-Options" content="SAMEORIGIN" />
+        <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
+        <meta name="format-detection" content="telephone=no" />
       </head>
       <body>
         {children}
         <Analytics />
+        
+        {/* ─── Performance Monitoring ─── */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          if ('PerformanceObserver' in window) {
+            try {
+              const observer = new PerformanceObserver((list) => {
+                for (const entry of list.getEntries()) {
+                  console.log('Performance:', entry.name, entry.duration);
+                }
+              });
+              observer.observe({ entryTypes: ['navigation', 'resource', 'paint', 'measure'] });
+            } catch (e) {
+              console.error('Performance monitoring error:', e);
+            }
+          }
+        ` }} />
       </body>
     </html>
   )
