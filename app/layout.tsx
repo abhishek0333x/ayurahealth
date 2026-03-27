@@ -113,9 +113,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
         {/* Favicon */}
-        <link rel="icon" href="/favicon.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/favicon.png" />
-        <link rel="shortcut icon" href="/favicon.png" />
+        <link rel="icon" href="https://d2xsxph8kpxj0f.cloudfront.net/310519663443572913/nQYKCbsnkVANj8fjMcN4AQ/ayurahealth-favicon-modern-9wZwpYu7kqWnnsYWpCAkz3.webp" type="image/webp" />
+        <link rel="apple-touch-icon" href="https://d2xsxph8kpxj0f.cloudfront.net/310519663443572913/nQYKCbsnkVANj8fjMcN4AQ/ayurahealth-favicon-modern-9wZwpYu7kqWnnsYWpCAkz3.webp" />
+        <link rel="shortcut icon" href="https://d2xsxph8kpxj0f.cloudfront.net/310519663443572913/nQYKCbsnkVANj8fjMcN4AQ/ayurahealth-favicon-modern-9wZwpYu7kqWnnsYWpCAkz3.webp" />
 
         {/* ─── Extra meta for LINE / KakaoTalk / WeChat / Viber ─── */}
         <meta property="og:image" content={`${BASE_URL}/opengraph-image`} />
