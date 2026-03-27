@@ -308,10 +308,12 @@ export default function LandingPage() {
         </div>
       )}
 
-      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, padding: '0 2rem', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: scrolled ? 'rgba(5,16,10,0.92)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? '1px solid rgba(106,191,138,0.12)' : 'none', transition: 'all 0.35s' }}>
-        <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
-          <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663443572913/nQYKCbsnkVANj8fjMcN4AQ/ayurahealth-favicon-32-W9FpdYEkk6bV4kRDmwm3C9.png" alt="AyuraHealth" style={{ height: 32, width: 32 }} />
-          <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.15rem', fontWeight: 600, color: '#c9a84c', letterSpacing: '0.02em' }}>AyuraHealth</span>
+      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, padding: '0 2rem', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: scrolled ? 'rgba(5,16,10,0.95)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? '1px solid rgba(106,191,138,0.15)' : 'none', transition: 'all 0.35s', boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.3)' : 'none' }}>
+        <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', transition: 'transform 0.2s', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} >
+          <div style={{ background: 'linear-gradient(135deg, rgba(106,191,138,0.15), rgba(45,90,27,0.1))', padding: '0.5rem', borderRadius: '12px', border: '1px solid rgba(106,191,138,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663443572913/nQYKCbsnkVANj8fjMcN4AQ/ayurahealth-favicon-32-W9FpdYEkk6bV4kRDmwm3C9.png" alt="AyuraHealth" style={{ height: 40, width: 40 }} />
+          </div>
+          <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.35rem', fontWeight: 600, color: '#e8dfc8', letterSpacing: '0.02em' }}>AyuraHealth</span>
         </a>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <button className="lang-btn" onClick={() => setShowPicker(!showPicker)}>
