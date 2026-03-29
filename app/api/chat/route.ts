@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { messages, systems, incognito, dosha, lang, attachments, deepThink } = await req.json()
+    const { messages, systems, dosha, lang, attachments, deepThink } = await req.json()
 
     const LANG_NAMES: Record<string, string> = {
       en: 'English', sa: 'Sanskrit', hi: 'Hindi', ja: 'Japanese',
@@ -61,12 +61,6 @@ export async function POST(req: NextRequest) {
       el: 'Greek', ro: 'Romanian', hu: 'Hungarian', cs: 'Czech',
     }
     const langName = LANG_NAMES[lang || 'en'] || lang || 'English'
-
-    const langMap: Record<string, string> = {
-      en: 'Respond in English.',
-      ja: '日本語で回答してください。',
-      hi: 'हिंदी में उत्तर दें।',
-    }
 
     const systemsMap: Record<string, string> = {
       ayurveda: 'Ayurveda', tcm: 'TCM', western: 'Western Medicine',

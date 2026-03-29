@@ -165,7 +165,7 @@ Use this EXACT format:
                 </button>
               ))}
             </div>
-            <p style={{ color: 'rgba(232,223,200,0.3)', fontSize: '0.78rem', marginBottom: '1rem' }}>Don't know your dosha? <Link href="/chat" style={{ color: '#6abf8a', textDecoration: 'none' }}>Take the quiz →</Link></p>
+            <p style={{ color: 'rgba(232,223,200,0.3)', fontSize: '0.78rem', marginBottom: '1rem' }}>Don&apos;t know your dosha? <Link href="/chat" style={{ color: '#6abf8a', textDecoration: 'none' }}>Take the quiz →</Link></p>
             <button onClick={() => dosha && setStep(2)} style={{ width: '100%', padding: '0.9rem', background: dosha ? 'linear-gradient(135deg, #2d5a1b, #3d7a28)' : 'rgba(255,255,255,0.05)', color: dosha ? '#e8dfc8' : 'rgba(232,223,200,0.3)', border: 'none', borderRadius: 12, fontSize: '0.95rem', cursor: dosha ? 'pointer' : 'not-allowed', transition: 'all 0.2s' }}>
               Continue →
             </button>

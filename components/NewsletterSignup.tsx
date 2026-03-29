@@ -26,7 +26,7 @@ export default function NewsletterSignup() {
         setStatus('idle')
         setMessage('')
       }, 5000)
-    } catch (error) {
+    } catch {
       setStatus('error')
       setMessage('Something went wrong. Please try again.')
     }

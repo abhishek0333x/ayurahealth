@@ -1,7 +1,6 @@
 'use client'
 import Link from 'next/link'
 import { useState } from 'react'
-import type { Metadata } from 'next'
 
 export default function Contact() {
   const [sent, setSent] = useState(false)

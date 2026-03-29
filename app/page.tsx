@@ -218,15 +218,23 @@ export default function LandingPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem('ayura_lang')
-    if (saved && LANGUAGES.find(l => l.code === saved)) setLang(saved)
+    if (saved && LANGUAGES.find(l => l.code === saved)) {
+      setLang(saved)
+    }
+  }, [])
+
+  useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useEffect(() => {
-    if (showPicker) setTimeout(() => searchRef.current?.focus(), 50)
-    else setSearch('')
+    if (showPicker) {
+      setTimeout(() => searchRef.current?.focus(), 50)
+    } else {
+      setSearch('')
+    }
   }, [showPicker])
 
   useEffect(() => {
@@ -309,10 +317,10 @@ export default function LandingPage() {
       )}
 
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, padding: '0 2rem', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: scrolled ? 'rgba(5,16,10,0.95)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? '1px solid rgba(106,191,138,0.15)' : 'none', transition: 'all 0.35s', boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.3)' : 'none' }}>
-        <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', transition: 'transform 0.2s', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} >
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', transition: 'transform 0.2s', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} >
           <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663443572913/nQYKCbsnkVANj8fjMcN4AQ/ayurahealth-logo-modern-ai-ancient-Masdabix7xfaPSuHh7ULd8.webp" alt="AyuraHealth" style={{ height: 48, width: 48, borderRadius: '8px' }} />
-          <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.35rem', fontWeight: 600, color: '#e8dfc8', letterSpacing: '0.02em' }}>AyuraHealth</span>
-        </a>
+          <span style={{ fontFamily: '&quot;Cormorant Garamond&quot;, serif', fontSize: '1.35rem', fontWeight: 600, color: '#e8dfc8', letterSpacing: '0.02em' }}>AyuraHealth</span>
+        </Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <button className="lang-btn" onClick={() => setShowPicker(!showPicker)}>
             <span style={{ fontSize: '0.8rem' }}>🌐</span>
@@ -369,10 +377,10 @@ export default function LandingPage() {
 
       <section style={{ padding: '5rem 2rem', maxWidth: 700, margin: '0 auto' }}>
         <p style={{ textAlign: 'center', color: 'rgba(232,223,200,0.3)', fontSize: '0.75rem', marginBottom: '1rem', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: '-apple-system, sans-serif' }}>Sample VAIDYA Response</p>
-        <h2 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 300, textAlign: 'center', color: '#e8dfc8', marginBottom: '2rem' }}>Ask anything. Get wisdom from 5,000 years.</h2>
+        <h2 style={{ fontFamily: '&quot;Cormorant Garamond&quot;, serif', fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 300, textAlign: 'center', color: '#e8dfc8', marginBottom: '2rem' }}>Ask anything. Get wisdom from 5,000 years.</h2>
         <div style={{ background: 'rgba(5,16,10,0.8)', border: '1px solid rgba(106,191,138,0.15)', borderRadius: 20, padding: '1.5rem 2rem', fontFamily: '-apple-system, sans-serif' }}>
           <div style={{ background: 'rgba(45,90,27,0.15)', border: '1px solid rgba(106,191,138,0.1)', borderRadius: 12, padding: '0.75rem 1rem', marginBottom: '1.25rem', fontSize: '0.88rem', color: 'rgba(232,223,200,0.6)' }}>
-            💬 "I feel anxious, sleep poorly, and my digestion is irregular. What should I do?"
+            💬 &quot;I feel anxious, sleep poorly, and my digestion is irregular. What should I do?&quot;
           </div>
           <p style={{ color: '#c9a84c', fontWeight: 600, marginBottom: '0.5rem', fontSize: '0.75rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>✦ VAIDYA'S SYNTHESIS</p>
           <p style={{ fontSize: '0.85rem', color: 'rgba(232,223,200,0.7)', lineHeight: 1.8, marginBottom: '0.85rem' }}>These three symptoms together point to classic <strong style={{ color: '#6abf8a' }}>Vata imbalance</strong> — your air and space elements are in excess. Charaka Samhita describes this exact pattern in Nidanasthana Ch.1.</p>

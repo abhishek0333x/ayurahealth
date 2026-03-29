@@ -4,12 +4,20 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
+interface OrderDetails {
+  orderId: string
+  amount: string
+  tier: string
+  email: string
+  date: string
+}
+
 export default function SuccessPage() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
   const paymentId = searchParams.get('payment_id')
   const [loading, setLoading] = useState(true)
-  const [orderDetails, setOrderDetails] = useState<any>(null)
+  const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null)
 
   useEffect(() => {
     // Simulate fetching order details

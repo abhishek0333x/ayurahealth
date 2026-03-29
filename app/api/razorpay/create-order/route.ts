@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Razorpay from 'razorpay'
-import crypto from 'crypto'
 
 export const dynamic = 'force-dynamic'
 
@@ -65,7 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create Razorpay order
-    const orderParams: any = {
+    const orderParams: Record<string, unknown> = {
       amount: priceInfo.amount * 100, // Convert to paise
       currency,
       receipt: `order_${Date.now()}`,

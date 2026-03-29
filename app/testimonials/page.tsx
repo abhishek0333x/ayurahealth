@@ -97,7 +97,7 @@ export default function TestimonialsPage() {
                 </div>
 
                 {/* Quote */}
-                <p className="text-slate-700 mb-6 italic">"{testimonial.quote}"</p>
+                <p className="text-slate-700 mb-6 italic">&quot;{testimonial.quote}&quot;</p>
 
                 {/* Author */}
                 <div className="border-t border-slate-200 pt-4">

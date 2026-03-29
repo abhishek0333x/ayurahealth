@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { t, LANG_OPTIONS, type Lang } from '../../lib/translations'
+import { t, type Lang } from '../../lib/translations'
 
 interface Message { role: 'user' | 'assistant'; content: string }
 interface Attachment {
@@ -89,7 +89,6 @@ export default function ChatPage() {
     return 'en'
   })
   const [screen, setScreen] = useState<Screen>('landing')
-  const [userName, setUserName] = useState('')
   const [currentQ, setCurrentQ] = useState(0)
   const [answers, setAnswers] = useState<string[]>([])
   const [dosha, setDosha] = useState<Dosha | null>(null)
@@ -338,7 +337,6 @@ export default function ChatPage() {
     const newMessages: Message[] = [...messages, { role: 'user', content }]
     setMessages(newMessages); setLoading(true); setStreaming('')
     try {
-      const fullLang = localStorage.getItem('ayura_lang') || lang
       const res = await fetch('/api/chat', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: newMessages, systems: selectedSystems, incognito, dosha, lang: (typeof window !== "undefined" ? localStorage.getItem("ayura_lang") || lang : lang), attachments: currentAttachments }),

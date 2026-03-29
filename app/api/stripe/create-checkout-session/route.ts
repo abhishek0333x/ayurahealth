@@ -8,7 +8,7 @@ let stripe: Stripe | null = null
 function getStripe() {
   if (!stripe && process.env.STRIPE_SECRET_KEY) {
     stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2026-03-25.dahlia' as any,
+      apiVersion: '2024-12-18.acacia',
     })
   }
   return stripe
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create Stripe checkout session
-    const sessionParams: any = {
+    const sessionParams: Record<string, unknown> = {
       mode: 'subscription',
       customer_email: email,
       line_items: [

@@ -10,11 +10,11 @@ export default function VoiceInput({ onTranscript, language }: VoiceInputProps) 
   const [isRecording, setIsRecording] = useState(false)
   const [transcript, setTranscript] = useState('')
   const [isSupported, setIsSupported] = useState(false)
-  const recognitionRef = useRef<any>(null)
+  const recognitionRef = useRef<SpeechRecognition | null>(null)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      const SpeechRecognition = (window as unknown as { SpeechRecognition?: typeof window.SpeechRecognition; webkitSpeechRecognition?: typeof window.SpeechRecognition }).SpeechRecognition || (window as unknown as { webkitSpeechRecognition?: typeof window.SpeechRecognition }).webkitSpeechRecognition
       if (SpeechRecognition) {
         setIsSupported(true)
         recognitionRef.current = new SpeechRecognition()
@@ -27,7 +27,7 @@ export default function VoiceInput({ onTranscript, language }: VoiceInputProps) 
           setIsRecording(false)
           setTranscript('')
         }
-        recognitionRef.current.onresult = (event: any) => {
+        recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
           let interim = ''
           for (let i = event.resultIndex; i < event.results.length; i++) {
             const text = event.results[i][0].transcript
@@ -39,8 +39,8 @@ export default function VoiceInput({ onTranscript, language }: VoiceInputProps) 
           }
           setTranscript(interim)
         }
-        recognitionRef.current.onerror = (event: any) => {
-          console.error('Speech recognition error:', event.error)
+        recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
+          // Error silently handled
         }
       }
     }

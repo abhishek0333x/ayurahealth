@@ -6,8 +6,19 @@ import Link from 'next/link'
 
 declare global {
   interface Window {
-    Razorpay: any
+    Razorpay: RazorpayType
   }
+}
+
+interface RazorpayType {
+  open(): void
+  close(): void
+}
+
+interface RazorpayResponse {
+  razorpay_payment_id: string
+  razorpay_order_id: string
+  razorpay_signature: string
 }
 
 export default function CheckoutPage() {
@@ -17,7 +28,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'razorpay' | null>(null)
-  const [country, setCountry] = useState('US')
+  // Country detection for payment method selection
 
   useEffect(() => {
     // Detect user country based on timezone or IP
@@ -112,7 +123,7 @@ export default function CheckoutPage() {
             description: `${info.name} Subscription`,
             image: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663443572913/nQYKCbsnkVANj8fjMcN4AQ/ayurahealth-logo-modern-ai-ancient-Masdabix7xfaPSuHh7ULd8.webp',
             order_id: orderData.orderId,
-            handler: async (response: any) => {
+            handler: async (response: RazorpayResponse) => {
               // Verify payment
               const verifyResponse = await fetch('/api/razorpay/create-order', {
                 method: 'PUT',

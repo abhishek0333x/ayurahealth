@@ -8,12 +8,12 @@ interface VoiceOutputProps {
 
 export default function VoiceOutput({ text, language }: VoiceOutputProps) {
   const [isPlaying, setIsPlaying] = useState(false)
-  const [isSupported, setIsSupported] = useState(false)
+  const [isSupported] = useState(
+    typeof window !== 'undefined' && 'speechSynthesis' in window
+  )
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      setIsSupported(true)
-    }
+    // Component mounted, voice support is set
   }, [])
 
   const speak = async () => {
