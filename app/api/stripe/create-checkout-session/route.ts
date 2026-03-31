@@ -17,7 +17,7 @@ let stripe: Stripe | null = null
 function getStripe() {
   if (!stripe && process.env.STRIPE_SECRET_KEY) {
     stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2025-01-27.acacia' as Parameters<typeof Stripe>[1]['apiVersion'],
+      apiVersion: '2025-01-27.acacia' as any,
     })
   }
   return stripe
@@ -85,7 +85,6 @@ export async function POST(request: NextRequest) {
             recurring: {
               interval: priceInfo.interval,
               interval_count: 1,
-              trial_period_days: 7,
             },
           },
           quantity: 1,
@@ -109,7 +108,9 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json({ sessionId: session.id, url: session.url })
-  } catch {
-    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 })
+  } catch (err: any) {
+    console.error('Stripe Session Error:', err)
+    // Return exact error message to client so we know if it's an API config error
+    return NextResponse.json({ error: err?.message || 'Failed to create checkout session' }, { status: 500 })
   }
 }
