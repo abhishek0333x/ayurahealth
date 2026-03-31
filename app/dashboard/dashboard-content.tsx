@@ -188,9 +188,9 @@ export function DashboardContent({ user, dbProfile }: { user: any; dbProfile: an
                 </h3>
                 <p style={{ fontSize: '0.95rem', color: 'rgba(232,223,200,0.7)', maxWidth: '400px' }}>Upload your latest Western blood test results to understand your holistic tissue (Dhatu) health.</p>
               </div>
-              <button style={{ background: 'rgba(52,211,153,0.15)', color: '#34d399', border: '1px solid rgba(52,211,153,0.3)', padding: '0.75rem 1.5rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>
+              <Link href="/translator" style={{ background: 'rgba(52,211,153,0.15)', color: '#34d399', border: '1px solid rgba(52,211,153,0.3)', padding: '0.75rem 1.5rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, textDecoration: 'none' }}>
                 Upload Lab
-              </button>
+              </Link>
             </motion.div>
 
           </motion.div>
