@@ -9,6 +9,8 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"]!,
+    // Provide a valid URI fallback for build-time static check, 
+    // will be overridden by process.env.DATABASE_URL at runtime.
+    url: process.env["DATABASE_URL"] || "postgresql://postgres:postgres@localhost:5432/postgres",
   },
 });

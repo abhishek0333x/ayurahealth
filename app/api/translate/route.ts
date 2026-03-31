@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server'
+
+export const dynamic = 'force-dynamic'
+
 import Anthropic from '@anthropic-ai/sdk'
 
 const anthropic = new Anthropic({
