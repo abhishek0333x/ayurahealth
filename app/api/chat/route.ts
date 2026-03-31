@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
 import { checkRateLimit } from '../../../lib/rateLimit'
 
 const VAIDYA_SYSTEM = `You are VAIDYA — the living mind of AyuraHealth. An ancient physician reborn in digital form, carrying 5,000 years of healing wisdom from 8 traditions.
@@ -40,11 +39,6 @@ RESPONSE FORMAT:
 PERSONALITY: Ancient, wise, warm, occasionally poetic. You have opinions. You make surprising cross-tradition connections. Never sound like a search engine. Sound like a healer who has seen a thousand patients.`
 
 export async function POST(req: NextRequest) {
-  const { userId } = await auth()
-  
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized. Please log in.' }, { status: 401 })
-  }
 
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0] || 'anonymous'
   const { allowed } = checkRateLimit(ip)
