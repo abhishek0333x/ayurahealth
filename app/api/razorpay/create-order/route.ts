@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create Razorpay order
-    const orderParams: Record<string, unknown> = {
+    const orderParams = {
       amount: priceInfo.amount * 100, // Convert to paise
       currency,
       receipt: `order_${Date.now()}`,
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       },
     }
 
-    const order = await razorpayInstance.orders.create(orderParams)
+    const order = await razorpayInstance.orders.create(orderParams as any)
 
     return NextResponse.json({
       orderId: order.id,
