@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Razorpay from 'razorpay'
+import crypto from 'crypto'
 import { checkRateLimit, checkPaymentRateLimit } from '../../../../lib/rateLimit'
 
 export const dynamic = 'force-dynamic'
@@ -95,5 +96,35 @@ export async function POST(request: NextRequest) {
     })
   } catch {
     return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body
+
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return NextResponse.json({ success: false, error: 'Missing parameters' }, { status: 400 })
+    }
+
+    const secret = process.env.RAZORPAY_KEY_SECRET
+
+    if (!secret) {
+      return NextResponse.json({ success: false, error: 'Configuration missing' }, { status: 500 })
+    }
+
+    const expectedSignature = crypto
+      .createHmac('sha256', secret)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest('hex')
+
+    if (expectedSignature === razorpay_signature) {
+      return NextResponse.json({ success: true })
+    } else {
+      return NextResponse.json({ success: false, error: 'Invalid signature' }, { status: 400 })
+    }
+  } catch {
+    return NextResponse.json({ success: false, error: 'Verification failed' }, { status: 500 })
   }
 }

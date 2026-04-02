@@ -95,13 +95,8 @@ export default function Nav({ lang = 'en', onLangChange, showLangPicker = true, 
         .tab-item:active { opacity: 0.7; }
         .tab-icon { font-size: 1.25rem; }
         
-        .picker-overlay { position: fixed; inset: 0; z-index: 300; }
-        .nav-pill { color: rgba(232,223,200,0.7); font-size: 0.8rem; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(106,191,138,0.15); padding: 0.3rem 0.85rem; border-radius: 980px; white-space: nowrap; background: rgba(106,191,138,0.03); }
-        .nav-pill:hover { color: #e8dfc8; border-color: rgba(106,191,138,0.45); background: rgba(106,191,138,0.08); }
-        .lang-trigger { background: rgba(106,191,138,0.05); border: 1px solid rgba(106,191,138,0.18); color: rgba(232,223,200,0.8); padding: 0.3rem 0.85rem; border-radius: 980px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; font-family: inherit; }
-        .lang-trigger:hover { border-color: rgba(106,191,138,0.45); color: #e8dfc8; background: rgba(106,191,138,0.1); }
-        .picker-overlay { position: fixed; inset: 0; z-index: 300; }
-        .picker-box { position: fixed; top: 68px; right: 1.5rem; background: rgba(6,18,10,0.98); border: 1px solid rgba(106,191,138,0.18); border-radius: 16px; width: 280px; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.8); backdrop-filter: blur(24px); z-index: 305; }
+        .picker-overlay { position: fixed; inset: 0; z-index: 9998; }
+        .picker-box { position: fixed; top: 68px; right: 1.5rem; background: rgba(6,18,10,0.98); border: 1px solid rgba(106,191,138,0.18); border-radius: 16px; width: 280px; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.8); backdrop-filter: blur(24px); z-index: 9999; }
         .picker-search { width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(106,191,138,0.08); color: #e8dfc8; padding: 0.75rem 1rem; font-size: 0.85rem; outline: none; font-family: inherit; }
         .picker-search::placeholder { color: rgba(232,223,200,0.25); }
         .picker-list { max-height: 300px; overflow-y: auto; }

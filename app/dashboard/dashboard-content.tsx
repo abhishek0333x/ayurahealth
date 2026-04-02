@@ -35,7 +35,7 @@ export function DashboardContent({ user, dbProfile }: { user: any; dbProfile: an
   const firstName = user?.firstName || 'Explorer'
 
   return (
-    <main style={{ background: '#05100a', minHeight: '100dvh', color: '#e8dfc8', overflowX: 'hidden', paddingBottom: 'calc(60px + env(safe-area-inset-bottom))' }}>
+    <main style={{ background: '#05100a', height: '100dvh', color: '#e8dfc8', overflowY: 'auto', overflowX: 'hidden', overscrollBehaviorY: 'none', paddingBottom: 'calc(80px + env(safe-area-inset-bottom))' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
