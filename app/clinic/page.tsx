@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import Link from 'next/link'
+import Nav from '../../components/Nav'
 
 export default function ClinicPage() {
   const [showModal, setShowModal] = useState(false)
@@ -31,7 +32,7 @@ export default function ClinicPage() {
   }
 
   return (
-    <main style={{ minHeight: '100vh', background: '#05100a', fontFamily: '"DM Sans", -apple-system, sans-serif', color: '#e8dfc8', position: 'relative' }}>
+    <main style={{ minHeight: '100dvh', background: '#05100a', fontFamily: '"DM Sans", -apple-system, sans-serif', color: '#e8dfc8', position: 'relative' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500;600&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -55,10 +56,7 @@ export default function ClinicPage() {
       `}</style>
 
       {/* Nav */}
-      <nav style={{ background: 'rgba(5,16,10,0.95)', borderBottom: '1px solid rgba(106,191,138,0.1)', padding: '0 2rem', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50, backdropFilter: 'blur(20px)' }}>
-        <Link href="/" style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.15rem', fontWeight: 600, color: '#c9a84c', textDecoration: 'none' }}>🌿 AyuraHealth</Link>
-        <button onClick={() => setShowModal(true)} className="outline-btn" style={{ padding: '0.3rem 1rem', fontSize: '0.8rem' }}>Request Demo</button>
-      </nav>
+      <Nav showLangPicker={false} />
 
       <div style={{ maxWidth: 860, margin: '0 auto', padding: '5rem 1.5rem 4rem' }}>
 
