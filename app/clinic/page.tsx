@@ -1,14 +1,37 @@
-import type { Metadata } from 'next'
+'use client'
+import React, { useState } from 'react'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'AyuraHealth for Clinics — AI Health Companion for Ayurvedic & Wellness Centers',
-  description: 'Give every patient their own AI health advisor combining Ayurveda, Chinese Medicine and 6 healing traditions. 50+ languages. Free 30-day trial.',
-}
-
 export default function ClinicPage() {
+  const [showModal, setShowModal] = useState(false)
+  const [formData, setFormData] = useState({ clinicName: '', contactName: '', email: '', phone: '', tradition: '', patientCount: '', message: '' })
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/clinic-lead', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      if (!res.ok) {
+        const d = await res.json()
+        throw new Error(d.error || 'Failed to submit')
+      }
+      setSuccess(true)
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <main style={{ minHeight: '100vh', background: '#05100a', fontFamily: '"DM Sans", -apple-system, sans-serif', color: '#e8dfc8' }}>
+    <main style={{ minHeight: '100vh', background: '#05100a', fontFamily: '"DM Sans", -apple-system, sans-serif', color: '#e8dfc8', position: 'relative' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500;600&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,18 +39,25 @@ export default function ClinicPage() {
         .feature-card:hover { background: rgba(106,191,138,0.05); border-color: rgba(106,191,138,0.2); transform: translateY(-2px); }
         .price-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(106,191,138,0.08); border-radius: 20px; padding: 2rem; transition: all 0.2s; }
         .price-card.hi { background: rgba(106,191,138,0.06); border: 2px solid rgba(106,191,138,0.35); }
-        .cta-btn { display: inline-block; padding: 1rem 2.5rem; background: linear-gradient(135deg, #2d5a1b, #3d7a28); color: #e8dfc8; border-radius: 980px; font-size: 1rem; font-weight: 500; text-decoration: none; transition: all 0.25s; box-shadow: 0 4px 24px rgba(45,90,27,0.35); }
-        .cta-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(45,90,27,0.5); }
-        .outline-btn { display: inline-block; padding: 1rem 2rem; border: 1px solid rgba(106,191,138,0.3); color: #6abf8a; border-radius: 980px; font-size: 0.95rem; text-decoration: none; transition: all 0.2s; }
+        .cta-btn { display: inline-block; padding: 1rem 2.5rem; background: linear-gradient(135deg, #2d5a1b, #3d7a28); color: #e8dfc8; border-radius: 980px; font-size: 1rem; font-weight: 500; text-decoration: none; transition: all 0.25s; box-shadow: 0 4px 24px rgba(45,90,27,0.35); border: none; cursor: pointer; font-family: inherit; }
+        .cta-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(45,90,27,0.5); }
+        .cta-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .outline-btn { display: inline-block; padding: 1rem 2rem; border: 1px solid rgba(106,191,138,0.3); color: #6abf8a; background: transparent; border-radius: 980px; font-size: 0.95rem; text-decoration: none; transition: all 0.2s; cursor: pointer; font-family: inherit; }
         .outline-btn:hover { background: rgba(106,191,138,0.08); border-color: rgba(106,191,138,0.5); }
         .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(106,191,138,0.12), transparent); margin: 4rem 0; }
         .check { color: #6abf8a; margin-right: 0.5rem; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .modal { background: #081510; border: 1px solid rgba(106,191,138,0.2); border-radius: 20px; padding: 2.5rem; width: 100%; max-width: 500px; position: relative; box-shadow: 0 24px 64px rgba(0,0,0,0.6); }
+        .form-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(106,191,138,0.15); border-radius: 8px; padding: 0.75rem 1rem; color: #e8dfc8; font-family: inherit; outline: none; transition: border-color 0.2s; margin-bottom: 1rem; }
+        .form-input:focus { border-color: rgba(106,191,138,0.5); }
+        .form-label { display: block; fontSize: 0.82rem; color: rgba(232,223,200,0.6); marginBottom: 0.4rem; }
       `}</style>
 
       {/* Nav */}
       <nav style={{ background: 'rgba(5,16,10,0.95)', borderBottom: '1px solid rgba(106,191,138,0.1)', padding: '0 2rem', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50, backdropFilter: 'blur(20px)' }}>
         <Link href="/" style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.15rem', fontWeight: 600, color: '#c9a84c', textDecoration: 'none' }}>🌿 AyuraHealth</Link>
-        <a href="mailto:clinics@ayurahealth.com" className="outline-btn" style={{ padding: '0.3rem 1rem', fontSize: '0.8rem' }}>Contact Sales</a>
+        <button onClick={() => setShowModal(true)} className="outline-btn" style={{ padding: '0.3rem 1rem', fontSize: '0.8rem' }}>Request Demo</button>
       </nav>
 
       <div style={{ maxWidth: 860, margin: '0 auto', padding: '5rem 1.5rem 4rem' }}>
@@ -45,8 +75,8 @@ export default function ClinicPage() {
             AyuraHealth gives your clinic an AI that knows Charaka Samhita, Huangdi Neijing, and 6 other healing traditions — available to your patients 24/7 in 50+ languages.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="mailto:clinics@ayurahealth.com?subject=Clinic Partnership Inquiry" className="cta-btn">Start Free 30-Day Trial →</a>
-            <a href="mailto:clinics@ayurahealth.com?subject=Demo Request" className="outline-btn">Book a Demo</a>
+            <button onClick={() => setShowModal(true)} className="cta-btn">Start Free 30-Day Trial →</button>
+            <button onClick={() => setShowModal(true)} className="outline-btn">Book a Demo</button>
           </div>
           <p style={{ color: 'rgba(200,200,200,0.25)', fontSize: '0.78rem', marginTop: '1rem', fontFamily: '-apple-system, sans-serif' }}>No credit card required · Setup in 10 minutes · Cancel anytime</p>
         </div>
@@ -147,9 +177,9 @@ export default function ClinicPage() {
                     </div>
                   ))}
                 </div>
-                <a href={`mailto:clinics@ayurahealth.com?subject=${encodeURIComponent(p.name + ' Plan Inquiry')}`} style={{ display: 'block', padding: '0.8rem', background: p.hi ? 'linear-gradient(135deg, #2d5a1b, #3d7a28)' : 'transparent', border: `1px solid ${p.hi ? 'transparent' : 'rgba(106,191,138,0.25)'}`, borderRadius: 12, color: '#e8dfc8', fontSize: '0.88rem', fontWeight: 500, textDecoration: 'none', textAlign: 'center', fontFamily: '-apple-system, sans-serif', transition: 'all 0.2s' }}>
+                <button onClick={() => setShowModal(true)} style={{ display: 'block', width: '100%', padding: '0.8rem', background: p.hi ? 'linear-gradient(135deg, #2d5a1b, #3d7a28)' : 'transparent', border: `1px solid ${p.hi ? 'transparent' : 'rgba(106,191,138,0.25)'}`, borderRadius: 12, color: '#e8dfc8', cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500, fontFamily: '-apple-system, sans-serif', transition: 'all 0.2s' }}>
                   {p.cta} →
-                </a>
+                </button>
               </div>
             ))}
           </div>
@@ -185,9 +215,9 @@ export default function ClinicPage() {
           <p style={{ color: 'rgba(200,200,200,0.4)', marginBottom: '2rem', fontFamily: '-apple-system, sans-serif', fontSize: '0.95rem' }}>
             Email us and we will set up your free trial within 24 hours.
           </p>
-          <a href="mailto:clinics@ayurahealth.com?subject=Clinic Partnership — Free Trial" className="cta-btn" style={{ fontSize: '1rem', padding: '1rem 2.5rem' }}>
-            clinics@ayurahealth.com →
-          </a>
+          <button onClick={() => setShowModal(true)} className="cta-btn" style={{ fontSize: '1rem', padding: '1rem 2.5rem' }}>
+            Request Your Demo →
+          </button>
           <p style={{ color: 'rgba(200,200,200,0.2)', fontSize: '0.75rem', marginTop: '1rem', fontFamily: '-apple-system, sans-serif' }}>
             Based in Tokyo · Serving clinics worldwide
           </p>
@@ -203,6 +233,66 @@ export default function ClinicPage() {
         </div>
         <p style={{ color: 'rgba(232,223,200,0.1)', fontSize: '0.7rem', marginTop: '0.75rem', fontFamily: '-apple-system, sans-serif' }}>© 2026 AyuraHealth · ayurahealth.com</p>
       </footer>
+      {showModal && (
+        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowModal(false)}>
+          <div className="modal">
+            <button onClick={() => setShowModal(false)} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'transparent', border: 'none', color: 'rgba(232,223,200,0.5)', cursor: 'pointer', fontSize: '1.2rem' }}>×</button>
+            <h3 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.8rem', fontWeight: 600, color: '#c9a84c', marginBottom: '0.5rem' }}>Partner with AyuraHealth</h3>
+            <p style={{ color: 'rgba(232,223,200,0.5)', fontSize: '0.9rem', marginBottom: '2rem' }}>Leave your details and our team will get you set up within 24 hours.</p>
+            
+            {success ? (
+              <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🌿</div>
+                <div style={{ color: '#6abf8a', fontSize: '1.2rem', fontWeight: 500, marginBottom: '0.5rem' }}>Application Received</div>
+                <p style={{ color: 'rgba(232,223,200,0.5)', fontSize: '0.9rem' }}>Thank you. Our clinic success team will be in touch shortly.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                {error && <div style={{ background: 'rgba(232,90,90,0.1)', color: '#e85a5a', padding: '0.75rem', borderRadius: 8, fontSize: '0.85rem', marginBottom: '1rem' }}>{error}</div>}
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
+                  <div>
+                    <label className="form-label">Clinic Name *</label>
+                    <input required value={formData.clinicName} onChange={e => setFormData(p => ({ ...p, clinicName: e.target.value }))} className="form-input" placeholder="Sanjeevani Ayurveda" />
+                  </div>
+                  <div>
+                    <label className="form-label">Contact Name *</label>
+                    <input required value={formData.contactName} onChange={e => setFormData(p => ({ ...p, contactName: e.target.value }))} className="form-input" placeholder="Dr. Sharma" />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
+                  <div>
+                    <label className="form-label">Work Email *</label>
+                    <input required type="email" value={formData.email} onChange={e => setFormData(p => ({ ...p, email: e.target.value }))} className="form-input" placeholder="dr@clinic.com" />
+                  </div>
+                  <div>
+                    <label className="form-label">Phone</label>
+                    <input type="tel" value={formData.phone} onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))} className="form-input" placeholder="+1..." />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="form-label">Primary Tradition / Modality</label>
+                  <select value={formData.tradition} onChange={e => setFormData(p => ({ ...p, tradition: e.target.value }))} className="form-input" style={{ width: '100%', appearance: 'none' }}>
+                    <option value="">Select one...</option>
+                    <option value="Ayurveda">Ayurveda</option>
+                    <option value="TCM">Traditional Chinese Medicine</option>
+                    <option value="Kampo">Japanese Kampo</option>
+                    <option value="Naturopathy">Naturopathy</option>
+                    <option value="Integrative">Integrative / Functional Medicine</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                
+                <button type="submit" disabled={loading} className="cta-btn" style={{ width: '100%', marginTop: '1rem' }}>
+                  {loading ? 'Submitting...' : 'Request Demo'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   )
 }

@@ -28,3 +28,16 @@ model ChatSession {
   
   user           UserProfile @relation(fields: [userId], references: [id])
 }
+
+model ClinicLead {
+  id           String   @id @default(uuid())
+  clinicName   String
+  contactName  String
+  email        String
+  phone        String?
+  tradition    String?  // e.g., Ayurveda, Kampo
+  patientCount String?  // e.g., "100-500/mo"
+  message      String?
+  status       String   @default("New") // New, Contacted, Converted
+  createdAt    DateTime @default(now())
+}
