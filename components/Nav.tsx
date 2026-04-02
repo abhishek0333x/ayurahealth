@@ -79,7 +79,23 @@ export default function Nav({ lang = 'en', onLangChange, showLangPicker = true, 
     <>
       <style>{`
         .nav-root { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; transition: all 0.35s cubic-bezier(0.4,0,0.2,1); }
-        .nav-root.scrolled { background: rgba(5,16,10,0.88); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); border-bottom: 1px solid rgba(106,191,138,0.1); box-shadow: 0 4px 32px rgba(0,0,0,0.5); }
+        .nav-root.scrolled { background: rgba(5,16,10,0.85); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); border-bottom: 1px solid rgba(106,191,138,0.12); box-shadow: 0 4px 32px rgba(0,0,0,0.5); }
+        .nav-actions { display: flex; align-items: center; gap: 0.5rem; }
+        
+        .desktop-links { display: flex; gap: 0.5rem; align-items: center; }
+        .nav-pill { color: rgba(232,223,200,0.7); font-size: 0.8rem; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(106,191,138,0.15); padding: 0.3rem 0.85rem; border-radius: 980px; white-space: nowrap; background: rgba(106,191,138,0.03); }
+        .nav-pill:hover { color: #e8dfc8; border-color: rgba(106,191,138,0.45); background: rgba(106,191,138,0.08); }
+        
+        .lang-trigger { background: rgba(106,191,138,0.05); border: 1px solid rgba(106,191,138,0.18); color: rgba(232,223,200,0.8); padding: 0.3rem 0.85rem; border-radius: 980px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; font-family: inherit; }
+        .lang-trigger:hover { border-color: rgba(106,191,138,0.45); color: #e8dfc8; background: rgba(106,191,138,0.1); }
+        
+        /* Bottom Tab Bar for Mobile */
+        .bottom-tab-bar { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 199; background: rgba(5,16,10,0.85); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); border-top: 1px solid rgba(106,191,138,0.12); padding-bottom: env(safe-area-inset-bottom); padding-top: 0.5rem; justify-content: space-around; align-items: center; }
+        .tab-item { display: flex; flexDirection: column; align-items: center; justify-content: center; color: rgba(232,223,200,0.5); text-decoration: none; font-size: 0.65rem; gap: 0.2rem; margin-bottom: 0.5rem; transition: color 0.2s; }
+        .tab-item:active { opacity: 0.7; }
+        .tab-icon { font-size: 1.25rem; }
+        
+        .picker-overlay { position: fixed; inset: 0; z-index: 300; }
         .nav-pill { color: rgba(232,223,200,0.7); font-size: 0.8rem; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(106,191,138,0.15); padding: 0.3rem 0.85rem; border-radius: 980px; white-space: nowrap; background: rgba(106,191,138,0.03); }
         .nav-pill:hover { color: #e8dfc8; border-color: rgba(106,191,138,0.45); background: rgba(106,191,138,0.08); }
         .lang-trigger { background: rgba(106,191,138,0.05); border: 1px solid rgba(106,191,138,0.18); color: rgba(232,223,200,0.8); padding: 0.3rem 0.85rem; border-radius: 980px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; font-family: inherit; }
@@ -94,13 +110,18 @@ export default function Nav({ lang = 'en', onLangChange, showLangPicker = true, 
         .lang-item { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 1rem; cursor: pointer; transition: background 0.12s; }
         .lang-item:hover { background: rgba(106,191,138,0.07); }
         .lang-item.active { background: rgba(106,191,138,0.1); }
-        @media(max-width:600px) { .nav-root { padding: 0 1rem; } .picker-box { right: 0.5rem; width: calc(100vw - 1rem); } }
+        @media(max-width:768px) { 
+          .nav-root { padding: 0 1rem; } 
+          .picker-box { right: 0.5rem; width: calc(100vw - 1rem); } 
+          .desktop-links { display: none; }
+          .bottom-tab-bar { display: flex; }
+        }
       `}</style>
 
       <nav className={`nav-root${scrolled ? ' scrolled' : ''}`}>
         <Logo size={36} showText={true} href="/" />
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div className="nav-actions">
           {showLangPicker && (
             <button className="lang-trigger" onClick={() => setShowPicker(p => !p)}>
               <span style={{ fontSize: '0.8rem' }}>🌐</span>
@@ -108,9 +129,12 @@ export default function Nav({ lang = 'en', onLangChange, showLangPicker = true, 
               <span style={{ fontSize: '0.6rem', opacity: 0.6 }}>▾</span>
             </button>
           )}
-          {defaultLinks.map(link => (
-            <Link key={link.href} href={link.href} className="nav-pill">{link.label}</Link>
-          ))}
+          
+          <div className="desktop-links">
+            {defaultLinks.map(link => (
+              <Link key={link.href} href={link.href} className="nav-pill">{link.label}</Link>
+            ))}
+          </div>
           
           <div style={{ marginLeft: '0.5rem', display: 'flex', alignItems: 'center', height: 32 }}>
             {isLoaded ? (
@@ -123,7 +147,24 @@ export default function Nav({ lang = 'en', onLangChange, showLangPicker = true, 
               )
             ) : null}
           </div>
-        </div>
+          </div>
+      </nav>
+
+      <nav className="bottom-tab-bar">
+        {defaultLinks.map(link => {
+          let icon = '❖'
+          if (link.href.includes('dashboard') || link.label.includes('Pulse')) icon = '⚡'
+          if (link.href.includes('pricing') || link.label.includes('Pricing')) icon = '💳'
+          if (link.href.includes('clinic') || link.label.includes('Clinic')) icon = '🏥'
+          if (link.href.includes('diet') || link.label.includes('Diet')) icon = '🌿'
+          
+          return (
+            <Link key={link.href} href={link.href} className="tab-item" style={{ flexDirection: 'column' }}>
+              <span className="tab-icon">{icon}</span>
+              <span className="tab-label">{link.label.replace(' →', '')}</span>
+            </Link>
+          )
+        })}
       </nav>
 
       {showPicker && (

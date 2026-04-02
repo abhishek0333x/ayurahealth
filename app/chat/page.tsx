@@ -671,15 +671,14 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* CHAT */}
       {screen === 'chat' && (
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 760, margin: '0 auto', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 57px)' }}>
-          <div style={{ padding: '0.6rem 1rem', background: 'rgba(5,16,10,0.6)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(106,191,138,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 760, margin: '0 auto', display: 'flex', flexDirection: 'column', height: '100dvh' }}>
+          <div className="liquid-glass" style={{ padding: '0.6rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h1 style={{ color: '#f0e6c8', fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>🌿 AyuraHealth Chat</h1>
             <button onClick={() => setScreen('landing')} style={{ background: 'transparent', border: 'none', color: 'rgba(200,200,200,0.5)', fontSize: '0.8rem', cursor: 'pointer' }}>Exit</button>
           </div>
           {/* System pills */}
-          <div style={{ padding: '0.6rem 1rem', display: 'flex', gap: '0.35rem', flexWrap: 'wrap', borderBottom: '1px solid rgba(106,191,138,0.08)', background: 'rgba(5,16,10,0.6)', backdropFilter: 'blur(10px)' }}>
+          <div className="liquid-glass" style={{ padding: '0.6rem 1rem', display: 'flex', gap: '0.35rem', flexWrap: 'wrap', borderTop: 'none', borderBottom: '1px solid rgba(106,191,138,0.08)' }}>
             {MEDICINE_SYSTEMS.map(sys => (
               <button key={sys.id} onClick={() => setSelectedSystems(prev => prev.includes(sys.id) ? prev.filter(s => s !== sys.id) : [...prev, sys.id])}
                 style={{ padding: '0.22rem 0.65rem', borderRadius: 20, border: `1px solid ${selectedSystems.includes(sys.id) ? 'rgba(106,191,138,0.4)' : 'rgba(255,255,255,0.07)'}`, background: selectedSystems.includes(sys.id) ? 'rgba(106,191,138,0.1)' : 'transparent', color: selectedSystems.includes(sys.id) ? '#6abf8a' : 'rgba(200,200,200,0.35)', fontSize: '0.7rem', cursor: 'pointer' }}>
@@ -721,7 +720,7 @@ export default function ChatPage() {
           </div>
 
           {/* Input area */}
-          <div style={{ padding: '1rem', background: 'rgba(5,16,10,0.85)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(106,191,138,0.08)' }}>
+          <div className="liquid-glass" style={{ padding: '1rem', paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}>
 
             {/* Attachment previews */}
             {attachments.length > 0 && (
