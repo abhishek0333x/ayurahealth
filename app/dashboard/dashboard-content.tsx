@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Logo from '../../components/Logo'
+import Nav from '../../components/Nav'
 import { motion } from 'framer-motion'
 
 export function DashboardContent({ user, dbProfile }: { user: any; dbProfile: any }) {
@@ -34,7 +35,7 @@ export function DashboardContent({ user, dbProfile }: { user: any; dbProfile: an
   const firstName = user?.firstName || 'Explorer'
 
   return (
-    <main style={{ background: '#05100a', minHeight: '100vh', color: '#e8dfc8', overflowX: 'hidden' }}>
+    <main style={{ background: '#05100a', minHeight: '100dvh', color: '#e8dfc8', overflowX: 'hidden', paddingBottom: 'calc(60px + env(safe-area-inset-bottom))' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -63,17 +64,7 @@ export function DashboardContent({ user, dbProfile }: { user: any; dbProfile: an
       `}</style>
 
       {/* Navigation */}
-      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, padding: '0 2rem', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(3,10,6,0.85)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(106,191,138,0.1)' }}>
-        <Link href="/" style={{ textDecoration: 'none' }}>
-          <Logo size={42} />
-        </Link>
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <Link href="/chat" style={{ color: 'rgba(232,223,200,0.8)', textDecoration: 'none', fontSize: '0.95rem', fontWeight: 500 }}>VAIDYA Chat</Link>
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #2d5a1b, #c9a84c)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1rem', color: '#05100a' }}>
-            {firstName.charAt(0)}
-          </div>
-        </div>
-      </nav>
+      <Nav showLangPicker={false} />
 
       <div style={{ paddingTop: '7rem', paddingBottom: '4rem' }}>
         
