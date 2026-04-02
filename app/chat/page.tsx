@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { useUser } from '@clerk/nextjs'
+import { useUser, useClerk } from '@clerk/nextjs'
 import { t, type Lang } from '../../lib/translations'
 
 interface Message { role: 'user' | 'assistant'; content: string }
@@ -82,7 +82,8 @@ function isValidUrl(str: string): boolean {
 }
 
 export default function ChatPage() {
-  const { user, isLoaded } = useUser()
+  const { user, isLoaded, isSignedIn } = useUser()
+  const clerk = useClerk()
   const [lang, setLang] = useState<Lang>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('ayura_lang')
@@ -448,27 +449,44 @@ export default function ChatPage() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem', backdropFilter: 'blur(12px)' }}>
           <div style={{ background: 'linear-gradient(145deg, #0a1a0f, #081510)', border: '1px solid rgba(106,191,138,0.25)', borderRadius: 28, padding: '2.5rem 2rem', maxWidth: 440, width: '100%', textAlign: 'center', boxShadow: '0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(106,191,138,0.1)' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem', filter: 'drop-shadow(0 0 24px rgba(201,168,76,0.5))' }}>🌿</div>
-            <div style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.9rem', fontWeight: 700, color: '#c9a84c', marginBottom: '0.5rem' }}>3 Free Consultations Used</div>
+            <div style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.9rem', fontWeight: 700, color: '#c9a84c', marginBottom: '0.5rem' }}>Free Consultations Used</div>
             <p style={{ color: 'rgba(232,223,200,0.6)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '2rem' }}>
               You have experienced what VAIDYA can do. Thousands of years of healing wisdom — now unlock it fully.
             </p>
-            <div style={{ background: 'rgba(106,191,138,0.06)', border: '1px solid rgba(106,191,138,0.15)', borderRadius: 16, padding: '1.25rem', marginBottom: '1.5rem', textAlign: 'left' }}>
-              {['Unlimited AI consultations', 'Advanced blood report analysis', 'Personalized weekly meal plans', 'Consultation history & export', '7-day free trial — cancel anytime'].map((f, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.35rem 0', fontSize: '0.85rem', color: 'rgba(232,223,200,0.75)' }}>
-                  <span style={{ color: '#6abf8a', fontWeight: 700, flexShrink: 0 }}>✓</span>{f}
+            
+            {isSignedIn ? (
+              <>
+                <div style={{ background: 'rgba(106,191,138,0.06)', border: '1px solid rgba(106,191,138,0.15)', borderRadius: 16, padding: '1.25rem', marginBottom: '1.5rem', textAlign: 'left' }}>
+                  {['Unlimited AI consultations', 'Advanced blood report analysis', 'Personalized weekly meal plans', 'Consultation history & export', '7-day free trial — cancel anytime'].map((f, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.35rem 0', fontSize: '0.85rem', color: 'rgba(232,223,200,0.75)' }}>
+                      <span style={{ color: '#6abf8a', fontWeight: 700, flexShrink: 0 }}>✓</span>{f}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div style={{ marginBottom: '0.75rem' }}>
-              <div style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '2.4rem', fontWeight: 300, color: '#e8dfc8', lineHeight: 1 }}>$4.99</div>
-              <div style={{ color: 'rgba(232,223,200,0.4)', fontSize: '0.8rem' }}>/month · 7-day free trial</div>
-            </div>
-            <a
-              href={`/pricing/checkout?tier=premium&billing=monthly&currency=usd`}
-              style={{ display: 'block', width: '100%', padding: '1rem', background: 'linear-gradient(135deg, #1a4d2e, #2d7a45, #3a9455)', color: '#e8dfc8', border: '1px solid rgba(106,191,138,0.4)', borderRadius: 980, fontSize: '1rem', fontWeight: 700, textDecoration: 'none', marginBottom: '0.75rem', boxShadow: '0 8px 32px rgba(45,122,69,0.5)', cursor: 'pointer' }}
-            >
-              Start 7-Day Free Trial →
-            </a>
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <div style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '2.4rem', fontWeight: 300, color: '#e8dfc8', lineHeight: 1 }}>$4.99</div>
+                  <div style={{ color: 'rgba(232,223,200,0.4)', fontSize: '0.8rem' }}>/month · 7-day free trial</div>
+                </div>
+                <a
+                  href={`/pricing/checkout?tier=premium&billing=monthly&currency=usd`}
+                  style={{ display: 'block', width: '100%', padding: '1rem', background: 'linear-gradient(135deg, #1a4d2e, #2d7a45, #3a9455)', color: '#e8dfc8', border: '1px solid rgba(106,191,138,0.4)', borderRadius: 980, fontSize: '1rem', fontWeight: 700, textDecoration: 'none', marginBottom: '0.75rem', boxShadow: '0 8px 32px rgba(45,122,69,0.5)', cursor: 'pointer' }}
+                >
+                  Start 7-Day Free Trial →
+                </a>
+              </>
+            ) : (
+              <>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <div style={{ color: 'rgba(232,223,200,0.8)', fontSize: '0.95rem', marginBottom: '1rem' }}>Create a free account to continue your journey and unlock more free consultations.</div>
+                </div>
+                <button
+                  onClick={() => clerk.openSignUp({ fallbackRedirectUrl: window.location.href })}
+                  style={{ display: 'block', width: '100%', padding: '1rem', background: 'linear-gradient(135deg, #1a4d2e, #2d7a45, #3a9455)', color: '#e8dfc8', border: '1px solid rgba(106,191,138,0.4)', borderRadius: 980, fontSize: '1rem', fontWeight: 700, textDecoration: 'none', marginBottom: '0.75rem', boxShadow: '0 8px 32px rgba(45,122,69,0.5)', cursor: 'pointer' }}
+                >
+                  Sign Up for Free
+                </button>
+              </>
+            )}
             <button
               onClick={() => setShowPaywall(false)}
               style={{ background: 'none', border: 'none', color: 'rgba(200,200,200,0.35)', fontSize: '0.82rem', cursor: 'pointer', padding: '0.5rem' }}

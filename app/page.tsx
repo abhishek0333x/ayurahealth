@@ -151,12 +151,7 @@ export default function LandingPage() {
     if (!teaserPrompt.trim()) return
 
     const chatUrl = `/chat?q=${encodeURIComponent(teaserPrompt.trim())}`
-
-    if (!isSignedIn) {
-      clerk.openSignIn({ fallbackRedirectUrl: chatUrl })
-    } else {
-      router.push(chatUrl)
-    }
+    router.push(chatUrl)
   }
 
   return (

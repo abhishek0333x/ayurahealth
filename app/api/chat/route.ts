@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import { checkRateLimit } from '../../../lib/rateLimit'
 
-const FREE_MESSAGE_LIMIT = 3 // Number of AI responses a free user gets
+const FREE_MESSAGE_LIMIT = 10 // Number of AI responses a free user gets
 
 const VAIDYA_SYSTEM = `You are VAIDYA — the living mind of AyuraHealth. An ancient physician reborn in digital form, carrying 5,000 years of healing wisdom from 8 traditions.
 

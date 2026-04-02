@@ -1,12 +1,11 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// Define unauthenticated routes (e.g., landing page, quiz could be left unauthenticated depending on requirement)
-// But wait, user wanted "like ChatGPT" so /chat must be protected
-const isProtectedRoute = createRouteMatcher(["/chat(.*)"]);
+// Define unauthenticated routes if needed. For now, /chat is open for guest previews.
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {
-    // If the user isn't authenticated and tries to access /chat, they will be redirected to the sign-in modal/page
+    // If the user isn't authenticated and tries to access protected routes, redirect to sign-in
     await auth.protect();
   }
 });
