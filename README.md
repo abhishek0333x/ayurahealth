@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AyuraHealth — Ancient Wisdom, Modern AI
 
-## Getting Started
+AyuraHealth is a personal holistic health companion that combines **Ayurveda, Traditional Chinese Medicine (TCM), and 6 other healing traditions** with modern NVIDIA-powered AI to provide personalized wellness guidance.
 
-First, run the development server:
+![AyuraHealth Logo](https://ayurahealth.com/logo.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Dosha Quiz**: Discover your Ayurvedic mind-body type in minutes.
+- **Multilingual Support**: Available in English, Hindi, Japanese, Arabic, and more.
+- **8 Healing Traditions**: Integrates Ayurveda, TCM, Tibetan, Unani, Siddha, Homeopathy, Naturopathy, and Western Medicine.
+- **Privacy-First**: Health data stays in your browser's local storage.
+- **Razorpay Integration**: Seamless premium subscriptions with regional (INR) support.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠 Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS + Framer Motion (Rich UI/UX)
+- **Authentication**: [Clerk](https://clerk.com/)
+- **Database**: [Prisma](https://www.prisma.io/) + Supabase
+- **Payments**: [Razorpay](https://razorpay.com/)
+- **AI**: NVIDIA Nemotron via Groq/OpenRouter
+- **Deployment**: [Vercel](https://vercel.com/)
 
-## Learn More
+## 🚀 Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Node.js 20+
+- A Razorpay account
+- A Clerk project
+- A Prisma-supported database
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Installation
 
-## Deploy on Vercel
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/abhishek0333x/ayurahealth.git
+   cd ayurahealth
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Set up Environment Variables**:
+   Create a `.env.local` file with the following:
+   ```env
+   # Database
+   DATABASE_URL="your_prisma_db_url"
+
+   # Clerk
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
+   CLERK_SECRET_KEY=...
+
+   # Razorpay
+   RAZORPAY_KEY_ID=...
+   RAZORPAY_KEY_SECRET=...
+
+   # AI APIs
+   GROQ_API_KEY=...
+   OPENROUTER_API_KEY=...
+   ```
+
+4. **Initialize Database**:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. **Run the Development Server**:
+   ```bash
+   npm run dev
+   ```
+
+## 🔒 Security & Privacy
+
+AyuraHealth implements industry-standard security practices:
+- **Rate Limiting**: Protected API endpoints to prevent abuse.
+- **Signature Verification**: HMAC validation for all payment webhooks.
+- **Audit Logs**: Regular security and deployment audits.
+- **No-Tracking**: No invasive tracking cookies or 3rd party advertising networks.
+
+## 🌐 Deploy on Vercel
+
+The production version is hosted on Vercel. Automatic deployments are enabled via GitHub Actions.
+
+---
+
+© 2026 AyuraHealth · Tokyo, Japan
