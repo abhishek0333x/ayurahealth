@@ -96,12 +96,13 @@ export async function POST(request: NextRequest) {
       keyId: process.env.RAZORPAY_KEY_ID,
     })
   } catch (err: unknown) {
-    // Improved error handling
+    // Improved error handling with logging
+    console.error('Razorpay order creation error:', err)
     const errorMessage = err instanceof Error ? err.message : 'Failed to create order'
     const errorCode = (err as { statusCode?: number })?.statusCode || 500
     
     return NextResponse.json(
-      { error: errorMessage },
+      { error: errorMessage, debug: process.env.NODE_ENV === 'development' ? String(err) : undefined },
       { status: errorCode >= 400 && errorCode < 600 ? errorCode : 500 }
     )
   }

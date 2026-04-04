@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
         "https://checkout.razorpay.com",        // Razorpay checkout
         "https://api.razorpay.com",             // Razorpay API
         "https://cdn.razorpay.com",             // Razorpay CDN
+        "https://lumberjack.razorpay.com",      // Razorpay analytics
         "https://easy-gator-64.clerk.accounts.dev", // Clerk auth
         "https://formspree.io",                // Contact form
         "https://www.google-analytics.com",    // GA
