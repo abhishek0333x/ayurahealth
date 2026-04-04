@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -20,8 +21,8 @@ const sections = [
     content: `• To provide AI health guidance responses\n• To personalize your experience based on your dosha type\n• To improve our service through anonymous analytics\n• To process subscription payments securely\n\nWe never sell your data. We never use your data for advertising. We never share personal information with third parties except as described in Section 4.`,
   },
   {
-    title: '4. Third-Party Data Processors',
-    content: `• Groq API (groq.com): Processes your messages to generate AI responses. Subject to Groq's privacy policy.\n• OpenRouter / NVIDIA Nemotron: Used for Deep Mind mode. Subject to their privacy policies.\n• Razorpay (razorpay.com): Payment processing (UPI, NetBanking, Cards, Wallets). Subject to Razorpay's privacy policy. We never store payment card data.\n• Clerk (clerk.com): Authentication for premium subscribers. Subject to Clerk's privacy policy.\n• Vercel Analytics: Anonymous usage statistics only. No personal identifiers.\n• Google Fonts: Font loading. Subject to Google's privacy policy.\n\nWe do not use Facebook Pixel, invasive tracking cookies, or advertising networks.`,
+    title: '4. Third-Party Data Processors (Sub-processors)',
+    content: `AyuraHealth engages the following sub-processors to providing our core services. We ensure all partners are compliant with global privacy standards:\n\n• Groq API (groq.com): Real-time AI inference processing.\n• OpenRouter / NVIDIA: Deep Mind mode and large-scale synthesis.\n• Razorpay (razorpay.com): Regional payment processing (INR).\n• Stripe (stripe.com): Global payment processing (USD).\n• Clerk (clerk.com): Secured user authentication and account management.\n• Vercel (vercel.com): Website hosting and anonymous performance analytics.\n• Google Fonts: Typography delivery.\n\nWe do not use Facebook Pixel, invasive tracking cookies, or advertising networks. We review the security and privacy practices of our sub-processors annually to ensure they meet our high standards for data integrity.`,
   },
   {
     title: '5. Payment Data & Security',
@@ -75,7 +76,7 @@ export default function PrivacyPolicy() {
 
       <nav style={{ background: 'rgba(5,16,10,0.94)', borderBottom: '1px solid rgba(106,191,138,0.1)', padding: '0 2rem', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50, backdropFilter: 'blur(22px)' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none' }}>
-          <img src="/favicon.svg" alt="AyuraHealth" width={32} height={32} style={{ display: 'block' }} />
+          <Image src="/favicon.svg" alt="AyuraHealth" width={32} height={32} style={{ display: 'block' }} />
           <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.1rem', fontWeight: 700, color: '#6abf8a', letterSpacing: '0.02em' }}>AyuraHealth</span>
         </Link>
         <Link href="/chat" style={{ fontSize: '0.8rem', color: 'rgba(106,191,138,0.7)', textDecoration: 'none', border: '1px solid rgba(106,191,138,0.18)', padding: '0.3rem 0.85rem', borderRadius: 20, transition: 'all 0.2s' }}>Open App →</Link>

@@ -1,5 +1,5 @@
 {
-  "projectId": "your-project-id-here",
+  "projectId": "ayurahealth-prod",
   "name": "ayurahealth",
   "description": "AI-powered Ayurvedic wellness platform with Stripe and Razorpay integration",
   "runtime": "node18",

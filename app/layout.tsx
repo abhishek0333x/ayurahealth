@@ -109,6 +109,8 @@ export const metadata: Metadata = {
 }
 
 import { ClerkProvider } from "@clerk/nextjs";
+import ConsentBanner from '../components/ConsentBanner'
+import Image from 'next/image'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -166,6 +168,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ClerkProvider>
           {children}
+          <ConsentBanner />
           <Analytics />
         </ClerkProvider>
       </body>

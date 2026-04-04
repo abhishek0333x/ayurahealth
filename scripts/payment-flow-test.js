@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable */
 
 /**
  * AyuraHealth Automated Payment Flow Validation Script

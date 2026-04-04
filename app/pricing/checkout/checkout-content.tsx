@@ -7,11 +7,15 @@ import Logo from '../../../components/Logo'
 
 declare global {
   interface Window {
-    Razorpay: RazorpayType
+    Razorpay: RazorpayConstructor
   }
 }
 
-interface RazorpayType {
+interface RazorpayConstructor {
+  new (options: Record<string, unknown>): RazorpayInstance
+}
+
+interface RazorpayInstance {
   open(): void
   close(): void
 }
@@ -29,13 +33,16 @@ export function CheckoutContent() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [currency, setCurrency] = useState<'INR' | 'USD'>('INR')
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'razorpay' | null>(null)
 
   useEffect(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     if (timezone.includes('Asia/Kolkata') || timezone.includes('Asia/Calcutta')) {
       setCurrency('INR')
+      setPaymentMethod('razorpay')
     } else {
-      setCurrency('INR') // Default to INR for Razorpay
+      setCurrency('INR') // Default to INR for Razorpay for now
+      setPaymentMethod('razorpay')
     }
   }, [])
 

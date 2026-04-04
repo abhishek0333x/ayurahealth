@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useRef, useEffect } from 'react'
 
 interface VoiceInputProps {
@@ -6,23 +7,36 @@ interface VoiceInputProps {
   language: string
 }
 
+interface SpeechRecognitionEvent extends Event {
+  resultIndex: number;
+  results: SpeechRecognitionResultList;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+
+const getSpeechRecognition = (): any => {
+  if (typeof window !== 'undefined') {
+    return window.SpeechRecognition || window.webkitSpeechRecognition
+  }
+  return null
+}
+
 export default function VoiceInput({ onTranscript, language }: VoiceInputProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [transcript, setTranscript] = useState('')
-  const [isSupported] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window as unknown as { SpeechRecognition?: typeof window.SpeechRecognition; webkitSpeechRecognition?: typeof window.SpeechRecognition }).SpeechRecognition || (window as unknown as { webkitSpeechRecognition?: typeof window.SpeechRecognition }).webkitSpeechRecognition
-      return !!SpeechRecognition
-    }
-    return false
-  })
-  const recognitionRef = useRef<SpeechRecognition | null>(null)
+  const [isSupported] = useState(() => !!getSpeechRecognition())
+  const recognitionRef = useRef<any>(null)
 
   useEffect(() => {
     if (typeof window !== 'undefined' && isSupported) {
-      const SpeechRecognition = (window as unknown as { SpeechRecognition?: typeof window.SpeechRecognition; webkitSpeechRecognition?: typeof window.SpeechRecognition }).SpeechRecognition || (window as unknown as { webkitSpeechRecognition?: typeof window.SpeechRecognition }).webkitSpeechRecognition
-      if (SpeechRecognition) {
-        recognitionRef.current = new SpeechRecognition()
+      const SR = getSpeechRecognition()
+      if (SR) {
+        recognitionRef.current = new SR()
         recognitionRef.current.continuous = true
         recognitionRef.current.interimResults = true
         recognitionRef.current.lang = mapLanguageToCode(language)
@@ -49,7 +63,7 @@ export default function VoiceInput({ onTranscript, language }: VoiceInputProps) 
         }
       }
     }
-  }, [language, onTranscript])
+  }, [language, onTranscript, isSupported])
 
   const toggleRecording = () => {
     if (recognitionRef.current) {
@@ -103,50 +117,15 @@ export default function VoiceInput({ onTranscript, language }: VoiceInputProps) 
 
 function mapLanguageToCode(lang: string): string {
   const map: Record<string, string> = {
-    en: 'en-US',
-    hi: 'hi-IN',
-    ja: 'ja-JP',
-    zh: 'zh-CN',
-    ko: 'ko-KR',
-    ar: 'ar-SA',
-    es: 'es-ES',
-    fr: 'fr-FR',
-    de: 'de-DE',
-    pt: 'pt-BR',
-    ru: 'ru-RU',
-    ta: 'ta-IN',
-    te: 'te-IN',
-    bn: 'bn-IN',
-    mr: 'mr-IN',
-    gu: 'gu-IN',
-    pa: 'pa-IN',
-    ur: 'ur-PK',
-    fa: 'fa-IR',
-    tr: 'tr-TR',
-    id: 'id-ID',
-    ms: 'ms-MY',
-    th: 'th-TH',
-    vi: 'vi-VN',
-    nl: 'nl-NL',
-    it: 'it-IT',
-    pl: 'pl-PL',
-    sv: 'sv-SE',
-    uk: 'uk-UA',
-    he: 'he-IL',
-    el: 'el-GR',
-    ro: 'ro-RO',
-    hu: 'hu-HU',
-    cs: 'cs-CZ',
-    sw: 'sw-KE',
-    ne: 'ne-NP',
-    si: 'si-LK',
-    my: 'my-MM',
-    km: 'km-KH',
-    mn: 'mn-MN',
-    ka: 'ka-GE',
-    am: 'am-ET',
-    af: 'af-ZA',
-    da: 'da-DK',
+    en: 'en-US', hi: 'hi-IN', ja: 'ja-JP', zh: 'zh-CN', ko: 'ko-KR',
+    ar: 'ar-SA', es: 'es-ES', fr: 'fr-FR', de: 'de-DE', pt: 'pt-BR',
+    ru: 'ru-RU', ta: 'ta-IN', te: 'te-IN', bn: 'bn-IN', mr: 'mr-IN',
+    gu: 'gu-IN', pa: 'pa-IN', ur: 'ur-PK', fa: 'fa-IR', tr: 'tr-TR',
+    id: 'id-ID', ms: 'ms-MY', th: 'th-TH', vi: 'vi-VN', nl: 'nl-NL',
+    it: 'it-IT', pl: 'pl-PL', sv: 'sv-SE', uk: 'uk-UA', he: 'he-IL',
+    el: 'el-GR', ro: 'ro-RO', hu: 'hu-HU', cs: 'cs-CZ', sw: 'sw-KE',
+    ne: 'ne-NP', si: 'si-LK', my: 'my-MM', km: 'km-KH', mn: 'mn-MN',
+    ka: 'ka-GE', am: 'am-ET', af: 'af-ZA', da: 'da-DK',
   }
   return map[lang] || 'en-US'
 }

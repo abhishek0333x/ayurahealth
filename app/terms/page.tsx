@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -90,7 +91,7 @@ export default function Terms() {
 
       <nav style={{ background: 'rgba(5,16,10,0.94)', borderBottom: '1px solid rgba(106,191,138,0.1)', padding: '0 2rem', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50, backdropFilter: 'blur(22px)' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none' }}>
-          <img src="/favicon.svg" alt="AyuraHealth" width={32} height={32} style={{ display: 'block' }} />
+          <Image src="/favicon.svg" alt="AyuraHealth" width={32} height={32} style={{ display: 'block' }} />
           <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.1rem', fontWeight: 700, color: '#6abf8a', letterSpacing: '0.02em' }}>AyuraHealth</span>
         </Link>
         <Link href="/chat" style={{ fontSize: '0.8rem', color: 'rgba(106,191,138,0.7)', textDecoration: 'none', border: '1px solid rgba(106,191,138,0.18)', padding: '0.3rem 0.85rem', borderRadius: 20, transition: 'all 0.2s' }}>Open App →</Link>

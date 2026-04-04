@@ -57,9 +57,12 @@ export default function Nav({ lang = 'en', onLangChange, showLangPicker = true, 
   }, [])
 
   useEffect(() => {
-    if (showPicker) setTimeout(() => searchRef.current?.focus(), 50)
-    else setSearch('')
-  }, [showPicker])
+    if (showPicker) {
+      setTimeout(() => searchRef.current?.focus(), 50)
+    } else if (search !== '') {
+      setSearch('') // eslint-disable-line react-hooks/set-state-in-effect
+    }
+  }, [showPicker, search])
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {

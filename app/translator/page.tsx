@@ -5,10 +5,18 @@ import Link from 'next/link'
 import Logo from '../../components/Logo'
 import { motion, AnimatePresence } from 'framer-motion'
 
+interface BiomarkerAnalysis {
+  western_summary: string;
+  flagged_markers: string[];
+  ayurvedic_root_cause: string;
+  affected_systems: string[];
+  recommendations: string[];
+}
+
 export default function TranslatorPage() {
   const [labText, setLabText] = useState('')
   const [analyzing, setAnalyzing] = useState(false)
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<BiomarkerAnalysis | null>(null)
 
   const handleAnalyze = async () => {
     if (!labText.trim()) return

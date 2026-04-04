@@ -6,7 +6,7 @@ import Logo from '../../components/Logo'
 import Nav from '../../components/Nav'
 import { motion } from 'framer-motion'
 
-export function DashboardContent({ user, dbProfile }: { user: any; dbProfile: any }) {
+export function DashboardContent({ user, dbProfile }: { user: { firstName?: string } | null; dbProfile: { vataScore?: number; pittaScore?: number; kaphaScore?: number; primaryDosha?: string } | null }) {
   const [mounted, setMounted] = useState(false)
   
   // Real-Time Database Profile Dosha Balance
@@ -27,7 +27,8 @@ export function DashboardContent({ user, dbProfile }: { user: any; dbProfile: an
   const kaphaLength = (doshaData.kapha / 100) * circumference
 
   useEffect(() => {
-    setMounted(true)
+    const timer = setTimeout(() => setMounted(true), 0)
+    return () => clearTimeout(timer)
   }, [])
 
   if (!mounted) return null
@@ -165,7 +166,7 @@ export function DashboardContent({ user, dbProfile }: { user: any; dbProfile: an
                 <div className="routine-time">10:00 PM</div>
                 <div>
                   <h3 style={{ fontSize: '1.05rem', color: '#e8dfc8', marginBottom: '0.25rem' }}>Ashwagandha Milk</h3>
-                  <p style={{ fontSize: '0.9rem', color: 'rgba(232,223,200,0.6)' }}>Warm almond or cow's milk with 1/2 tsp Ashwagandha and nutmeg for deep sleep.</p>
+                  <p style={{ fontSize: '0.9rem', color: 'rgba(232,223,200,0.6)' }}>Warm almond or cow&apos;s milk with 1/2 tsp Ashwagandha and nutmeg for deep sleep.</p>
                 </div>
               </div>
             </div>

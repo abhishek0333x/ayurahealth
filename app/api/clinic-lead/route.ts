@@ -39,8 +39,9 @@ export async function POST(req: NextRequest) {
     })
 
     return NextResponse.json({ success: true, leadId: lead.id }, { status: 201 })
-  } catch (err: any) {
-    console.error('ClinicLead Error:', err)
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err.message : 'Failed to submit form'
+    console.error('ClinicLead Error:', error)
     return NextResponse.json({ error: 'Failed to submit form' }, { status: 500 })
   }
 }

@@ -24,8 +24,9 @@ export default function ClinicPage() {
         throw new Error(d.error || 'Failed to submit')
       }
       setSuccess(true)
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An unexpected error occurred'
+      setError(message)
     } finally {
       setLoading(false)
     }

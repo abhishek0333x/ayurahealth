@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useUser, useClerk } from '@clerk/nextjs'
 import { t, type Lang } from '../../lib/translations'
+import Image from 'next/image'
 
 interface Message { role: 'user' | 'assistant'; content: string }
 interface Attachment {
@@ -100,7 +101,7 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false)
   const [streaming, setStreaming] = useState('')
   const [selectedSystems, setSelectedSystems] = useState(['ayurveda', 'tcm', 'western'])
-  const [incognito, setIncognito] = useState(false)
+  const [incognito] = useState(false)
   const [revealed, setRevealed] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
@@ -332,7 +333,7 @@ export default function ChatPage() {
           setShareSuccess(true); setTimeout(() => setShareSuccess(false), 3000)
         }
       }, 'image/png')
-    } catch (e) { /* Error silently handled */ }
+    } catch { /* Error silently handled */ }
     finally { setIsSharing(false) }
   }
 
@@ -509,7 +510,7 @@ export default function ChatPage() {
             </div>
           </div>
           <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: '0.6rem 0.75rem', marginBottom: '0.75rem', fontSize: '0.8rem', color: 'rgba(200,200,200,0.5)', fontStyle: 'italic', lineHeight: 1.5, borderLeft: `2px solid ${savedState.dosha ? DOSHA_META[savedState.dosha].color + '40' : 'rgba(106,191,138,0.3)'}` }}>
-            "{savedState.messages.filter(m => m.role === 'user').slice(-1)[0]?.content?.substring(0, 80) || 'Your consultation'}..."
+            &quot;{savedState.messages.filter(m => m.role === 'user').slice(-1)[0]?.content?.substring(0, 80) || 'Your consultation'}&quot;...
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <button onClick={resumeSession} style={{ flex: 1, padding: '0.65rem', background: savedState.dosha ? `${DOSHA_META[savedState.dosha].color}20` : 'rgba(106,191,138,0.15)', border: `1px solid ${savedState.dosha ? DOSHA_META[savedState.dosha].color + '40' : 'rgba(106,191,138,0.3)'}`, borderRadius: 12, color: savedState.dosha ? DOSHA_META[savedState.dosha].color : '#6abf8a', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>Continue →</button>
@@ -675,7 +676,13 @@ export default function ChatPage() {
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 760, margin: '0 auto', display: 'flex', flexDirection: 'column', height: '100dvh' }}>
           <div className="liquid-glass" style={{ padding: '0.6rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h1 style={{ color: '#f0e6c8', fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>🌿 AyuraHealth Chat</h1>
-            <button onClick={() => setScreen('landing')} style={{ background: 'transparent', border: 'none', color: 'rgba(200,200,200,0.5)', fontSize: '0.8rem', cursor: 'pointer' }}>Exit</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <div style={{ padding: '0.25rem 0.6rem', background: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 12, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span style={{ fontSize: '0.65rem', filter: 'grayscale(1)' }}>🛡️</span>
+                <span style={{ color: '#c9a84c', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Educational Only — Not Medical Advice</span>
+              </div>
+              <button onClick={() => setScreen('landing')} style={{ background: 'transparent', border: 'none', color: 'rgba(200,200,200,0.5)', fontSize: '0.8rem', cursor: 'pointer' }}>Exit</button>
+            </div>
           </div>
           {/* System pills */}
           <div className="liquid-glass" style={{ padding: '0.6rem 1rem', display: 'flex', gap: '0.35rem', flexWrap: 'wrap', borderTop: 'none', borderBottom: '1px solid rgba(106,191,138,0.08)' }}>
@@ -728,7 +735,7 @@ export default function ChatPage() {
                 {attachments.map(att => (
                   <div key={att.id} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(255,255,255,0.05)', border: `1px solid ${attachmentColorMap[att.type]}30`, borderRadius: 10, padding: '0.3rem 0.5rem', maxWidth: 200 }}>
                     {att.type === 'image' && att.preview ? (
-                      <img src={att.preview} alt="" style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
+                      <Image src={att.preview} alt="" width={28} height={28} style={{ borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} unoptimized />
                     ) : (
                       <span style={{ fontSize: '1rem', flexShrink: 0 }}>{attachmentIconMap[att.type]}</span>
                     )}

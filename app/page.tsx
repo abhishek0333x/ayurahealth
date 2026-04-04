@@ -138,13 +138,14 @@ export default function LandingPage() {
 
   const [teaserPrompt, setTeaserPrompt] = useState('')
   const router = useRouter()
-  const clerk = useClerk()
   const { isSignedIn } = useUser()
 
   useEffect(() => {
     const saved = localStorage.getItem('ayura_lang')
-    if (saved) setLang(saved)
-  }, [])
+    if (saved && saved !== lang) {
+      setLang(saved) // eslint-disable-line react-hooks/set-state-in-effect
+    }
+  }, [lang])
 
   const handleTeaserSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault()

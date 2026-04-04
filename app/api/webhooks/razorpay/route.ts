@@ -28,19 +28,22 @@ export async function POST(req: Request) {
         const paymentEntity = event.payload.payment.entity;
         // UserID should be passed in notes
         const userId = paymentEntity.notes?.userId;
+        const purchasedTier = paymentEntity.notes?.tier || 'premium';
 
         if (userId) {
           const clerk = await clerkClient();
           await clerk.users.updateUserMetadata(userId, {
             publicMetadata: {
-              tier: 'premium'
+              tier: purchasedTier
             }
           });
         }
     }
 
     return NextResponse.json({ status: 'ok' });
-  } catch (error) {
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+    console.error('Razorpay Webhook Error:', errorMsg);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
