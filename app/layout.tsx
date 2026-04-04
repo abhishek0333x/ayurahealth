@@ -162,7 +162,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             "@type": "Organization",
             "name": "AyuraHealth",
             "url": BASE_URL,
-            "logo": `${BASE_URL}/logo.png`,
+            "logo": {
+              "@type": "ImageObject",
+              "url": `${BASE_URL}/favicon.png`,
+              "width": 512,
+              "height": 512
+            },
             "sameAs": [
               "https://x.com/ayurahealth",
               "https://reddit.com/r/AyuraHealth"

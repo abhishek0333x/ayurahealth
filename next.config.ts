@@ -14,8 +14,8 @@ const nextConfig: NextConfig = {
   async headers() {
     const csp = [
       "default-src 'self'",
-      // scripts: self + inline/eval (Next.js needs these) + payment SDKs + analytics
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://js.stripe.com https://www.googletagmanager.com https://fonts.googleapis.com",
+      // scripts: self + inline/eval (Next.js needs these) + payment SDKs + analytics + Clerk
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://cdn.razorpay.com https://easy-gator-64.clerk.accounts.dev https://www.googletagmanager.com https://fonts.googleapis.com",
       // styles: self + inline + Google Fonts
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       // fonts
@@ -29,15 +29,15 @@ const nextConfig: NextConfig = {
         "https://openrouter.ai",               // VAIDYA Deep Mind
         "https://checkout.razorpay.com",        // Razorpay checkout
         "https://api.razorpay.com",             // Razorpay API
-        "https://js.stripe.com",               // Stripe.js
-        "https://api.stripe.com",              // Stripe API
+        "https://cdn.razorpay.com",             // Razorpay CDN
+        "https://easy-gator-64.clerk.accounts.dev", // Clerk auth
         "https://formspree.io",                // Contact form
         "https://www.google-analytics.com",    // GA
         "https://vitals.vercel-insights.com",  // Vercel analytics
         "https://va.vercel-scripts.com",       // Vercel analytics 2
       ].join(' '),
-      // iframes: only Stripe & Razorpay (for payment widgets)
-      "frame-src https://js.stripe.com https://hooks.stripe.com https://api.razorpay.com",
+      // iframes: only Razorpay (for payment widgets)
+      "frame-src https://api.razorpay.com",
       // block all framing of our pages
       "frame-ancestors 'none'",
       // workers
@@ -59,7 +59,7 @@ const nextConfig: NextConfig = {
           // Referrer: only send origin cross-site
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           // Permissions: lock down hardware access
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(self), geolocation=(), payment=(self "https://checkout.razorpay.com" "https://js.stripe.com")' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(self), geolocation=(), payment=(self "https://checkout.razorpay.com")' },
           // Full CSP
           { key: 'Content-Security-Policy', value: csp },
           // Disable speculative loading of cross-origin resources

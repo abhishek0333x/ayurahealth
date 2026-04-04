@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Razorpay from 'razorpay'
 import crypto from 'crypto'
 import { checkRateLimit, checkPaymentRateLimit } from '../../../../lib/rateLimit'
+import { prisma } from '../../../../lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
@@ -105,8 +106,6 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-
-import { prisma } from '../../../../lib/prisma'
 
 export async function PUT(request: NextRequest) {
   try {
