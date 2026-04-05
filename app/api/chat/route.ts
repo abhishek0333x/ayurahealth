@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 
 export const dynamic = 'force-dynamic'
+export const maxDuration = 60
 
 import { checkRateLimit } from '../../../lib/rateLimit'
 import { prisma } from '../../../lib/prisma'
@@ -382,8 +383,9 @@ ${deepThink ? 'DEEP MIND MODE: Maximum reasoning depth. Cross-reference all 8 tr
 
     return new NextResponse(createStream(response, { sources: chunks }), { headers: streamHeaders })
 
-  } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  } catch (err) {
+    console.error('CHAT_API_CRASH:', err)
+    return NextResponse.json({ error: 'Internal server error', details: String(err) }, { status: 500 })
   }
 }
 

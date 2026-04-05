@@ -405,20 +405,28 @@ export default function ChatPage() {
         }
         throw new Error('API error')
       }
-      const reader = res.body?.getReader(); const decoder = new TextDecoder(); let full = ''; let currentSources: ChatSource[] = []
+      const reader = res.body?.getReader(); const decoder = new TextDecoder(); let full = ''; let currentSources: ChatSource[] = []; let buffer = ''
       if (reader) {
         while (true) {
           const { done, value } = await reader.read(); if (done) break
-          for (const line of decoder.decode(value).split('\n')) {
-            if (line.startsWith('data: ')) { 
-              try { 
-                const d = JSON.parse(line.slice(6))
-                if (d.sources) { 
-                  currentSources = d.sources 
-                } else if (d.content) { 
-                  full += d.content; setStreaming(full) 
-                } 
-              } catch {} 
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          // Keep the last partial line in the buffer
+          buffer = lines.pop() || ''
+          
+          for (const line of lines) {
+            const trimmed = line.trim()
+            if (!trimmed || !trimmed.startsWith('data: ')) continue
+            
+            try { 
+              const d = JSON.parse(trimmed.slice(6))
+              if (d.sources) { 
+                currentSources = d.sources 
+              } else if (d.content) { 
+                full += d.content; setStreaming(full) 
+              } 
+            } catch (e) {
+              console.warn('SSE_PARSE_ERROR:', e, 'Line:', trimmed)
             }
           }
         }
@@ -435,7 +443,11 @@ export default function ChatPage() {
            })
         }).catch(err => console.error('Failed to save chat session:', err));
       }
-    } catch { setMessages(prev => [...prev, { role: 'assistant', content: 'Connection interrupted. Please try again.' }]); setStreaming('') }
+    } catch (err) { 
+      console.error('CHAT_FETCH_FAILURE:', err)
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Connection interrupted. Please try again.' }]); 
+      setStreaming('') 
+    }
     finally { setLoading(false) }
   }
 
