@@ -41,7 +41,9 @@ export async function getEmbedding(text: string): Promise<number[]> {
   // ── Legacy Mode: Local Transformers.js ─────────────────────────────────────
   try {
     const extract = await getExtractor();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const output = await extract(text, { pooling: 'mean', normalize: true } as any);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return Array.from((output as any).data);
   } catch (error) {
     console.error('EMBEDDING_ENGINE_CRASH:', error);
