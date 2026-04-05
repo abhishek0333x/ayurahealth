@@ -1,9 +1,11 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
+  extensions = [vector]
 }
 
 model UserProfile {
@@ -21,6 +23,7 @@ model UserProfile {
   updatedAt          DateTime @updatedAt
   
   chatSessions   ChatSession[]
+  memories       UserMemory[]
 }
 
 model ChatSession {
@@ -31,6 +34,29 @@ model ChatSession {
   createdAt      DateTime @default(now())
   
   user           UserProfile @relation(fields: [userId], references: [id])
+}
+
+model UserMemory {
+  id             String   @id @default(uuid())
+  userId         String
+  content        String
+  embedding      Unsupported("vector(384)")?
+  category       String   // e.g., "Health Fact", "Preference", "Metric"
+  source         String   // e.g., "Chat", "Manual", "Report"
+  createdAt      DateTime @default(now())
+
+  user           UserProfile @relation(fields: [userId], references: [id])
+}
+
+model KnowledgeChunk {
+  id             String   @id @default(uuid())
+  title          String
+  content        String
+  embedding      Unsupported("vector(384)")?
+  source         String   // e.g., "Charaka Samhita", "Modern Science"
+  tradition      String?  // e.g., "Ayurveda", "TCM"
+  tags           String[]
+  createdAt      DateTime @default(now())
 }
 
 model ClinicLead {

@@ -1,0 +1,26 @@
+# AyuraHealth Replit Configuration
+# 🌿 VAIDYA + AI Brain Ready
+
+run = "npm run dev"
+
+[env]
+NODE_ENV = "development"
+
+[nix]
+channel = "stable-23.11"
+
+[interpreter]
+command = "bash"
+
+[deployment]
+run = "npm run build && npm start"
+
+[packager]
+language = "nodejs"
+
+[languages.javascript]
+pattern = "**/*.{js,jsx,ts,tsx}"
+syntax = "typescript"
+
+[ports]
+"127.0.0.1:3000" = { external = 80, name = "AyuraHealth" }

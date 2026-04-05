@@ -4,6 +4,9 @@ import { currentUser } from '@clerk/nextjs/server'
 export const dynamic = 'force-dynamic'
 
 import { checkRateLimit } from '../../../lib/rateLimit'
+import { prisma } from '../../../lib/prisma'
+import { getEmbedding } from '../../../lib/ai/embeddings'
+import { COUNCIL_OF_AGENTS, SYNTHESIS_PROMPT } from '../../../lib/ai/agents'
 
 const FREE_MESSAGE_LIMIT = 10 // Number of AI responses a free user gets
 
@@ -238,9 +241,52 @@ Be thorough. Be specific. Cite actual biomarker values from the report.
             a.type === 'link' ? `\n[ARTICLE: "${a.name}"]\n${a.content}` : ''
           ).join('') : ''
 
+    const lastMsg = messages[messages.length - 1]
+    const userQuery = lastMsg.role === 'user' ? lastMsg.content : ''
+
+    // ── AI Brain: Vector Search (RAG) ────────────────────────────────────────
+    let knowledgeCtx = ''
+    if (userQuery && userQuery.length > 3) {
+      try {
+        const queryEmbedding = await getEmbedding(userQuery)
+        const vectorString = `[${queryEmbedding.join(',')}]`
+
+        // Search for relevant classical wisdom
+        const chunks: any[] = await prisma.$queryRawUnsafe(
+          `SELECT title, content, tradition, source, 1 - (embedding <=> $1::vector) as similarity 
+           FROM "KnowledgeChunk" 
+           WHERE 1 - (embedding <=> $1::vector) > 0.6
+           ORDER BY similarity DESC 
+           LIMIT 3`,
+          vectorString
+        )
+
+        if (chunks && chunks.length > 0) {
+          knowledgeCtx = `\nRELEVANT CLASSICAL WISDOM FROM AI BRAIN:\n` + 
+            chunks.map(c => `[${c.tradition}] ${c.title}: ${c.content} (Source: ${c.source})`).join('\n')
+        }
+      } catch (err) {
+        console.error('AI Brain Retrieval Error:', err)
+      }
+    }
+
+    // ── Council of Agents: System Brief ──────────────────────────────────────
+    const councilBrief = `COUNCIL OF AGENTS CURRENT STATUS:
+    - The Acharya: Online (Leading on Ayurveda / NotebookLM Vetted)
+    - The Sage: Online (Leading on TCM/Qi / NotebookLM Vetted)
+    - The Researcher: Online (Vetting Evidence / Modern Synthesis)
+    
+    SPECIAL AGENT CONTRIBUTIONS:
+    ${COUNCIL_OF_AGENTS.map(a => `${a.name} (${a.role}): ${a.personality}`).join('\n')}
+    
+    ${knowledgeCtx ? `\nFOUNDATIONAL DATA RETRIEVED FROM AI BRAIN (NotebookLM Curated):\n${knowledgeCtx}` : ''}
+    `
+
     const systemPrompt = `${VAIDYA_SYSTEM}
+${SYNTHESIS_PROMPT}
 ${selectedSystems}
 ${doshaCtx}
+${councilBrief}
 LANGUAGE: ${safeLang === 'sa'
       ? 'Respond ONLY in classical Sanskrit (देवनागरी script). Use Sanskrit grammar. Every word must be Sanskrit. Example greeting: नमस्ते। अहं वैद्यः।'
       : `Respond entirely in ${langName}. Every single word must be in ${langName}. Do not use English.`}
@@ -248,7 +294,6 @@ ${isBloodReport ? bloodReportPrompt : ''}
 ${deepThink ? 'DEEP MIND MODE: Maximum reasoning depth. Cross-reference all 8 traditions thoroughly. Show nuanced multi-tradition connections. Be comprehensive and cite specific classical chapters.' : ''}`
 
     const hasImages = safeAttachments.some(a => a.type === 'image')
-    const lastMsg = messages[messages.length - 1]
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formattedMessages: any[] = []

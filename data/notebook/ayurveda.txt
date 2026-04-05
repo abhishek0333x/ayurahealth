@@ -1,0 +1,27 @@
+# Classic Ayurveda Knowledge Base (NotebookLM Source)
+
+## Core Principles
+1. **Panchamahabhuta (The Five Elements)**: All of nature—and the human body—is composed of five elements:
+   - Akasha (Space/Ether)
+   - Vayu (Air)
+   - Tejas (Fire)
+   - Aap (Water)
+   - Prithvi (Earth)
+   
+2. **Tridosha (The Three Humors)**: 
+   - **Vata (Air/Ether)**: Responsible for movement, nervous system, and circulation. Associated with being light, dry, and cold.
+   - **Pitta (Fire/Water)**: Responsible for metabolism, digestion, and heat. Associated with being sharp, hot, and acidic.
+   - **Kapha (Earth/Water)**: Responsible for structure, stability, and fluids. Associated with being heavy, slow, and cool.
+
+3. **Agni (Digestive Fire)**: The pilot light of the metabolism. Proper health is impossible without strong, stable Agni.
+4. **Ama (Metabolic Toxicity)**: Undigested waste that leads to disease.
+5. **Dhatus (The Seven Tissues)**: Rasa (plasma), Rakta (blood), Mamsa (muscle), Meda (fat), Asthi (bone), Majja (marrow), and Shukra (reproductive tissue).
+
+## Diagnostic Methodologies
+- **Nadi Pariksha (Pulse Diagnosis)**: Evaluating the state of the three doshas via the radial pulse.
+- **Ashta Vidha Pariksha (Eight-Fold Examination)**: Tongue, Pulse, Urine, Stool, Voice, Skin, Eyes, and Appearance.
+
+## Treatments
+- **Dinacharya (Daily Regimen)**: Waking, tongue scraping, oil pulling, and seasonal adjustments.
+- **Ritucharya (Seasonal Regimen)**: How the doshas shift with the earth's cycles.
+- **Panchakarma (The Five Actions)**: Deep detoxification via Vamana (emesis), Virechana (purgation), Basti (enema), Nasya (nasal therapy), and Raktamokshana (bloodletting).

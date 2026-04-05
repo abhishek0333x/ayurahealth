@@ -1,0 +1,32 @@
+# Homeopathy (NotebookLM Source)
+
+## Core Principles
+1. **Law of Similars**: "Similia Similibus Curentur" (Let Like Be Cured by Like).
+2. **Law of Minimum Dose**: Sub-molecular dilutions based on potencies.
+3. **The Miasms**: PSORA (The itch), SYCOSIS (The overgrowth), and SYPHILIS (The destruction).
+4. **The Vital Force**: Protecting the invisible core of the human system.
+
+## Diagnostic Methodologies
+- **Individualization**: Every patient receives a remedy unique to their constellation of symptoms.
+- **Mental Symptoms**: Emotional and mental states are as important as physical ones.
+
+---
+
+# Naturopathy (NotebookLM Source)
+
+## Core Principles
+1. **Vis Medicatrix Naturae**: Trust in the healing power of nature.
+2. **Identify and Treat the Causes (Tolle Causam)**: Symptom suppression is a last resort.
+3. **First Do No Harm (Primum Non Nocere)**: The least invasive path is the best path.
+4. **Doctor as Teacher (Docere)**: Educating the patient for self-care.
+5. **Treat the Whole Person**: Environment, Genetics, and Lifestyle are one.
+
+---
+
+# Western Integrative Medicine (NotebookLM Source)
+
+## Core Principles
+1. **Functional Medicine**: Systems biology approach to health.
+2. **Gut-Brain Axis**: The microbiome and its impact on the rest of the body.
+3. **Biofeedback and Resilience**: Using modern data to optimize stress response.
+4. **Biomarker Analysis**: Understanding health via lab results while considering traditional constitutional factors.

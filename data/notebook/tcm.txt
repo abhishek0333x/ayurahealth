@@ -1,0 +1,24 @@
+# Traditional Chinese Medicine (NotebookLM Source)
+
+## Core Principles
+1. **Yin and Yang**: The complementary and opposing forces (Cold/Heat, Moving/Still, Inside/Outside, Empty/Full).
+2. **Qi (Life Force Energy)**: Circulates through the body in meridians (channels).
+3. **The Five Elements (Wu Xing)**:
+   - Wood (Liver/Gallbladder)
+   - Fire (Heart/Small Intestine)
+   - Earth (Spleen/Stomach)
+   - Metal (Lung/Large Intestine)
+   - Water (Kidney/Bladder)
+4. **Zang-Fu Organs**: The functional relationships between the internal organs and their energetic pathways.
+
+## Diagnostic Methodologies
+- **Tongue Diagnosis**: Color, shape, coating, and moisture.
+- **Pulse Palette**: 28 different pulse qualities used to determine organ health.
+- **Pattern Differentiation (Zheng)**: Identifying the underlying syndrome rather than the disease label.
+
+## Treatments
+- **Acupuncture**: Regulating Qi flow via fine needles at meridian points.
+- **Moxibustion**: Warming meridians with burning mugwort (Moxa).
+- **Herbal Formulas**: Customized decoctions based on the specific pattern (e.g., Liu Wei Di Huang Wan).
+- **Tui Na**: Therapeutic massage and bone manipulation.
+- **Qi Gong/Tai Chi**: Movement and breath to cultivate internal energy.

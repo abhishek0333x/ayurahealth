@@ -9,8 +9,7 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    // Provide a valid URI fallback for build-time static check, 
-    // will be overridden by process.env.DATABASE_URL at runtime.
-    url: process.env["DATABASE_URL"] || "postgresql://postgres:postgres@localhost:5432/postgres",
+    // For Prisma 7 Migrate/Push, a direct connection is preferred over a pooler.
+    url: process.env["DIRECT_URL"] || process.env["DATABASE_URL"] || "postgresql://postgres:postgres@localhost:5432/postgres",
   },
 });

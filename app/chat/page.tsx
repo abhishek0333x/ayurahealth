@@ -53,7 +53,11 @@ const QUESTIONS = (lang: Lang) => [
 
 function renderMarkdown(text: string, doshaColor = '#6abf8a'): string {
   return text
-    .replace(/\*\*✦ SYNTHESIS\*\*/g, `<div class="synthesis-header">✦ SYNTHESIS</div>`)
+    .replace(/\*\*✦ VAIDYA'S SYNTHESIS\*\*/g, `<div class="synthesis-header">✦ VAIDYA'S SYNTHESIS</div>`)
+    .replace(/\*\*🌿 The Path of Balance\*\*/g, `<div class="section-header" style="color:${doshaColor}">🌿 The Path of Balance</div>`)
+    .replace(/\*\*📊 Clinical Correlation\*\*/g, `<div class="section-header" style="color:${doshaColor}">📊 Clinical Correlation</div>`)
+    .replace(/\*\*⚡ Your Integrated Regimens?\*\*/g, `<div class="section-header" style="color:${doshaColor}">⚡ Your Integrated Regimen</div>`)
+    .replace(/\*\*📚 Lineage & Proof\*\*/g, `<div class="section-header" style="color:${doshaColor}">📚 Lineage & Proof</div>`)
     .replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${doshaColor}">$1</strong>`)
     .replace(/\*([^*]+)\*/g, '<em style="opacity:0.85">$1</em>')
     .replace(/^### (.+)$/gm, `<h3 style="color:${doshaColor};font-size:1rem;font-weight:600;margin:1rem 0 0.4rem">$1</h3>`)
@@ -718,9 +722,20 @@ export default function ChatPage() {
               </div>
             )}
             {loading && !streaming && (
-              <div style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg, #2d5a1b, #4a9e6a)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}>🌿</div>
-                <div style={{ padding: '0.6rem 1rem', borderRadius: '6px 16px 16px 16px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(106,191,138,0.1)', color: 'rgba(200,200,200,0.4)', fontSize: '0.85rem' }}>Vaidya is consulting{thinkingDots}</div>
+              <div style={{ marginBottom: '1.25rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.6rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg, #2d5a1b, #4a9e6a)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}>🌿</div>
+                  <div style={{ padding: '0.6rem 1rem', borderRadius: '6px 16px 16px 16px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(106,191,138,0.1)', color: 'rgba(200,200,200,0.4)', fontSize: '0.85rem' }}>Vaidya is consulting the Council{thinkingDots}</div>
+                </div>
+                {/* Knowledge Pulse Visualizer */}
+                <div style={{ marginLeft: 36, display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.4rem 0.75rem', background: 'rgba(106,191,138,0.05)', border: '1px solid rgba(106,191,138,0.15)', borderRadius: 12, animation: 'pulse 2s infinite ease-in-out' }}>
+                  <div style={{ display: 'flex', gap: '3px' }}>
+                    {[0, 1, 2].map(i => (
+                      <div key={i} style={{ width: 3, height: 12, background: '#6abf8a', borderRadius: 2, animation: `bounce 1s infinite ${i * 0.2}s` }} />
+                    ))}
+                  </div>
+                  <span style={{ fontSize: '0.65rem', color: '#6abf8a', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Accessing AI Brain Wisdom...</span>
+                </div>
               </div>
             )}
             <div ref={messagesEndRef} />

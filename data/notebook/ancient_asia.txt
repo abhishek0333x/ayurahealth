@@ -1,0 +1,44 @@
+# Tibetan Medicine - Sowa Rigpa (NotebookLM Source)
+
+## Core Principles
+1. **Three Humors (Nyepa Sum)**: 
+   - **Lung (Wind/Air)**: Movement, respiration, senses, and the nervous system. Associated with the heart, lungs, and colon. Excess leads to anxiety and insomnia.
+   - **Tripa (Bile/Fire)**: Metabolism, digestion, and heat production. Associated with the liver, gallbladder, and small intestine. Excess leads to inflammation and fever.
+   - **Pekan (Phlegm/Earth/Water)**: Structure, lubrication, and cool stability. Associated with the brain, stomach, and joints. Excess leads to stagnation and heaviness.
+2. **Poisons of the Mind**: Ignorance, Attachment, and Hatred are the root causes of all physical suffering.
+3. **The Five Elements**: Sa (Earth), Chu (Water), Me (Fire), Lung (Air), and Nam-kha (Space).
+
+## Diagnostic Methodologies
+- **Pulse Analysis**: Evaluating the state of the humors and the internal organs.
+- **Urinalysis (Chu-Tak)**: Color, steam, odor, bubbles, and sediment.
+- **Tongue and Eye**: Examining for specific patterns.
+
+---
+
+# Unani Medicine (NotebookLM Source)
+
+## Core Principles
+1. **The Four Humors (Akhlat)**:
+   - Dam (Blood): Warm and Moist.
+   - Balgham (Phlegm): Cold and Moist.
+   - Safra (Yellow Bile): Warm and Dry.
+   - Sauda (Black Bile): Cold and Dry.
+2. **Quwwat-e-Mudabbira-e-Badan**: The body's innate self-healing capability. 
+3. **Mizaj (Temperament)**: A customized constitutional analysis for every patient.
+
+## Diagnostic Methodologies
+- **Nabz (Pulse Evaluation)**: Ten types of pulse parameters.
+- **Baul and Baraz (Urine and Stool)**: Assessing the humor balance.
+
+---
+
+# Siddha Medicine (NotebookLM Source)
+
+## Core Principles
+1. **The 36 Tattvas (Principles of Nature)**: Understanding man as a microcosm.
+2. **The Three Humors (Mukkutram)**: Vatham (Air), Pitham (Fire), and Kabam (Water/Earth).
+3. **Food is Medicine**: The first line of defense.
+
+## Specialty
+- **Iatrochemistry**: Use of purified mercury, sulfur, and minerals for long-term health.
+- **Varma**: Manipulation of vital energy points.
