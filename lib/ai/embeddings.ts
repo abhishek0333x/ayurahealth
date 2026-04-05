@@ -21,8 +21,11 @@ async function getExtractor() {
 export async function getEmbedding(text: string): Promise<number[]> {
   try {
     const extract = await getExtractor();
-    const output = await extract(text, { pooling: 'mean', normalize: true });
-    return Array.from(output.data);
+    // Use 'any' cast for options to bypass a known TS type-clash with the 'normalize' property in some environments.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const output = await extract(text, { pooling: 'mean', normalize: true } as any);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return Array.from((output as any).data);
   } catch (error) {
     console.error('Error generating embedding:', error);
     throw new Error('Failed to generate embedding');
