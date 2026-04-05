@@ -1,6 +1,6 @@
 import { pipeline } from '@xenova/transformers';
 
-let extractor: any = null;
+let extractor: Awaited<ReturnType<typeof pipeline>> | null = null;
 
 /**
  * Initializes the embedding extractor (all-MiniLM-L6-v2, 384 dimensions)

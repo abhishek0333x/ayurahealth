@@ -244,6 +244,14 @@ Be thorough. Be specific. Cite actual biomarker values from the report.
     const lastMsg = messages[messages.length - 1]
     const userQuery = lastMsg.role === 'user' ? lastMsg.content : ''
 
+    interface KnowledgeChunkResult {
+      title: string;
+      content: string;
+      tradition: string;
+      source: string;
+      similarity: number;
+    }
+
     // ── AI Brain: Vector Search (RAG) ────────────────────────────────────────
     let knowledgeCtx = ''
     if (userQuery && userQuery.length > 3) {
@@ -252,7 +260,7 @@ Be thorough. Be specific. Cite actual biomarker values from the report.
         const vectorString = `[${queryEmbedding.join(',')}]`
 
         // Search for relevant classical wisdom
-        const chunks: any[] = await prisma.$queryRawUnsafe(
+        const chunks = await prisma.$queryRawUnsafe<KnowledgeChunkResult[]>(
           `SELECT title, content, tradition, source, 1 - (embedding <=> $1::vector) as similarity 
            FROM "KnowledgeChunk" 
            WHERE 1 - (embedding <=> $1::vector) > 0.6
@@ -295,15 +303,24 @@ ${deepThink ? 'DEEP MIND MODE: Maximum reasoning depth. Cross-reference all 8 tr
 
     const hasImages = safeAttachments.some(a => a.type === 'image')
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const formattedMessages: any[] = []
+    interface ChatPart {
+      type: 'text' | 'image_url';
+      text?: string;
+      image_url?: { url: string };
+    }
+
+    interface ChatMessage {
+      role: 'user' | 'assistant' | 'system';
+      content: string | ChatPart[];
+    }
+
+    const formattedMessages: ChatMessage[] = []
     for (let i = 0; i < messages.length - 1; i++) {
-      formattedMessages.push({ role: messages[i].role, content: messages[i].content })
+      formattedMessages.push({ role: messages[i].role as 'user' | 'assistant', content: messages[i].content })
     }
 
     if (hasImages) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const parts: any[] = [{ type: 'text', text: lastMsg.content + attachmentCtx }]
+      const parts: ChatPart[] = [{ type: 'text', text: lastMsg.content + attachmentCtx }]
       safeAttachments.filter(a => a.type === 'image').forEach(a => {
         parts.push({ type: 'image_url', image_url: { url: `data:${a.mimeType || 'image/jpeg'};base64,${a.content}` } })
       })

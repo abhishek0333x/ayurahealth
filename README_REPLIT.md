@@ -15,7 +15,7 @@ Replit does not read `.env.local`. You MUST add the following to the **Secrets**
 ## 2. Initialize the AI Brain 🧠
 The knowledge base is pre-populated in `data/notebook/`. Run the ingestion command in the shell once you set your secrets:
 ```bash
-NODE_TLS_REJECT_UNAUTHORIZED=0 DATABASE_URL=$DIRECT_URL npx ts-node scripts/ingest-notebook.ts
+NODE_TLS_REJECT_UNAUTHORIZED=0 DATABASE_URL=$DIRECT_URL npx tsx scripts/ingest-notebook.ts
 ```
 
 ## 3. Run the App 🚀

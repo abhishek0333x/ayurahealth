@@ -69,8 +69,9 @@ async function ingest() {
       );
     }
     console.log('✅ Ingestion complete.');
-  } catch (error: any) {
-    console.error('❌ Ingestion failed:', error.message || error);
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error('❌ Ingestion failed:', err.message || error);
   } finally {
     await client.end();
   }

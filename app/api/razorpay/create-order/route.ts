@@ -134,7 +134,7 @@ export async function PUT(request: NextRequest) {
       // ── Signature is valid. Now persist the payment state ────────────────
       // Fetch the order to get the tier and user email stored in notes
       const order = await razorpayInstance.orders.fetch(razorpay_order_id)
-      const { tier, email, userId } = (order.notes as { tier: string; email: string; userId?: string })
+      const { tier, email } = (order.notes as { tier: string; email: string; userId?: string })
 
       if (email) {
         // Record the subscription in the database
