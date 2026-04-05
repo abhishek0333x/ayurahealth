@@ -10,8 +10,13 @@ const isProtectedRoute = createRouteMatcher([
 ])
 
 export default clerkMiddleware(async (auth, req) => {
-  // Only protect specific authenticated routes
-  if (isProtectedRoute(req)) {
+  // ── CEO Bypass: Frictionless access for the owner ──────────────────────────
+  const ceoToken = req.cookies.get('ayura_ceo_token')?.value
+  const CEO_BYPASS_KEY = process.env.CEO_BYPASS_KEY
+  const isCeo = CEO_BYPASS_KEY && ceoToken === CEO_BYPASS_KEY
+
+  // Only protect specific authenticated routes if NOT in CEO Mode
+  if (isProtectedRoute(req) && !isCeo) {
     await auth.protect()
   }
 })

@@ -99,8 +99,14 @@ function isValidUrl(str: string): boolean {
 }
 
 export default function ChatPage() {
-  const { user, isSignedIn } = useUser()
+  const { user, isLoaded: clerkLoaded } = useUser()
   const clerk = useClerk()
+  
+  // ── CEO Bypass: Check for frictionless owner access ────────────────────────
+  const isCeo = typeof window !== 'undefined' && document.cookie.includes('ayura_ceo_token')
+  const userLoaded = clerkLoaded || isCeo
+  const activeUser = user || (isCeo ? { firstName: 'CEO', lastName: 'Owner', imageUrl: '/favicon.svg' } : null)
+
   const [lang, setLang] = useState<Lang>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('ayura_lang')
@@ -433,7 +439,7 @@ export default function ChatPage() {
       }
       setMessages(prev => [...prev, { role: 'assistant', content: full, sources: currentSources }]); setStreaming('')
       
-      if (newMessages.length <= 2 && user && !incognito) {
+      if (newMessages.length <= 2 && activeUser && !incognito) {
         fetch('/api/chat-session', {
            method: 'POST',
            headers: { 'Content-Type': 'application/json' },
@@ -529,7 +535,7 @@ export default function ChatPage() {
               You have experienced what VAIDYA can do. Thousands of years of healing wisdom — now unlock it fully.
             </p>
             
-            {isSignedIn ? (
+            {!!activeUser ? (
               <>
                 <div style={{ background: 'rgba(106,191,138,0.06)', border: '1px solid rgba(106,191,138,0.15)', borderRadius: 16, padding: '1.25rem', marginBottom: '1.5rem', textAlign: 'left' }}>
                   {['Unlimited AI consultations', 'Advanced blood report analysis', 'Personalized weekly meal plans', 'Consultation history & export', '7-day free trial — cancel anytime'].map((f, i) => (
@@ -555,7 +561,7 @@ export default function ChatPage() {
                   <div style={{ color: 'rgba(232,223,200,0.8)', fontSize: '0.95rem', marginBottom: '1rem' }}>Create a free account to continue your journey and unlock more free consultations.</div>
                 </div>
                 <button
-                  onClick={() => clerk.openSignUp({ fallbackRedirectUrl: window.location.href })}
+                  onClick={() => { if (clerkLoaded && !activeUser) clerk.openSignIn({ fallbackRedirectUrl: window.location.href }) }}
                   style={{ display: 'block', width: '100%', padding: '1rem', background: 'linear-gradient(135deg, #1a4d2e, #2d7a45, #3a9455)', color: '#e8dfc8', border: '1px solid rgba(106,191,138,0.4)', borderRadius: 980, fontSize: '1rem', fontWeight: 700, textDecoration: 'none', marginBottom: '0.75rem', boxShadow: '0 8px 32px rgba(45,122,69,0.5)', cursor: 'pointer' }}
                 >
                   Sign Up for Free
