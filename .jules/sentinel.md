@@ -1,0 +1,4 @@
+## 2024-05-18 - Prevent Timing Attacks in Token Comparisons
+**Vulnerability:** String comparison `===` or `!==` was used to compare CEO authentication tokens. This allows timing attacks where an attacker can determine the secret key byte by byte based on the time it takes for the comparison to fail.
+**Learning:** Standard string equality checks short-circuit on the first mismatched character, revealing information through execution time.
+**Prevention:** Always use `crypto.timingSafeEqual` for comparing secrets, API keys, or security tokens. Crucially, explicitly verify both strings are the exact same length (`buf1.length === buf2.length`) before calling `timingSafeEqual`, as the function will throw an error if the lengths differ. Also, ensure error messages for unauthorized access do not leak details like "Please check your CEO_BYPASS_KEY."
