@@ -1,0 +1,3 @@
+## 2026-09-08 - Memoizing MessageItem for Chat Performance
+**Learning:** In chat interfaces, large lists of complex components like `MessageItem` (which includes markdown rendering and animations) can cause significant UI thread blocking when the parent `ChatMessagesPanel` re-renders during streaming or state changes. Wrapping list items in `React.memo` prevents these expensive re-renders.
+**Action:** Always consider `React.memo` for items in large or frequently updating lists, especially when the item components are complex. Ensure props like `onSpeakText` passed to them are stable (e.g., via `useCallback`).
