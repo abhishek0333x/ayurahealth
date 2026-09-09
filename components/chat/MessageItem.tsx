@@ -51,7 +51,8 @@ interface MessageItemProps {
   onSelectSource: (source: ChatSource) => void
 }
 
-export default function MessageItem({
+// ⚡ Bolt: Wrapped in React.memo to prevent unnecessary O(N^2) re-renders of the entire chat history when streaming new messages.
+const MessageItem = React.memo(function MessageItem({
   msg,
   doshaColor,
   voiceSupported,
@@ -227,4 +228,6 @@ export default function MessageItem({
       </div>
     </motion.div>
   )
-}
+})
+
+export default MessageItem
