@@ -1,0 +1,3 @@
+## 2024-05-19 - Added React.memo() to MessageItem
+**Learning:** In `ChatMessagesPanel.tsx`, `MessageItem` is rendered in a list mapping over the `messages` array. As new messages stream in or typing dots appear, the entire `messages` array might trigger re-renders of all previous `MessageItem` components in the list. `MessageItem` is a complex component with markdown rendering (`ClinicalMarkdown`), source displays, and animations. Unnecessary re-renders of all message items on every state change during a chat can severely bottleneck frontend performance, especially in long chat sessions.
+**Action:** Wrap `MessageItem` with `React.memo` to prevent re-rendering of existing messages when new messages stream in, as long as their props haven't changed.
