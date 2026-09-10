@@ -11,7 +11,8 @@ interface ClinicalMarkdownProps {
   className?: string
 }
 
-export default function ClinicalMarkdown({ 
+// ⚡ Bolt: Wrapped in React.memo to prevent unnecessary re-renders of expensive markdown parsing during streaming and chat interactions.
+export default React.memo(function ClinicalMarkdown({
   content, 
   doshaColor = 'var(--accent-main)',
   className = '' 
@@ -120,4 +121,4 @@ export default function ClinicalMarkdown({
       </ReactMarkdown>
     </div>
   )
-}
+})
